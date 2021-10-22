@@ -30,6 +30,7 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
+    "@vue/cli": "^4.5.14",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-e2e-webdriverio": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
