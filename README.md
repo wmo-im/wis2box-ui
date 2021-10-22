@@ -20,7 +20,7 @@ npm run serve
 npm run build
 
 # build for different modes with .env.[mode]
-vite build --mode staging
+npx vite build --mode staging
 ```
 See [Vite build guide](https://vitejs.dev/guide/build.html) for more options
 
