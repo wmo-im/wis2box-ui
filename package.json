@@ -16,9 +16,9 @@
   "license": "Apache-2.0",
   "private": false,
   "scripts": {
-    "dev": "vite", // start dev server
-    "build": "vite build", // build for production
-    "serve": "vite preview" // locally preview production build
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore src",
     "lint:fix": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "format": "prettier .  --write"
@@ -33,6 +33,7 @@
   "devDependencies": {
     "@types/leaflet": "^1.5.7",
     "@vitejs/plugin-vue": "^1.9.3",
+    "@wdio/cli": "^7.16.2",
     "chromedriver": "94",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",

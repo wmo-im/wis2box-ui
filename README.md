@@ -10,6 +10,11 @@ npm install
 npm run dev
 ```
 
+### Preview production build
+```
+npm run serve
+```
+
 ### Build for production
 ```sh
 npm run build
