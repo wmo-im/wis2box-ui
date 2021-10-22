@@ -1,4 +1,4 @@
-# vue-hello-world
+# wis2node-ui
 
 ## Project setup
 ```

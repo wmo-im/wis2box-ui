@@ -1,0 +1,13 @@
+body {
+  background-color: #ffffff;
+  font-family: arial, verdana, sans-serif;
+  text-align: left;
+  float: left;
+}
+footer {
+  height: 2px;
+  border-width: 0;
+  color: gray;
+  background-color: gray;
+  text-align: center;
+}

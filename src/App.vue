@@ -1,30 +1,30 @@
 <template>
-  <div id="nav">
+  <app-header></app-header>
+  <div id="wis2node-app">
     <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <a target="_window_catalogue" href="http://localhost:8999/pygeoapi">Catalogue</a> |
+    <a target="_window_service_monitor" href="http://localhost:8999/monitor">Service Monitor</a> |
+    <a target="_window_docs" :href="documentation">Documentation</a>
+    <router-view/>
   </div>
-  <router-view />
+  <app-footer></app-footer>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import { documentation } from "../package"
 
-#nav {
-  padding: 30px;
-}
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+export default {
+  components: {
+    AppHeader,
+    AppFooter
+  },
+  data() {
+    return {
+      documentation: documentation
+    }
+  }
 }
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+</script>

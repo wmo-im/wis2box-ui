@@ -1,7 +1,20 @@
 {
-  "name": "vue-hello-world",
+  "name": "wis2node-ui",
   "version": "0.1.0",
-  "private": true,
+  "description": "wis2node-ui is the web application component of the WIS 2.0 node in a box project",
+  "keywords": [
+    "wmo",
+    "wis 2.0"
+  ],
+  "homepage": "https://github.com/wmo-im/wis2node",
+  "documentation": "https://wmo-im.github.io/wis2node",
+  "repository": "github:wmo-im/wis2node",
+  "bugs": {
+    "url": "https://github.com/wmo-im/wis2node/issues",
+    "email": "tomkralidis@gmail.com"
+  },
+  "license": "Apache-2.0",
+  "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -12,9 +25,11 @@
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "vue-leaflet": "^0.6.1"
   },
   "devDependencies": {
+    "@vue-leaflet/vue-leaflet": "^0.6.1",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-e2e-webdriverio": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
@@ -29,6 +44,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^7.0.0",
     "geckodriver": "^1.20.0",
+    "leaflet": "^1.7.1",
     "prettier": "^2.2.1",
     "wdio-chromedriver-service": "^6.0.3",
     "wdio-geckodriver-service": "^1.1.0"
