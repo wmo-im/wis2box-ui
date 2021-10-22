@@ -1,17 +1,21 @@
 <template>
   <section id="home-map">
-    <p>
-      <l-map ref="map" v-model="zoom" :center="center" :bounds="bounds" style="height:80vh">
-        <l-geo-json :geojson="geojson" :options="geojsonOptions">
-        </l-geo-json>
-        <l-tile-layer :url="url" :attribution="attribution"/>
-      </l-map>
-    </p>
+    <l-map
+      ref="wisMap"
+      :zoom="zoom"
+      :center="center"
+      :bounds="bounds"
+      style="height: 80vh"
+    >
+      <l-geo-json :geojson="geojson" :options="geojsonOptions"></l-geo-json>
+      <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+    </l-map>
   </section>
 </template>
 
 <script>
-import "leaflet/dist/leaflet.css"
+import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
+import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
 
 let oapi = process.env.VUE_APP_OAPI;
@@ -21,57 +25,77 @@ export default {
   components: {
     LMap,
     LTileLayer,
-    LGeoJson
+    LGeoJson,
   },
   data() {
     return {
-      bounds: [],
+      bounds: [
+        [42, -142],
+        [84, -52],
+      ],
       geojson: null,
+      geojsonLayer: geoJSON(null, null),
       geojsonOptions: {
-        onEachFeature: function(feature, layer) {
-          layer.bindPopup('<a target="_window_url" href="' + feature.properties.url + '">' + feature.properties.name + '</a>');
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(
+            '<a target="_window_url" href="' +
+              feature.properties.url +
+              '">' +
+              feature.properties.name +
+              "</a>"
+          );
+        },
+        pointToLayer: function (feature, latLng) {
+          // style markers according to properties
+          let fillColor;
+          let lineColor;
+          switch (feature.properties.status) {
+            case "operational":
+              fillColor = "SpringGreen";
+              lineColor = "SeaGreen";
+              break;
+            case "nonReporting":
+              fillColor = "Salmon";
+              lineColor = "FireBrick";
+              break;
+            case "closed":
+              fillColor = "SlateGrey";
+              lineColor = "DimGrey";
+              break;
+            default:
+              // undefined status
+              fillColor = "Tan";
+              lineColor = "Sienna";
+          }
+          const markerStyle = {
+            radius: 10,
+            fillColor: fillColor,
+            color: lineColor,
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8,
+          };
+          return circleMarker(latLng, markerStyle);
         },
       },
-      optionsStyle: {
-        style: function(feature) {
-          let color;
-          switch (feature.properties.status) {
-            case 'operational':
-              color = 'green';
-              break;
-            case 'nonReporting':
-              color = 'red';
-              break;
-            case 'closed':
-              color = 'grey';
-              break;
-            }
-          return {'color': color, 'weight': 21};
-        }
-      },
-      attribution: "&copy; <a href=\"https://osm.org/copyright\">OpenStreetMap</a> contributors",
+      attribution:
+        '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       center: [0, 0],
-      zoom: 1
+      zoom: 1,
     };
-  },
-  async beforeMount() {
-    const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
-
-    // And now the Leaflet circleMarker function can be used by the options:
-    this.geojsonOptions.pointToLayer = (feature, latLng) =>
-      circleMarker(latLng, { radius: 8 });
-    this.mapIsReady = true;
   },
   async created() {
     this.loading = true;
-    const response = await fetch(oapi + "/collections/stations/items?f=json")
+    const response = await fetch(
+      oapi + "/collections/climate-stations/items?f=json"
+    );
     const data = await response.json();
     this.geojson = data;
-    this.bounds = [[42, -142],[84, -52]];
-//    this.bounds = this.geojson.getBounds();
-    this.loading = false;
-  }
-};
 
+    // update bounds
+    this.bounds = geoJSON(this.geojson).getBounds();
+    this.loading = false;
+  },
+};
 </script>
