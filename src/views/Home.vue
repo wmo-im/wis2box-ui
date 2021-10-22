@@ -88,7 +88,7 @@ export default {
   async created() {
     this.loading = true;
     const response = await fetch(
-      oapi + "/collections/climate-stations/items?f=json"
+      oapi + "/collections/stations/items?f=json"
     );
     const data = await response.json();
     this.geojson = data;
