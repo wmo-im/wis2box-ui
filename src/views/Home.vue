@@ -1,15 +1,17 @@
 <template>
   <section id="home-map">
-    <l-map
-      ref="wisMap"
-      :zoom="zoom"
-      :center="center"
-      :bounds="bounds"
-      style="height: 80vh"
-    >
-      <l-geo-json :geojson="geojson" :options="geojsonOptions"></l-geo-json>
-      <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-    </l-map>
+    <p>
+      <l-map
+        ref="wisMap"
+        :zoom="zoom"
+        :center="center"
+        :bounds="bounds"
+        style="height: 80vh"
+      >
+        <l-geo-json :geojson="geojson" :options="geojsonOptions"></l-geo-json>
+        <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+      </l-map>
+    </p>
   </section>
 </template>
 
@@ -87,9 +89,7 @@ export default {
   },
   async created() {
     this.loading = true;
-    const response = await fetch(
-      oapi + "/collections/stations/items?f=json"
-    );
+    const response = await fetch(oapi + "/collections/stations/items?f=json");
     const data = await response.json();
     this.geojson = data;
 
