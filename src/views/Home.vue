@@ -1,17 +1,15 @@
 <template>
   <section id="home-map">
-    <p>
-      <l-map
-        ref="wisMap"
-        :zoom="zoom"
-        :center="center"
-        :bounds="bounds"
-        style="height: 80vh"
-      >
-        <l-geo-json :geojson="geojson" :options="geojsonOptions"></l-geo-json>
-        <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-      </l-map>
-    </p>
+    <l-map
+      ref="wisMap"
+      :zoom="zoom"
+      :center="center"
+      :bounds="bounds"
+      style="height: 80vh"
+    >
+      <l-geo-json :geojson="geojson" :options="geojsonOptions"></l-geo-json>
+      <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+    </l-map>
   </section>
 </template>
 
@@ -20,7 +18,7 @@ import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
 
-let oapi = process.env.VUE_APP_OAPI;
+let oapi = import.meta.env.VITE_APP_OAPI;
 
 export default {
   name: "Home",
@@ -89,7 +87,9 @@ export default {
   },
   async created() {
     this.loading = true;
-    const response = await fetch(oapi + "/collections/stations/items?f=json");
+    const response = await fetch(
+      oapi + "/collections/stations/items?f=json"
+    );
     const data = await response.json();
     this.geojson = data;
 
