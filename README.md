@@ -5,29 +5,24 @@
 npm install
 ```
 
-### Start dev server
-```
-npm run dev
-```
-
-### Preview production build
+### Compiles and hot-reloads for development
 ```
 npm run serve
 ```
 
-### Build for production
-```sh
-npm run build
-
-# build for different modes with .env.[mode]
-npx vite build --mode staging
+### Compiles and minifies for production
 ```
-See [Vite build guide](https://vitejs.dev/guide/build.html) for more options
+npm run build
+```
+
+### Run your end-to-end tests
+```
+npm run test:e2e
+```
 
 ### Lints and fixes files
 ```
 npm run lint
-npm run lint:fix
 ```
 
 ### Customize configuration
