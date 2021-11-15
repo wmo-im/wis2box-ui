@@ -1,9 +1,27 @@
 <template>
-  <footer>
-    <p>
-      Powered by <a :title="name" :href="homepage">{{ name }}</a> {{ version }}
-    </p>
-  </footer>
+  <v-footer>
+    <v-row
+      justify="center"
+      align="center"
+      no-gutters
+    >
+      <v-col
+        class="primary text-center"
+        cols="12"
+      >
+        <p>
+          Powered by <a :title="name" :href="homepage">{{ name }}</a> {{ version }}
+        </p>
+      </v-col>
+      <v-col
+        cols="12"
+      >
+        <img
+          :src="`${require('@/assets/img/wmo-foot.png')}`"
+        />
+      </v-col>
+    </v-row>
+  </v-footer>
 </template>
 
 <script>

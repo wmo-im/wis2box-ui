@@ -1,24 +1,48 @@
 <template>
-  <header :style="{ width: '100%' }">
-    <div
-      id="banner"
-      :style="{
-        'background-image': `url(${require('@/assets/img/wmo-banner.png')})`,
-      }"
+  <v-system-bar
+    height="110"
+  >
+    <v-row
+      justify="center"
     >
-      <a
-        href="https://community.wmo.int/activity-areas/wis/wis2-implementation"
-        title="wis2node"
+      <v-card
+        height="109"
+        width="1279"
+        :style="{
+            'background-image': `url(${require('@/assets/img/wmo-banner.png')})`,
+          }"
       >
-        <img
-          alt="wis2node"
-          width="68"
-          height="77"
-          src="@/assets/img/logo.png"
-        />
-      </a>
-      <br />
-      <h1>Welcome to WIS 2.0 node in box!</h1>
-    </div>
-  </header>
+        <v-container>
+          <v-row
+            align="center"
+          >
+            <a
+              href="https://community.wmo.int/activity-areas/wis/wis2-implementation"
+              title="wis2node"
+            >
+              <img
+                :src="`${require('@/assets/img/logo.png')}`"
+              />
+            </a>
+            <v-spacer/>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-row>
+  </v-system-bar>
 </template>
+
+<script>
+import { name, version, homepage } from "../../package";
+
+export default {
+  name: "AppHeader",
+  data() {
+    return {
+      version: version,
+      name: name,
+      homepage: homepage,
+    };
+  },
+};
+</script>
