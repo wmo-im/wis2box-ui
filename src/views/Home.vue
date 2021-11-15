@@ -1,18 +1,25 @@
 <template>
-  <section id="home-map">
-    <p>
-      <l-map
-        ref="wisMap"
-        :zoom="zoom"
-        :center="center"
-        :bounds="bounds"
-        style="height: 80vh"
-      >
-        <l-geo-json :geojson="geojson" :options="geojsonOptions"></l-geo-json>
-        <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-      </l-map>
-    </p>
-  </section>
+  <v-container>
+    <h1>Welcome to WIS 2.0 node in box!</h1>
+  </v-container>
+  <v-container>
+    <div
+      id="home-map"
+    >
+      <p>
+        <l-map
+          ref="wisMap"
+          :zoom="zoom"
+          :center="center"
+          :bounds="bounds"
+          style="height: 80vh"
+        >
+          <l-geo-json :geojson="geojson" :options="geojsonOptions"></l-geo-json>
+          <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+        </l-map>
+      </p>
+    </div>
+  </v-container>
 </template>
 
 <script>
