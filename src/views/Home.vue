@@ -47,12 +47,13 @@ export default {
       geojsonOptions: {
         onEachFeature: function (feature, layer) {
           layer.bindPopup(
-            '<a target="_window_url" href="' +
-              feature.properties.url +
-              '">' +
-              feature.properties.name +
-              "</a>"
-          );
+            '<a href="/plot" target="_self"' +
+              'onclick="event.preventDefault(); plot(' +
+              // feature.properties +
+              ');">' +
+              feature.properties.name + 
+            "</a>"
+          )
         },
         pointToLayer: function (feature, latLng) {
           // style markers according to properties
@@ -104,5 +105,13 @@ export default {
     this.bounds = geoJSON(this.geojson).getBounds();
     this.loading = false;
   },
+  methods: {
+    goBack() {
+      window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
+    },
+    plot() {
+      this.$router.push('/plot')
+    },
+  }
 };
 </script>
