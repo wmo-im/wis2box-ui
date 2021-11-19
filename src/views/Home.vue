@@ -3,9 +3,7 @@
     <h1>Welcome to WIS 2.0 node in box!</h1>
   </v-container>
   <v-container>
-    <div
-      id="home-map"
-    >
+    <div id="home-map">
       <p>
         <l-map
           ref="wisMap"
@@ -49,11 +47,11 @@ export default {
           layer.bindPopup(
             '<a href="/plot" target="_self"' +
               'onclick="event.preventDefault(); plot(' +
-              // feature.properties +
+              feature.properties +
               ');">' +
-              feature.properties.name + 
-            "</a>"
-          )
+              feature.properties.name +
+              "</a>"
+          );
         },
         pointToLayer: function (feature, latLng) {
           // style markers according to properties
@@ -107,11 +105,11 @@ export default {
   },
   methods: {
     goBack() {
-      window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
+      window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
     },
-    plot() {
-      this.$router.push('/plot')
+    plot(properties) {
+      this.$router.push("/plot", properties);
     },
-  }
+  },
 };
 </script>

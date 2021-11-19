@@ -13,7 +13,7 @@ const routes = [
     name: "Plot",
     component: Plot,
     params: {
-      properties: {}
+      properties: {},
     },
   },
 ];
