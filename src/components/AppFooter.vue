@@ -7,7 +7,7 @@
         </v-col>
         <v-col class="primary text-center" cols="12">
           <p>
-            {{ $root.t("$vuetify.footer.powered_by") }}
+            {{ $t("footer.powered_by") }}
             <a :title="name" :href="homepage">{{ name }}</a>
             {{ version }}
           </p>

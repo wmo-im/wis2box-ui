@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <div id="PlotlyChart" />
+    <div id="plotly-chart" />
   </v-container>
 </template>
 
@@ -9,6 +9,7 @@ import Plotly from "plotly.js-dist-min";
 
 export default {
   name: "ChartPlot",
+  template: "#plotly-chart",
   props: ["title"],
   data() {
     return {
@@ -32,8 +33,7 @@ export default {
   methods: {
     plot() {
       this.layout.title = this.title_;
-      var el = document.getElementById("PlotlyChart");
-      Plotly.newPlot(el, this.data, this.layout, {});
+      Plotly.newPlot(this.$el, this.data, this.layout, {});
     },
   },
   mounted() {
@@ -41,7 +41,8 @@ export default {
   },
   watch: {
     title(t) {
-      this.layout.title = t;
+      this.title_ = t;
+      this.plot();
     },
   },
 };

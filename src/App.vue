@@ -4,26 +4,26 @@
     <v-container>
       <div id="wis2node-nav">
         <router-link to="/">
-          {{ $t("$vuetify.navigation.homepage") }}
+          {{ $t("navigation.homepage") }}
         </router-link>
         |
         <router-link to="/plot">
-          {{ $t("$vuetify.navigation.plot") }}
+          {{ $t("navigation.plot") }}
         </router-link>
         |
         <a target="_window_catalogue" href="http://localhost:8999/pygeoapi">
-          {{ $t("$vuetify.navigation.catalogue") }}
+          {{ $t("navigation.catalogue") }}
         </a>
         |
         <a
           target="_window_service_monitor"
           href="http://localhost:8999/monitor"
         >
-          {{ $t("$vuetify.navigation.service_monitor") }}
+          {{ $t("navigation.service_monitor") }}
         </a>
         |
         <a target="_window_docs" :href="documentation">
-          {{ $t("$vuetify.navigation.documentation") }}
+          {{ $t("navigation.documentation") }}
         </a>
       </div>
     </v-container>

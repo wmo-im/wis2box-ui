@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1>{{ $t("$vuetify.messages.welcome") }}</h1>
+    <h1>{{ $t("messages.welcome") }}</h1>
   </v-container>
   <v-container>
     <div id="home-map">

@@ -3,10 +3,10 @@
     <v-list-item>
       <v-list-item-content>
         <v-list-item-title class="text-h6"> 
-          {{ $root.t("$vuetify.chart.options") }}
+          {{ $t("chart.options") }}
         </v-list-item-title>
         <v-list-item-subtitle>
-          {{ $root.t("$vuetify.chart.current") }} : {{ collections_choice_ }}
+          {{ $t("chart.current") }} : {{ collections_choice_ }}
         </v-list-item-subtitle>
         <v-list-item>
           <div class="pa-4">

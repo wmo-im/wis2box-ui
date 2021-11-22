@@ -6,7 +6,7 @@ import "vuetify/styles";
 import { createVuetify } from "vuetify";
 
 // i18n
-import { i18n_config } from "../locales/i18n";
+import { loadLocale } from "../locales/i18n";
 // import { createVueI18nAdapter } from 'vuetify/locale/adapters'
 // import { useI18n } from 'vue-i18n'
 
@@ -25,7 +25,13 @@ export default createVuetify({
       error: "#b71c1c",
     },
   },
-  locale: i18n_config,
+  locale: {
+    legacy: false, // Vuetify does not support the legacy mode of vue-i18n
+    defaultLocale: "en",
+    fallbackLocale: "fr",
+    globalInjection: true,
+    messages: loadLocale(),
+  },
   // locale: createVueI18nAdapter({ // Pending https://github.com/vuetifyjs/vuetify/issues/14408
   //   i18n,
   //   useI18n

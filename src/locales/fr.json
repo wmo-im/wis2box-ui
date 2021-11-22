@@ -1,0 +1,19 @@
+{
+  "navigation": {
+    "homepage": "Page d'accueil",
+    "plot": "Graphique",
+    "catalogue": "Catalogue",
+    "service_monitor": "Moniteur de service",
+    "documentation": "Documentation"
+  },
+  "footer": {
+    "powered_by": "Alimenté par"
+  },
+  "messages": {
+    "welcome": "Bienvenue dans le nud WIS 2.0 dans la boîte !"
+  },
+  "chart": {
+    "options": "Options de Graphique",
+    "current": "Collection Actuelle"
+  }
+}
