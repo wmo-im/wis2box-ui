@@ -11,7 +11,7 @@
          cols="12"
         >
           <p>
-            Powered by <a :title="name_" :href="homepage_">{{ name_ }}</a> {{ version_ }}
+            Powered by <a :title="name" :href="homepage">{{ name }}</a> {{ version }}
           </p>
         </v-col>
         <v-col
@@ -32,9 +32,9 @@ export default {
   template: "#app-footer",
   data() {
     return {
-      version_: version,
-      name_: name,
-      homepage_: homepage,
+      version: version,
+      name: name,
+      homepage: homepage,
     };
   },
 };
