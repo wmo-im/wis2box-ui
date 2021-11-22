@@ -4,7 +4,7 @@ import { createI18n } from "vue-i18n";
 const messages = {
   en: {
     $vuetify: {
-      nagivation: {
+      navigation: {
         homepage: "Homepage",
         plot: "Plot",
         catalogue: "Catalogue",
@@ -12,10 +12,14 @@ const messages = {
         documentation: "Documentation",
       },
       footer: {
-        poweredby: "Powered by"
+        powered_by: "Powered by",
       },
       messages: {
         welcome: "Welcome to WIS 2.0 node in box!",
+      },
+      chart: {
+        options: "Chart Options",
+        current: "Current Collection",
       },
     },
   },
@@ -29,10 +33,14 @@ const messages = {
         documentation: "Documentation",
       },
       footer: {
-        poweredby: "Alimenté par"
+        powered_by: "Alimenté par",
       },
       messages: {
         welcome: "Bienvenue dans le nud WIS 2.0 dans la boîte !",
+      },
+      chart: {
+        options: "Chart Options",
+        current: "Current Collection",
       },
     },
   },
@@ -46,10 +54,14 @@ const messages = {
         documentation: "Documentación",
       },
       footer: {
-        poweredby: "Desarrollada por"
+        powered_by: "Desarrollada por",
       },
       messages: {
         welcome: "¡Bienvenido al nodo WIS 2.0 en caja!",
+      },
+      chart: {
+        options: "Chart Options",
+        current: "Current Collection",
       },
     }
   },
@@ -63,7 +75,7 @@ let i18n_config = {
   messages,
 };
 
-export { i18n_config };
+export { i18n_config, messages };
 
 export default createI18n({
   legacy: false, // Vuetify does not support the legacy mode of vue-i18n

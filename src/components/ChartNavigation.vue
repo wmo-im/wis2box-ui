@@ -2,9 +2,11 @@
   <v-navigation-drawer color="primary" absolute>
     <v-list-item>
       <v-list-item-content>
-        <v-list-item-title class="text-h6"> Chart Options </v-list-item-title>
+        <v-list-item-title class="text-h6"> 
+          {{ $root.t("$vuetify.chart.options") }}
+        </v-list-item-title>
         <v-list-item-subtitle>
-          Current Collection: {{ collections_choice_ }}
+          {{ $root.t("$vuetify.chart.current") }} : {{ collections_choice_ }}
         </v-list-item-subtitle>
         <v-list-item>
           <div class="pa-4">

@@ -18,6 +18,7 @@
                 <img :src="`${require('@/assets/img/logo.png')}`" />
               </a>
               <v-spacer />
+              <select-locale />
             </v-row>
           </v-container>
         </v-card>
@@ -27,9 +28,13 @@
 </template>
 
 <script>
+import SelectLocale from "./SelectLocale.vue";
 export default {
   name: "AppHeader",
   template: "#app-header",
+  components: {
+    SelectLocale,
+  },
   data() {
     return {
       height: 110,
