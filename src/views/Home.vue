@@ -1,18 +1,23 @@
 <template>
-  <section id="home-map">
-    <p>
-      <l-map
-        ref="wisMap"
-        :zoom="zoom"
-        :center="center"
-        :bounds="bounds"
-        style="height: 80vh"
-      >
-        <l-geo-json :geojson="geojson" :options="geojsonOptions"></l-geo-json>
-        <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-      </l-map>
-    </p>
-  </section>
+  <v-container>
+    <h1>Welcome to WIS 2.0 node in box!</h1>
+  </v-container>
+  <v-container>
+    <div id="home-map">
+      <p>
+        <l-map
+          ref="wisMap"
+          :zoom="zoom"
+          :center="center"
+          :bounds="bounds"
+          style="height: 80vh"
+        >
+          <l-geo-json :geojson="geojson" :options="geojsonOptions"></l-geo-json>
+          <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+        </l-map>
+      </p>
+    </div>
+  </v-container>
 </template>
 
 <script>
@@ -40,9 +45,10 @@ export default {
       geojsonOptions: {
         onEachFeature: function (feature, layer) {
           layer.bindPopup(
-            '<a target="_window_url" href="' +
-              feature.properties.url +
-              '">' +
+            '<a href="/plot" target="_self"' +
+              'onclick="event.preventDefault(); plot(' +
+              feature.properties +
+              ');">' +
               feature.properties.name +
               "</a>"
           );
@@ -96,6 +102,14 @@ export default {
     // update bounds
     this.bounds = geoJSON(this.geojson).getBounds();
     this.loading = false;
+  },
+  methods: {
+    goBack() {
+      window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
+    },
+    plot(properties) {
+      this.$router.push("/plot", properties);
+    },
   },
 };
 </script>
