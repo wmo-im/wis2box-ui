@@ -3,8 +3,8 @@
     <v-list-item>
       <v-list-item-content>
         <v-list-item-title class="text-h6"> Chart Options </v-list-item-title>
-        <v-list-item-subtitle> 
-          Current Collection: {{ collections_choice_ }} 
+        <v-list-item-subtitle>
+          Current Collection: {{ collections_choice_ }}
         </v-list-item-subtitle>
         <v-list-item>
           <div class="pa-4">
@@ -12,11 +12,7 @@
               v-model="collections_choice_"
               active-class="primary--text"
             >
-              <v-chip
-               v-for="c in collections"
-               :key="c"
-               @click="updateTitle(c)"
-              >
+              <v-chip v-for="c in collections" :key="c" @click="updateTitle(c)">
                 {{ c }}
               </v-chip>
             </v-chip-group>
@@ -24,7 +20,7 @@
         </v-list-item>
       </v-list-item-content>
     </v-list-item>
-  </v-navigation-drawer> 
+  </v-navigation-drawer>
 </template>
 
 <script>

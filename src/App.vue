@@ -3,17 +3,28 @@
   <v-content>
     <v-container>
       <div id="wis2node-nav">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/plot">Plot</router-link> |
-        <a target="_window_catalogue" href="http://localhost:8999/pygeoapi"
-          >Catalogue</a
-        >
+        <router-link to="/">
+          {{ $t("$vuetify.navigation.homepage") }}
+        </router-link>
         |
-        <a target="_window_service_monitor" href="http://localhost:8999/monitor"
-          >Service Monitor</a
-        >
+        <router-link to="/plot">
+          {{ $t("$vuetify.navigation.plot") }}
+        </router-link>
         |
-        <a target="_window_docs" :href="documentation">Documentation</a>
+        <a target="_window_catalogue" href="http://localhost:8999/pygeoapi">
+          {{ $t("$vuetify.navigation.catalogue") }}
+        </a>
+        |
+        <a
+          target="_window_service_monitor"
+          href="http://localhost:8999/monitor"
+        >
+          {{ $t("$vuetify.navigation.service_monitor") }}
+        </a>
+        |
+        <a target="_window_docs" :href="documentation">
+          {{ $t("$vuetify.navigation.documentation") }}
+        </a>
       </div>
     </v-container>
     <v-container>
@@ -29,6 +40,8 @@ import { documentation } from "../package";
 import AppHeader from "@/components/AppHeader.vue";
 import AppFooter from "@/components/AppFooter.vue";
 
+import { useI18n } from "vue-i18n";
+
 export default {
   components: {
     AppHeader,
@@ -37,6 +50,12 @@ export default {
   data() {
     return {
       documentation: documentation,
+    };
+  },
+  setup() {
+    const { t } = useI18n();
+    return {
+      t,
     };
   },
 };

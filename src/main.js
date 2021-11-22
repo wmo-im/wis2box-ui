@@ -4,8 +4,14 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
+import i18n from "./locales/i18n";
 import { loadFonts } from "./plugins/webfontloader";
 
 loadFonts();
 
-createApp(App).use(router).use(store).use(vuetify).mount("#wis2node-app");
+createApp(App)
+  .use(router)
+  .use(store)
+  .use(vuetify)
+  .use(i18n)
+  .mount("#wis2node-app");

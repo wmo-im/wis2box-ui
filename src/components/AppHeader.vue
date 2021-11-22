@@ -3,9 +3,11 @@
     <v-system-bar :height="height">
       <v-row justify="center">
         <v-card
-         :height="height - 1"
-         width="1279"
-         :style="{'background-image': `url(${require('@/assets/img/wmo-banner.png')})`,}"
+          :height="height - 1"
+          width="1279"
+          :style="{
+            'background-image': `url(${require('@/assets/img/wmo-banner.png')})`,
+          }"
         >
           <v-container>
             <v-row align="center">

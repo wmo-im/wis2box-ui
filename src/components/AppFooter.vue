@@ -1,22 +1,15 @@
 <template>
   <div id="app-footer">
     <v-footer>
-      <v-row
-       justify="center"
-       align="center"
-       no-gutters
-      >
-        <v-col
-         class="primary text-center"
-         cols="12"
-        >
+      <v-row justify="center" align="center" no-gutters>
+        <v-col class="primary text-center" cols="12">
           <p>
-            Powered by <a :title="name_" :href="homepage_">{{ name_ }}</a> {{ version_ }}
+            {{ $root.t("$vuetify.footer.poweredby") }}
+            <a :title="name" :href="homepage">{{ name }}</a>
+            {{ version }}
           </p>
         </v-col>
-        <v-col
-         cols="12"
-        >
+        <v-col cols="12">
           <img :src="`${require('@/assets/img/wmo-foot.png')}`" />
         </v-col>
       </v-row>
@@ -32,9 +25,9 @@ export default {
   template: "#app-footer",
   data() {
     return {
-      version_: version,
-      name_: name,
-      homepage_: homepage,
+      version: version,
+      name: name,
+      homepage: homepage,
     };
   },
 };

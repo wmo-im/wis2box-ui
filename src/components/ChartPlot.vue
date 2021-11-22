@@ -40,7 +40,7 @@ export default {
     this.plot();
   },
   watch: {
-    title (t) {
+    title(t) {
       this.layout.title = t;
     },
   },
