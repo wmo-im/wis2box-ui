@@ -3,7 +3,7 @@
     <select v-model="$i18n.locale">
       <option v-for="(lang, i) in langs" :key="`lang-${i}`" :value="lang">
         <v-btn class="mx-2" outlined rounded> 
-          <v-icon dark> mdi-web </v-icon> {{ lang }} 
+          {{ lang }} 
         </v-btn>
       </option>
     </select>

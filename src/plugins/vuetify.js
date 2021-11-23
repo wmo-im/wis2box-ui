@@ -28,7 +28,7 @@ export default createVuetify({
   locale: {
     legacy: false, // Vuetify does not support the legacy mode of vue-i18n
     defaultLocale: "en",
-    fallbackLocale: "fr",
+    fallbackLocale: "en",
     globalInjection: true,
     messages: loadLocale(),
   },
