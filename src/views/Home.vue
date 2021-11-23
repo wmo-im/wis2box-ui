@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1>Welcome to WIS 2.0 node in box!</h1>
+    <h1>{{ $t("messages.welcome") }}</h1>
   </v-container>
   <v-container>
     <div id="home-map">

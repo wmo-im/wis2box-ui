@@ -1,0 +1,19 @@
+{
+  "navigation": {
+    "homepage": "Homepage",
+    "plot": "Plot",
+    "catalogue": "Catalogue",
+    "service_monitor": "Service Monitor",
+    "documentation": "Documentation"
+  },
+  "footer": {
+    "powered_by": "Powered by"
+  },
+  "messages": {
+    "welcome": "Welcome to WIS 2.0 node in box!"
+  },
+  "chart": {
+    "options": "Chart Options",
+    "current": "Current Collection"
+  }
+}

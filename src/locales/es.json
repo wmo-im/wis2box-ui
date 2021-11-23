@@ -1,0 +1,19 @@
+{
+  "navigation": {
+    "homepage": "Página Principal",
+    "plot": "Gráfico",
+    "catalogue": "Catálogo",
+    "service_monitor": "Monitor de servicio",
+    "documentation": "Documentación"
+  },
+  "footer": {
+    "powered_by": "Desarrollada por"
+  },
+  "messages": {
+    "welcome": "¡Bienvenido al nodo WIS 2.0 en caja!"
+  },
+  "chart": {
+    "options": "Opciones de Gráfico",
+    "current": "Colección Actual"
+  }
+}

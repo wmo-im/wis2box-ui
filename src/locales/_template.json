@@ -1,0 +1,19 @@
+{
+  "navigation": {
+    "homepage": "",
+    "plot": "",
+    "catalogue": "",
+    "service_monitor": "",
+    "documentation": ""
+  },
+  "footer": {
+    "powered_by": ""
+  },
+  "messages": {
+    "welcome": ""
+  },
+  "chart": {
+    "options": "",
+    "current": ""
+  }
+}
