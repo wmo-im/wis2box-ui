@@ -2,7 +2,7 @@
   <v-navigation-drawer color="primary" absolute>
     <v-list-item>
       <v-list-item-content>
-        <v-list-item-title class="text-h6"> 
+        <v-list-item-title class="text-h6">
           {{ $t("chart.options") }}
         </v-list-item-title>
         <v-list-item-subtitle>

@@ -56,9 +56,9 @@ export default {
     };
   },
   methods: {
-    toggleDialog: function(){
+    toggleDialog: function () {
       console.log(this.dialog);
-      this.dialog = (this.dialog === true) ? false : true;
+      this.dialog = this.dialog === true ? false : true;
     },
   },
   setup() {

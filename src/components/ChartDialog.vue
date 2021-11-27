@@ -1,11 +1,19 @@
 <template>
   <v-layout justify-center align-center>
-    <v-dialog 
+    <v-dialog
       v-model="$root.dialog"
-      @keydown.esc="event.preventDefault; $root.toggleDialog; event.stopPropagation;"
-      @click:outside="event.preventDefault; $root.toggleDialog; event.stopPropagation;"
+      @keydown.esc="
+        event.preventDefault;
+        $root.toggleDialog;
+        event.stopPropagation;
+      "
+      @click:outside="
+        event.preventDefault;
+        $root.toggleDialog;
+        event.stopPropagation;
+      "
     >
-      <v-card min-width="750" v-scroll.self>
+      <v-card min-width="750" v-scroll>
         <v-row>
           <v-spacer />
           <v-btn @click="$root.toggleDialog"> X </v-btn>
@@ -27,11 +35,11 @@ export default {
   components: { ChartPlot },
   name: "ChartDialog",
   props: ["feature"],
-  data: function() {
+  data: function () {
     return {
       station: this.feature.station,
       datastreams: this.feature.datastreams,
-    }
+    };
   },
-}
+};
 </script>

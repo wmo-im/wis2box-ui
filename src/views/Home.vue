@@ -1,4 +1,7 @@
 <template>
+  <v-container>
+    <h1>{{ $t("messages.welcome") }}</h1>
+  </v-container>
   <v-container v-if="loading">
     <v-row>
       <v-spacer />
@@ -6,10 +9,7 @@
       <v-spacer />
     </v-row>
   </v-container>
-  <v-container v-else>
-    <h1>{{ $t("messages.welcome") }}</h1>
-  </v-container>
-  <v-container v-show="!loading">
+  <v-container>
     <div id="home-map">
       <p>
         <l-map
@@ -19,7 +19,11 @@
           :bounds="bounds"
           style="height: 80vh"
         >
-          <l-geo-json :geojson="geojson" :options="geojsonOptions" @click="mapClick"></l-geo-json>
+          <l-geo-json
+            :geojson="geojson"
+            :options="geojsonOptions"
+            @click="mapClick"
+          ></l-geo-json>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
         </l-map>
       </p>
@@ -32,7 +36,7 @@
 import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
-import ChartDialog from '../components/ChartDialog.vue';
+import ChartDialog from "../components/ChartDialog.vue";
 
 let oapi = process.env.VUE_APP_OAPI;
 
@@ -44,7 +48,7 @@ export default {
     LGeoJson,
     ChartDialog,
   },
-  data: function() {
+  data: function () {
     return {
       bounds: [
         [42, -142],
@@ -102,7 +106,9 @@ export default {
   },
   async created() {
     this.loading = true;
-    const response = await fetch(oapi + "/collections/stations/items?f=json&limit=100");
+    const response = await fetch(
+      oapi + "/collections/stations/items?f=json&limit=100"
+    );
     const data = await response.json();
     this.geojson = data;
 
@@ -117,12 +123,12 @@ export default {
     mapClick(e) {
       this.$root.toggleDialog();
       this.feature.station = e.layer.feature;
-      for (const dstream of e.layer.feature.properties.Datastreams){
+      for (const dstream of e.layer.feature.properties.Datastreams) {
         const dstream_id = dstream.split("/").pop();
         this.feature.datastreams.push(dstream_id);
       }
       console.log(this.feature);
-    }
+    },
   },
 };
 </script>

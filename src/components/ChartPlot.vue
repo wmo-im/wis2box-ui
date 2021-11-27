@@ -7,7 +7,7 @@
     </v-row>
   </v-container>
   <v-container v-else />
-  <v-container v-show="!loading">
+  <v-container>
     <div id="plotly-chart" />
   </v-container>
 </template>
@@ -40,7 +40,7 @@ export default {
           autorange: true,
           type: "date",
           range: [null, null],
-          rangeslider: {range: [null, null]},
+          rangeslider: { range: [null, null] },
         },
         yaxis: {
           type: "linear",
@@ -57,7 +57,7 @@ export default {
       Plotly.newPlot(plot, this.data, this.layout);
     },
     get_col(features, key) {
-      return features.map(function(row) {
+      return features.map(function (row) {
         return row["properties"][key];
       });
     },
@@ -71,17 +71,15 @@ export default {
     async load_datastream(datastream) {
       var self = this;
       this.loading = true;
-      await this.$root.axios(
-        {
-            method: "get",
-            url: oapi + "/collections/Datastreams/items/" + datastream,
-            params: {
-              f: "json",
-            },
-        }
-      )
-      .then(
-        function(response) {
+      await this.$root
+        .axios({
+          method: "get",
+          url: oapi + "/collections/Datastreams/items/" + datastream,
+          params: {
+            f: "json",
+          },
+        })
+        .then(function (response) {
           // handle success
           console.log(response.data.properties);
           const range = response.data.properties.phenomenonTime.split("/");
@@ -89,51 +87,41 @@ export default {
           const unit = response.data.properties.unitOfMeasurement.symbol;
           self.layout.yaxis.title = title + " (" + unit + ")";
           self.layout.xaxis.range = range;
-          self.layout.xaxis.rangeslider = {"range": range};
-        }
-      )
-      .catch(
-        function(error) {
+          self.layout.xaxis.rangeslider = { range: range };
+        })
+        .catch(function (error) {
           // handle error
           console.log(error);
-        }
-      );
+        });
       var limit;
-      await this.$root.axios(
-        {
+      await this.$root
+        .axios({
           method: "get",
           url: oapi + "/collections/Observations/items",
           params: {
             f: "json",
             Datastream: datastream,
-            resulttype: "hits"
+            resulttype: "hits",
           },
-        }
-      )
-      .then(
-        function(response) {
+        })
+        .then(function (response) {
           // handle success
-          console.log( response.data );
+          console.log(response.data);
           limit = response.data.numberMatched;
           self.load_observations(datastream, limit);
-        }
-      )
-      .catch(
-        function(error) {
+        })
+        .catch(function (error) {
           // handle error
           console.log(error);
-        }
-      )
-      .then(
-        function(){
+        })
+        .then(function () {
           console.log("done");
-        }
-      );
+        });
     },
-    async load_observations(datastream, limit){
+    async load_observations(datastream, limit) {
       var self = this;
-      self.$root.axios(
-        {
+      self.$root
+        .axios({
           method: "get",
           url: oapi + "/collections/Observations/items",
           params: {
@@ -142,29 +130,22 @@ export default {
             sortby: "-phenomenonTime",
             limit: limit,
           },
-        }
-      )
-      .then(
-        function(response) {
+        })
+        .then(function (response) {
           // handle success
-          console.log(response.data)
+          console.log(response.data);
           self.new_trace(response.data.features, "phenomenonTime", "result");
-        }
-      )
-      .catch(
-        function (error) {
+        })
+        .catch(function (error) {
           // handle error
           console.log(error);
-        }
-      )
-      .then(
-        function() {
+        })
+        .then(function () {
           // always executed
           self.plot();
           self.loading = false;
-        }
-      );
-    }
+        });
+    },
   },
   mounted() {
     console.log(this.datastream);
