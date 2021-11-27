@@ -1,5 +1,13 @@
 <template>
-  <v-container>
+  <v-container v-if="loading">
+    <v-row>
+      <v-spacer />
+      <v-progress-circular indeterminate color="primary" />
+      <v-spacer />
+    </v-row>
+  </v-container>
+  <v-container v-else />
+  <v-container v-show="!loading">
     <div id="plotly-chart" />
   </v-container>
 </template>
@@ -11,7 +19,7 @@ let oapi = process.env.VUE_APP_OAPI;
 export default {
   name: "ChartPlot",
   template: "#plotly-chart",
-  // props: ["datastream_"],
+  props: ["datastream"],
   data() {
     return {
       trace: {
@@ -22,11 +30,8 @@ export default {
         y: [],
         line: { color: "#17BECF" },
       },
-      features: [],
       data: [],
       loading: false,
-      datastreams: [],
-      datastream: null,
       layout: {
         title: "Stream Gage Height",
         height: "100%",
@@ -44,7 +49,6 @@ export default {
         },
         font: { size: 18 },
       },
-      title_: this.title,
     };
   },
   methods: {
@@ -163,39 +167,8 @@ export default {
     }
   },
   mounted() {
-    // var self = this;
-    // this.$root.axios(
-    //   {
-    //     method: "get",
-    //     url: oapi + "/collections/Datastreams/items",
-    //     params: {
-    //       f: "json",
-    //       limit: 2000
-    //     },
-    //   }
-    // )
-    // .then(
-    //   function(response) {
-    //     // handle success
-    //     console.log( response.data );
-    //     for (const d of response.data.features){
-    //       self.datastreams.push(d.id);
-    //     }
-    //   }
-    // )
-    // .catch(
-    //   function(error) {
-    //     // handle error
-    //     console.log(error);
-    //   }
-    // );
-    this.load_datastream("'6f40a6c607b545999e3677a843be7695'");
+    console.log(this.datastream);
+    this.load_datastream(this.datastream);
   },
-  // watch: {
-  //   datastream(d) {
-  //     this.load_datastream(d);
-  //     this.plot();
-  //   },
-  // },
 };
 </script>

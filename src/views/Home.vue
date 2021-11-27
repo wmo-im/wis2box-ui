@@ -1,8 +1,15 @@
 <template>
-  <v-container>
+  <v-container v-if="loading">
+    <v-row>
+      <v-spacer />
+      <v-progress-circular indeterminate color="primary" />
+      <v-spacer />
+    </v-row>
+  </v-container>
+  <v-container v-else>
     <h1>{{ $t("messages.welcome") }}</h1>
   </v-container>
-  <v-container>
+  <v-container v-show="!loading">
     <div id="home-map">
       <p>
         <l-map
@@ -17,7 +24,7 @@
         </l-map>
       </p>
     </div>
-    <chart-dialog v-if="$root.dialog" :opts="opts" />
+    <chart-dialog v-if="$root.dialog" :feature="feature" />
   </v-container>
 </template>
 
@@ -87,14 +94,15 @@ export default {
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       center: [0, 0],
       zoom: 1,
-      opts: {
-        feature: null,
+      feature: {
+        station: null,
+        datastreams: [],
       },
     };
   },
   async created() {
     this.loading = true;
-    const response = await fetch(oapi + "/collections/stations/items?f=json");
+    const response = await fetch(oapi + "/collections/stations/items?f=json&limit=100");
     const data = await response.json();
     this.geojson = data;
 
@@ -108,10 +116,12 @@ export default {
     },
     mapClick(e) {
       this.$root.toggleDialog();
-
-      this.opts.feature = e.layer.feature;
-      console.log(this.opts);
-      console.log(e.layer.feature);
+      this.feature.station = e.layer.feature;
+      for (const dstream of e.layer.feature.properties.Datastreams){
+        const dstream_id = dstream.split("/").pop();
+        this.feature.datastreams.push(dstream_id);
+      }
+      console.log(this.feature);
     }
   },
 };
