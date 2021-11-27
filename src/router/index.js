@@ -12,9 +12,6 @@ const routes = [
     path: "/plot",
     name: "Plot",
     component: Plot,
-    params: {
-      properties: {},
-    },
   },
 ];
 

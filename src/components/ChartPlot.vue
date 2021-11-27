@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     plot() {
-      var plot = document.getElementById("#plotly-chart");
+      var plot = document.getElementById("plotly-chart");
       Plotly.newPlot(plot, this.data, this.layout);
     },
     get_col(features, key) {
@@ -145,7 +145,6 @@ export default {
           // handle success
           console.log(response.data)
           self.new_trace(response.data.features, "phenomenonTime", "result");
-          self.plot();
         }
       )
       .catch(
@@ -157,6 +156,7 @@ export default {
       .then(
         function() {
           // always executed
+          self.plot();
           self.loading = false;
         }
       );
@@ -190,7 +190,6 @@ export default {
     //   }
     // );
     this.load_datastream("'6f40a6c607b545999e3677a843be7695'");
-    this.plot();
   },
   // watch: {
   //   datastream(d) {

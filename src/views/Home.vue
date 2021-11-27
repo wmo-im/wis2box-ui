@@ -12,11 +12,12 @@
           :bounds="bounds"
           style="height: 80vh"
         >
-          <l-geo-json :geojson="geojson" :options="geojsonOptions"></l-geo-json>
+          <l-geo-json :geojson="geojson" :options="geojsonOptions" @click="mapClick"></l-geo-json>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
         </l-map>
       </p>
     </div>
+    <chart-dialog v-if="$root.dialog" :opts="opts" />
   </v-container>
 </template>
 
@@ -24,6 +25,7 @@
 import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
+import ChartDialog from '../components/ChartDialog.vue';
 
 let oapi = process.env.VUE_APP_OAPI;
 
@@ -33,8 +35,9 @@ export default {
     LMap,
     LTileLayer,
     LGeoJson,
+    ChartDialog,
   },
-  data() {
+  data: function() {
     return {
       bounds: [
         [42, -142],
@@ -44,14 +47,7 @@ export default {
       geojsonLayer: geoJSON(null, null),
       geojsonOptions: {
         onEachFeature: function (feature, layer) {
-          layer.bindPopup(
-            '<a href="/plot" target="_self"' +
-              'onclick="event.preventDefault(); plot(' +
-              feature.properties +
-              ');">' +
-              feature.properties.name +
-              "</a>"
-          );
+          layer.bindTooltip(feature.properties.name);
         },
         pointToLayer: function (feature, latLng) {
           // style markers according to properties
@@ -91,6 +87,9 @@ export default {
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       center: [0, 0],
       zoom: 1,
+      opts: {
+        feature: null,
+      },
     };
   },
   async created() {
@@ -107,9 +106,13 @@ export default {
     goBack() {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
     },
-    plot(properties) {
-      this.$router.push("/plot", properties);
-    },
+    mapClick(e) {
+      this.$root.toggleDialog();
+
+      this.opts.feature = e.layer.feature;
+      console.log(this.opts);
+      console.log(e.layer.feature);
+    }
   },
 };
 </script>
