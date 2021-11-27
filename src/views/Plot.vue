@@ -2,11 +2,11 @@
   <v-layout>
     <v-card min-height="450" min-width="700">
       <v-row class="fill-height" no-gutters>
-        <v-col cols="3">
+        <!-- <v-col cols="3">
           <chart-navigation :collections_choice="collections_choice" />
-        </v-col>
-        <v-col cols="9" offset="3">
-          <chart-plot :title="collections_choice" />
+        </v-col> -->
+        <v-col cols="12">
+          <chart-plot />
         </v-col>
       </v-row>
     </v-card>
@@ -15,13 +15,13 @@
 
 <script>
 import ChartPlot from "@/components/ChartPlot.vue";
-import ChartNavigation from "@/components/ChartNavigation.vue";
+// import ChartNavigation from "@/components/ChartNavigation.vue";
 
 export default {
   name: "Plot",
   components: {
     ChartPlot,
-    ChartNavigation,
+    // ChartNavigation,
   },
   data() {
     return {
