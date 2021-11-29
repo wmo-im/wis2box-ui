@@ -1,15 +1,15 @@
-<template>
-  <v-container v-if="loading">
-    <v-row>
-      <v-spacer />
-      <v-progress-circular indeterminate color="primary" />
-      <v-spacer />
-    </v-row>
-  </v-container>
-  <v-container v-else />
-  <v-container>
-    <div id="plotly-chart" />
-  </v-container>
+<template id="chart-plot">
+  <div class="chart-plot">
+    <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
+      <v-progress-linear striped indeterminate color="primary" />
+    </div>
+    <div
+      :style="{ visibility: !loading ? 'visible' : 'hidden' }"
+      class="text-center"
+    >
+      <div :id="'plotly-chart-' + datastream" />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -18,24 +18,23 @@ let oapi = process.env.VUE_APP_OAPI;
 
 export default {
   name: "ChartPlot",
-  template: "#plotly-chart",
+  template: "#chart-plot",
   props: ["datastream"],
   data() {
     return {
       trace: {
         type: "scatter",
         mode: "lines",
-        name: "Stream Gage Height",
         x: [],
         y: [],
         line: { color: "#17BECF" },
       },
       data: [],
-      loading: false,
+      loading: true,
       layout: {
-        title: "Stream Gage Height",
-        height: "100%",
-        width: "100%",
+        title: "",
+        height: "400",
+        width: "700",
         xaxis: {
           autorange: true,
           type: "date",
@@ -53,8 +52,8 @@ export default {
   },
   methods: {
     plot() {
-      var plot = document.getElementById("plotly-chart");
-      Plotly.newPlot(plot, this.data, this.layout);
+      var plot = document.getElementById("plotly-chart-" + this.datastream);
+      Plotly.newPlot(plot, this.data, this.layout,{scrollZoom: false});
     },
     get_col(features, key) {
       return features.map(function (row) {
@@ -81,10 +80,10 @@ export default {
         })
         .then(function (response) {
           // handle success
-          console.log(response.data.properties);
           const range = response.data.properties.phenomenonTime.split("/");
           const title = response.data.properties.ObservedProperty.description;
           const unit = response.data.properties.unitOfMeasurement.symbol;
+          self.layout.title = title;
           self.layout.yaxis.title = title + " (" + unit + ")";
           self.layout.xaxis.range = range;
           self.layout.xaxis.rangeslider = { range: range };
@@ -93,7 +92,6 @@ export default {
           // handle error
           console.log(error);
         });
-      var limit;
       await this.$root
         .axios({
           method: "get",
@@ -106,9 +104,7 @@ export default {
         })
         .then(function (response) {
           // handle success
-          console.log(response.data);
-          limit = response.data.numberMatched;
-          self.load_observations(datastream, limit);
+          self.load_observations(datastream, response.data.numberMatched);
         })
         .catch(function (error) {
           // handle error
@@ -120,7 +116,8 @@ export default {
     },
     async load_observations(datastream, limit) {
       var self = this;
-      self.$root
+      this.loading = true;
+      this.$root
         .axios({
           method: "get",
           url: oapi + "/collections/Observations/items",
@@ -133,22 +130,17 @@ export default {
         })
         .then(function (response) {
           // handle success
-          console.log(response.data);
           self.new_trace(response.data.features, "phenomenonTime", "result");
+          self.plot();
+          self.loading = false;
         })
         .catch(function (error) {
           // handle error
           console.log(error);
-        })
-        .then(function () {
-          // always executed
-          self.plot();
-          self.loading = false;
         });
     },
   },
   mounted() {
-    console.log(this.datastream);
     this.load_datastream(this.datastream);
   },
 };

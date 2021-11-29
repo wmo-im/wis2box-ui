@@ -1,45 +1,48 @@
-<template>
-  <v-layout justify-center align-center>
-    <v-dialog
-      v-model="$root.dialog"
-      @keydown.esc="
-        event.preventDefault;
-        $root.toggleDialog;
-        event.stopPropagation;
-      "
-      @click:outside="
-        event.preventDefault;
-        $root.toggleDialog;
-        event.stopPropagation;
-      "
-    >
-      <v-card min-width="750" v-scroll>
-        <v-row>
-          <v-spacer />
-          <v-btn @click="$root.toggleDialog"> X </v-btn>
-        </v-row>
+<template id="chart-dialog">
+  <div class="chart-dialog">
+    <v-dialog v-model="$root.dialog">
+      <v-card :min-height="410 * datastreams.length" min-width="750" v-click-outside="$root.toggleDialog">
+        <v-card-actions>
+          <v-row>
+            <v-spacer />
+            <v-btn @click="$root.toggleDialog"> X </v-btn>
+          </v-row>
+        </v-card-actions>
         <v-container>
-          <template v-for="(datastream, i) in datastreams" :key="i">
-            <chart-plot :datastream="datastream" />
-          </template>
+          <v-card
+            v-for="(datastream, i) in datastreams"
+            :key="i"
+            height="400"
+            width="700"
+          >
+            <chart-plot :datastream="datastream" :key="datastream" />
+          </v-card>
         </v-container>
+        <div style="flex: 1 1 auto;"></div>
       </v-card>
     </v-dialog>
-  </v-layout>
+  </div>
 </template>
 
 <script>
 import ChartPlot from "./ChartPlot.vue";
 
 export default {
-  components: { ChartPlot },
   name: "ChartDialog",
+  template: "#chart-dialog",
+  components: {
+    ChartPlot,
+  },
   props: ["feature"],
   data: function () {
     return {
+      feature_: this.feature,
       station: this.feature.station,
       datastreams: this.feature.datastreams,
     };
   },
+  mounted: function() {
+    console.log(this.feature_);
+  }
 };
 </script>

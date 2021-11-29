@@ -1,35 +1,33 @@
-<template>
+<template id="home">
   <v-container>
     <h1>{{ $t("messages.welcome") }}</h1>
   </v-container>
-  <v-container v-if="loading">
-    <v-row>
-      <v-spacer />
-      <v-progress-circular indeterminate color="primary" />
-      <v-spacer />
-    </v-row>
-  </v-container>
-  <v-container>
-    <div id="home-map">
-      <p>
-        <l-map
-          ref="wisMap"
-          :zoom="zoom"
-          :center="center"
-          :bounds="bounds"
-          style="height: 80vh"
-        >
-          <l-geo-json
-            :geojson="geojson"
-            :options="geojsonOptions"
-            @click="mapClick"
-          ></l-geo-json>
-          <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-        </l-map>
-      </p>
-    </div>
-    <chart-dialog v-if="$root.dialog" :feature="feature" />
-  </v-container>
+  <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
+    <v-progress-linear striped indeterminate color="primary" />
+  </div>
+  <div
+    :style="{ visibility: !loading ? 'visible' : 'hidden' }"
+    class="text-center"
+    id="home-map"
+  >
+    <p>
+      <l-map
+        ref="wisMap"
+        :zoom="zoom"
+        :center="center"
+        :bounds="bounds"
+        style="height: 80vh"
+      >
+        <l-geo-json
+          :geojson="geojson"
+          :options="geojsonOptions"
+          @click="mapClick"
+        ></l-geo-json>
+        <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+      </l-map>
+    </p>
+    <chart-dialog :feature="feature" />
+  </div>
 </template>
 
 <script>
@@ -42,6 +40,7 @@ let oapi = process.env.VUE_APP_OAPI;
 
 export default {
   name: "Home",
+  template: "#home",
   components: {
     LMap,
     LTileLayer,
@@ -121,13 +120,17 @@ export default {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
     },
     mapClick(e) {
-      this.$root.toggleDialog();
+      console.log(e);
+      e.originalEvent.stopPropagation();
+      console.log(this.feature);
       this.feature.station = e.layer.feature;
+      this.feature.datastreams.length = 0;
       for (const dstream of e.layer.feature.properties.Datastreams) {
         const dstream_id = dstream.split("/").pop();
         this.feature.datastreams.push(dstream_id);
       }
       console.log(this.feature);
+      this.$root.toggleDialog();
     },
   },
 };

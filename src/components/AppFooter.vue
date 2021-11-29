@@ -1,5 +1,5 @@
-<template>
-  <div id="app-footer">
+<template id="app-footer">
+  <div class="app-footer">
     <v-footer>
       <v-row justify="center" align="center" no-gutters>
         <v-col cols="12">

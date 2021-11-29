@@ -1,5 +1,5 @@
-<template>
-  <div id="app-header">
+<template id="app-header">
+  <div class="app-header">
     <v-system-bar :height="height">
       <v-row justify="center">
         <v-card

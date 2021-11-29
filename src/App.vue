@@ -1,7 +1,8 @@
 <template>
-  <v-app>
+  <v-app id="v-app">
     <app-header></app-header>
-    <v-content>
+    <v-main>
+      <v-card>
       <v-container>
         <div id="wis2node-nav">
           <router-link to="/">
@@ -31,7 +32,8 @@
       <v-container>
         <router-view />
       </v-container>
-    </v-content>
+      </v-card>
+    </v-main>
     <app-footer></app-footer>
   </v-app>
 </template>
