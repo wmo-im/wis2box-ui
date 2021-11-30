@@ -3,16 +3,10 @@
     <v-container>
       <h1>{{ $t("messages.welcome") }}</h1>
     </v-container>
-    <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
-      <v-progress-linear striped indeterminate color="primary" />
-    </div>
-    <div
-      :style="{ visibility: !loading ? 'visible' : 'hidden' }"
-      class="text-center"
-    >
+    <v-container>
       <wis-map :feature="feature" :params="{ limit: 25 }" />
-      <chart-dialog :feature="feature" />
-    </div>
+    </v-container>
+    <chart-dialog :feature="feature" />
   </div>
 </template>
 

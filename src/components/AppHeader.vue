@@ -10,7 +10,7 @@
           }"
         >
           <v-container>
-            <v-row align="center">
+            <v-row align="bottom">
               <a
                 href="https://community.wmo.int/activity-areas/wis/wis2-implementation"
                 title="wis2node"
@@ -35,7 +35,7 @@ export default {
   components: {
     SelectLocale,
   },
-  data() {
+  data: function () {
     return {
       height: 110,
     };

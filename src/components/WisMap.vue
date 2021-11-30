@@ -1,22 +1,30 @@
 <template id="wis-map">
   <div class="wis-map">
-    <p>
-      <l-map
-        ref="wisMap"
-        :zoom="zoom"
-        :center="center"
-        :bounds="bounds"
-        maxZoom="10"
-        style="height: 80vh"
-      >
-        <l-geo-json
-          :geojson="geojson"
-          :options="geojsonOptions"
-          @click="mapClick"
-        ></l-geo-json>
-        <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-      </l-map>
-    </p>
+    <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
+      <v-progress-linear striped indeterminate color="primary" />
+    </div>
+    <div
+      :style="{ visibility: !loading ? 'visible' : 'hidden' }"
+      class="text-center"
+    >
+      <p>
+        <l-map
+          ref="wisMap"
+          :zoom="zoom"
+          :center="center"
+          :bounds="bounds"
+          maxZoom="10"
+          style="height: 80vh"
+        >
+          <l-geo-json
+            :geojson="geojson"
+            :options="geojsonOptions"
+            @click="mapClick"
+          ></l-geo-json>
+          <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+        </l-map>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -36,9 +44,19 @@ export default {
     LGeoJson,
   },
   props: ["feature", "params"],
+  mounted: function () {
+    this.$nextTick(() => {
+      this.loadStations();
+    });
+  },
   data: function () {
     return {
       feature_: this.feature,
+      loading: true,
+      params_: {
+        f: "json",
+        limit: 10,
+      },
       bounds: [
         [42, -142],
         [84, -52],
@@ -89,35 +107,28 @@ export default {
       zoom: 1,
     };
   },
-  mounted() {
-    this.loading = true;
-    var self = this;
-    var p = {
-      f: "json",
-      limit: 10,
-    };
-    this.$root
-      .axios({
-        method: "get",
-        url: oapi + "/collections/stations/items",
-        params: Object.assign({}, p, this.params),
-      })
-      .then(function (response) {
-        // handle success
-        self.geojson = response.data;
-        self.bounds = geoJSON(self.geojson).getBounds();
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      })
-      .then(function () {
-        self.loading = false;
-      });
-  },
   methods: {
-    goBack() {
-      window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
+    loadStations() {
+      this.loading = true;
+      var self = this;
+      this.$root
+        .axios({
+          method: "get",
+          url: oapi + "/collections/stations/items",
+          params: Object.assign({}, self.params_, self.params),
+        })
+        .then(function (response) {
+          // handle success
+          self.geojson = response.data;
+          self.bounds = geoJSON(self.geojson).getBounds();
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .then(function () {
+          self.loading = false;
+        });
     },
     mapClick(e) {
       console.log(e);

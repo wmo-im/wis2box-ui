@@ -20,7 +20,12 @@ export default {
   name: "ChartPlot",
   template: "#chart-plot",
   props: ["datastream"],
-  data() {
+  mounted: function () {
+    this.$nextTick(() => {
+      this.loadDatastream(this.datastream);
+    });
+  },
+  data: function () {
     return {
       trace: {
         type: "scatter",
@@ -53,21 +58,21 @@ export default {
   methods: {
     plot() {
       var plot = document.getElementById("plotly-chart-" + this.datastream);
-      Plotly.newPlot(plot, this.data, this.layout, { scrollZoom: false });
+      Plotly.newPlot(plot, this.data, this.layout);
     },
-    get_col(features, key) {
+    getCol(features, key) {
       return features.map(function (row) {
         return row["properties"][key];
       });
     },
-    new_trace(features, x, y) {
-      const newTrace = JSON.parse(JSON.stringify(this.trace));
-      newTrace.x = this.get_col(features, x);
-      newTrace.y = this.get_col(features, y);
-      this.data.push(newTrace);
+    newTrace(features, x, y) {
+      const Trace = JSON.parse(JSON.stringify(this.trace));
+      Trace.x = this.getCol(features, x);
+      Trace.y = this.getCol(features, y);
+      this.data.push(Trace);
       console.log(this.data);
     },
-    async load_datastream(datastream) {
+    async loadDatastream(datastream) {
       var self = this;
       this.loading = true;
       await this.$root
@@ -104,7 +109,7 @@ export default {
         })
         .then(function (response) {
           // handle success
-          self.load_observations(datastream, response.data.numberMatched);
+          self.loadObservations(datastream, response.data.numberMatched);
         })
         .catch(function (error) {
           // handle error
@@ -114,7 +119,7 @@ export default {
           console.log("done");
         });
     },
-    async load_observations(datastream, limit) {
+    async loadObservations(datastream, limit) {
       var self = this;
       this.loading = true;
       this.$root
@@ -130,7 +135,7 @@ export default {
         })
         .then(function (response) {
           // handle success
-          self.new_trace(response.data.features, "phenomenonTime", "result");
+          self.newTrace(response.data.features, "phenomenonTime", "result");
           self.plot();
         })
         .catch(function (error) {
@@ -141,9 +146,6 @@ export default {
           self.loading = false;
         });
     },
-  },
-  mounted() {
-    this.load_datastream(this.datastream);
   },
 };
 </script>

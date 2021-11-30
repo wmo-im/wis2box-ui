@@ -11,13 +11,13 @@
 </template>
 
 <script>
-import { loadLocale } from "../locales/i18n";
 // https://www.digitalocean.com/community/tutorials/vuejs-vue-with-i18n
+import { loadLocale } from "../locales/i18n";
 
 export default {
   name: "SelectLocale",
   template: "#select-locale",
-  data() {
+  data: function () {
     return {
       langs: Object.keys(loadLocale()),
     };
