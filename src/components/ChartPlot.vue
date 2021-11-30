@@ -53,7 +53,7 @@ export default {
   methods: {
     plot() {
       var plot = document.getElementById("plotly-chart-" + this.datastream);
-      Plotly.newPlot(plot, this.data, this.layout,{scrollZoom: false});
+      Plotly.newPlot(plot, this.data, this.layout, { scrollZoom: false });
     },
     get_col(features, key) {
       return features.map(function (row) {
@@ -132,11 +132,13 @@ export default {
           // handle success
           self.new_trace(response.data.features, "phenomenonTime", "result");
           self.plot();
-          self.loading = false;
         })
         .catch(function (error) {
           // handle error
           console.log(error);
+        })
+        .then(function () {
+          self.loading = false;
         });
     },
   },

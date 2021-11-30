@@ -6,7 +6,7 @@
           <chart-navigation :collections_choice="collections_choice" />
         </v-col> -->
         <v-col cols="12">
-          <chart-plot datastream="'25d0db7725644ba0b506ab5c89ebfa8e'"/>
+          <chart-plot datastream="'25d0db7725644ba0b506ab5c89ebfa8e'" />
         </v-col>
       </v-row>
     </v-card>
