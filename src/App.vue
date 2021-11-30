@@ -9,10 +9,6 @@
               {{ $t("navigation.homepage") }}
             </router-link>
             |
-            <router-link to="/plot">
-              {{ $t("navigation.plot") }}
-            </router-link>
-            |
             <a target="_window_catalogue" href="http://localhost:8999/pygeoapi">
               {{ $t("navigation.catalogue") }}
             </a>
