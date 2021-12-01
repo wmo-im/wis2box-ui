@@ -23,7 +23,6 @@ export default {
     return {
       feature: {
         station: null,
-        names: [],
         datastreams: [],
       },
     };

@@ -21,7 +21,7 @@
                     <v-card max-height="400">
                       <wis-map
                         :feature="feature_"
-                        :params="{ Datastreams: feature_.datastreams[0] }"
+                        :params="{ '@iot.id': feature_.station.id }"
                       />
                     </v-card>
                   </v-item>

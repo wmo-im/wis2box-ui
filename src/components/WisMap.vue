@@ -89,6 +89,10 @@ export default {
               fillColor = "Tan";
               lineColor = "Sienna";
           }
+          if (feature.properties.active) {
+            fillColor = "SpringGreen";
+            lineColor = "SeaGreen";
+          }
           const markerStyle = {
             radius: 10,
             fillColor: fillColor,
@@ -111,9 +115,8 @@ export default {
     mapClick(e) {
       this.feature_.station = e.layer.feature;
       this.feature_.datastreams.length = 0;
-      for (const dstream of e.layer.feature.properties.Datastreams) {
-        const dstream_id = dstream.split("/").pop();
-        this.feature_.datastreams.push(dstream_id);
+      for (var dstream of e.layer.feature.properties.Datastreams) {
+        this.feature_.datastreams.push(dstream);
       }
       this.bounds = geoJSON(this.geojson).getBounds();
       this.$root.toggleDialog();
@@ -121,7 +124,8 @@ export default {
     },
     loadStations() {
       this.loading = true;
-      this.axios({
+      var self = this;
+      this.$root.axios({
           method: "get",
           url: oapi + "/collections/stations/items",
           params: Object.assign({}, self.params_, self.params),
@@ -137,7 +141,9 @@ export default {
         })
         .then(function () {
           self.loading = false;
+          console.log("done");
         });
+      console.log(this.loading);
     },
   },
 };

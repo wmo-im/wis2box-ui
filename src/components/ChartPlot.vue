@@ -73,41 +73,29 @@ export default {
       console.log(this.data);
     },
     async loadDatastream(datastream) {
-      var self = this;
       this.loading = true;
-      await this.axios({
-          method: "get",
-          url: oapi + "/collections/Datastreams/items/" + datastream,
-          params: {
-            f: "json",
-          },
-        })
-        .then(function (response) {
-          // handle success
-          const range = response.data.properties.phenomenonTime.split("/");
-          const title = response.data.properties.ObservedProperty.description;
-          const unit = response.data.properties.unitOfMeasurement.symbol;
-          self.layout.title = title;
-          self.layout.yaxis.title = title + " (" + unit + ")";
-          self.layout.xaxis.range = range;
-          self.layout.xaxis.rangeslider = { range: range };
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        });
-      await this.axios({
+      console.log(datastream);
+      const range = datastream.properties.phenomenonTime.split("/");
+      const title = datastream.properties.ObservedProperty.description;
+      const unit = datastream.properties.unitOfMeasurement.symbol;
+      const id = datastream["@iot.selfLink"].match(/(?<=\()(.*)(?=\))/g);
+      this.layout.title = title;
+      this.layout.yaxis.title = title + " (" + unit + ")";
+      this.layout.xaxis.range = range;
+      this.layout.xaxis.rangeslider = { range: range };
+
+      await this.$root.axios({
           method: "get",
           url: oapi + "/collections/Observations/items",
           params: {
             f: "json",
-            Datastream: datastream,
+            Datastream: id,
             resulttype: "hits",
           },
         })
         .then(function (response) {
           // handle success
-          self.loadObservations(datastream, response.data.numberMatched);
+          self.loadObservations(id, response.data.numberMatched);
         })
         .catch(function (error) {
           // handle error
@@ -120,7 +108,7 @@ export default {
     async loadObservations(datastream, limit) {
       var self = this;
       this.loading = true;
-      this.axios({
+      this.$root.axios({
           method: "get",
           url: oapi + "/collections/Observations/items",
           params: {
