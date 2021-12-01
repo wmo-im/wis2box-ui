@@ -4,28 +4,6 @@
     <v-main>
       <v-card>
         <v-container>
-          <div id="wis2node-nav">
-            <router-link to="/">
-              {{ $t("navigation.homepage") }}
-            </router-link>
-            |
-            <a target="_window_catalogue" href="http://localhost:8999/pygeoapi">
-              {{ $t("navigation.catalogue") }}
-            </a>
-            |
-            <a
-              target="_window_service_monitor"
-              href="http://localhost:8999/monitor"
-            >
-              {{ $t("navigation.service_monitor") }}
-            </a>
-            |
-            <a target="_window_docs" :href="documentation">
-              {{ $t("navigation.documentation") }}
-            </a>
-          </div>
-        </v-container>
-        <v-container>
           <router-view />
         </v-container>
       </v-card>
@@ -35,8 +13,6 @@
 </template>
 
 <script>
-import { documentation } from "../package";
-
 import AppHeader from "@/components/AppHeader.vue";
 import AppFooter from "@/components/AppFooter.vue";
 
@@ -49,7 +25,6 @@ export default {
   },
   data() {
     return {
-      documentation: documentation,
       dialog: false,
     };
   },

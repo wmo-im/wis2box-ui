@@ -58,9 +58,6 @@ export default {
     ChartPlot,
   },
   props: ["feature"],
-  mounted: function () {
-    console.log(this.feature_);
-  },
   data: function () {
     return {
       panel: [],

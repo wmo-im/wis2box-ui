@@ -1,8 +1,6 @@
 <template id="home">
   <div class="home">
-    <v-container>
-      <h1>{{ $t("messages.welcome") }}</h1>
-    </v-container>
+    <h1>{{ $t("messages.welcome") }}</h1>
     <v-container>
       <wis-map :feature="feature" :params="{ limit: 25 }" />
     </v-container>

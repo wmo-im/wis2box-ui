@@ -75,8 +75,7 @@ export default {
     async loadDatastream(datastream) {
       var self = this;
       this.loading = true;
-      await this.$root
-        .axios({
+      await this.axios({
           method: "get",
           url: oapi + "/collections/Datastreams/items/" + datastream,
           params: {
@@ -97,8 +96,7 @@ export default {
           // handle error
           console.log(error);
         });
-      await this.$root
-        .axios({
+      await this.axios({
           method: "get",
           url: oapi + "/collections/Observations/items",
           params: {
@@ -122,8 +120,7 @@ export default {
     async loadObservations(datastream, limit) {
       var self = this;
       this.loading = true;
-      this.$root
-        .axios({
+      this.axios({
           method: "get",
           url: oapi + "/collections/Observations/items",
           params: {

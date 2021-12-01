@@ -108,11 +108,20 @@ export default {
     };
   },
   methods: {
+    mapClick(e) {
+      this.feature_.station = e.layer.feature;
+      this.feature_.datastreams.length = 0;
+      for (const dstream of e.layer.feature.properties.Datastreams) {
+        const dstream_id = dstream.split("/").pop();
+        this.feature_.datastreams.push(dstream_id);
+      }
+      this.bounds = geoJSON(this.geojson).getBounds();
+      this.$root.toggleDialog();
+      e.originalEvent.stopPropagation();
+    },
     loadStations() {
       this.loading = true;
-      var self = this;
-      this.$root
-        .axios({
+      this.axios({
           method: "get",
           url: oapi + "/collections/stations/items",
           params: Object.assign({}, self.params_, self.params),
@@ -129,17 +138,6 @@ export default {
         .then(function () {
           self.loading = false;
         });
-    },
-    mapClick(e) {
-      console.log(e);
-      e.originalEvent.stopPropagation();
-      this.feature_.station = e.layer.feature;
-      this.feature_.datastreams.length = 0;
-      for (const dstream of e.layer.feature.properties.Datastreams) {
-        const dstream_id = dstream.split("/").pop();
-        this.feature_.datastreams.push(dstream_id);
-      }
-      this.$root.toggleDialog();
     },
   },
 };
