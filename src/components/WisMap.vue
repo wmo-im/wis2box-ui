@@ -115,9 +115,6 @@ export default {
     mapClick(e) {
       this.feature_.station = e.layer.feature;
       this.feature_.datastreams.length = 0;
-      for (var dstream of e.layer.feature.properties.Datastreams) {
-        this.feature_.datastreams.push(dstream);
-      }
       this.bounds = geoJSON(this.geojson).getBounds();
       this.$root.toggleDialog();
       e.originalEvent.stopPropagation();

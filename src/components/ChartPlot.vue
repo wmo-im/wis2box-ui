@@ -7,7 +7,7 @@
       :style="{ visibility: !loading ? 'visible' : 'hidden' }"
       class="text-center"
     >
-      <div :id="'plotly-chart-' + datastream" />
+      <div :id="'plotly-chart-' + datastream.id" />
     </div>
   </div>
 </template>
@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     plot() {
-      var plot = document.getElementById("plotly-chart-" + this.datastream);
+      var plot = document.getElementById("plotly-chart-" + this.datastream.id);
       Plotly.newPlot(plot, this.data, this.layout);
     },
     getCol(features, key) {
@@ -74,11 +74,11 @@ export default {
     },
     async loadDatastream(datastream) {
       this.loading = true;
+      var self = this;
       console.log(datastream);
       const range = datastream.properties.phenomenonTime.split("/");
       const title = datastream.properties.ObservedProperty.description;
-      const unit = datastream.properties.unitOfMeasurement.symbol;
-      const id = datastream["@iot.selfLink"].match(/(?<=\()(.*)(?=\))/g);
+      const unit = datastream.properties.unitOfMeasurement.symbol
       this.layout.title = title;
       this.layout.yaxis.title = title + " (" + unit + ")";
       this.layout.xaxis.range = range;
@@ -89,13 +89,13 @@ export default {
           url: oapi + "/collections/Observations/items",
           params: {
             f: "json",
-            Datastream: id,
+            Datastream: datastream.id,
             resulttype: "hits",
           },
         })
         .then(function (response) {
           // handle success
-          self.loadObservations(id, response.data.numberMatched);
+          self.loadObservations(datastream.id, response.data.numberMatched);
         })
         .catch(function (error) {
           // handle error
@@ -105,7 +105,7 @@ export default {
           console.log("done");
         });
     },
-    async loadObservations(datastream, limit) {
+    async loadObservations(datastreamID, limit) {
       var self = this;
       this.loading = true;
       this.$root.axios({
@@ -113,7 +113,7 @@ export default {
           url: oapi + "/collections/Observations/items",
           params: {
             f: "json",
-            Datastream: datastream,
+            Datastream: datastreamID,
             sortby: "-phenomenonTime",
             limit: limit,
           },

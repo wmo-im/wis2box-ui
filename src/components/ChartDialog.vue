@@ -5,7 +5,6 @@
         <v-card
           min-height="450"
           min-width="750"
-          v-click-outside="$root.toggleDialog"
         >
           <v-card-actions>
             <v-row>
@@ -21,19 +20,19 @@
                     <v-card max-height="400">
                       <wis-map
                         :feature="feature_"
-                        :params="{ '@iot.id': feature_.station.id }"
+                        :params="{ '@iot.id': station.id }"
                       />
                     </v-card>
                   </v-item>
                 </v-col>
                 <v-col
-                  v-for="(datastream, i) in datastreams"
+                  v-for="(d, i) in datastreams"
                   cols="12"
                   :key="i + 1"
                 >
                   <v-item>
                     <v-card>
-                      <chart-plot :datastream="datastream" :key="datastream" />
+                      <chart-plot :datastream="d" />
                     </v-card>
                   </v-item>
                 </v-col>
@@ -50,6 +49,8 @@
 import WisMap from "./WisMap.vue";
 import ChartPlot from "./ChartPlot.vue";
 
+let oapi = process.env.VUE_APP_OAPI;
+
 export default {
   name: "ChartDialog",
   template: "#chart-dialog",
@@ -60,11 +61,45 @@ export default {
   props: ["feature"],
   data: function () {
     return {
-      panel: [],
       feature_: this.feature,
-      station: this.feature.station,
-      datastreams: this.feature.datastreams,
     };
+  },
+  methods: {
+    async loadDatastreams() {
+      if (this.feature_.station === null){ return; }
+      var self = this;
+      await this.$root.axios({
+          method: "get",
+          url: oapi + "/collections/Datastreams/items",
+          params: {
+            f: "json",
+            Thing: self.feature_.station.id,
+            limit: self.feature_.station.properties.Datastreams.length,
+          },
+        })
+        .then(function (response) {
+          // handle success
+          self.feature_.datastreams = response.data.features;
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })        
+        .then(function () {
+          console.log("done");
+        });
+    },
+  },
+  computed: {
+    station: function() {
+      console.log(this.feature_);
+      this.loadDatastreams();
+      return this.feature_.station;
+    },
+    datastreams: function() { 
+      console.log(this.feature_);
+      return this.feature_.datastreams;
+    },
   },
 };
 </script>
