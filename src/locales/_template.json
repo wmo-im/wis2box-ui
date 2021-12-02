@@ -12,8 +12,8 @@
   "messages": {
     "welcome": ""
   },
-  "chart": {
-    "options": "",
-    "current": ""
+  "station": {
+    "map": "",
+    "properties": ""
   }
 }

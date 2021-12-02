@@ -1,12 +1,12 @@
 <template id="home">
+  <v-container>
+    <chart-dialog :feature="feature" />
+  </v-container>
   <div class="home">
     <h1>{{ $t("messages.welcome") }}</h1>
     <v-card>
       <wis-map :feature="feature" :params="{ limit: 25 }" />
     </v-card>
-    <v-container>
-      <chart-dialog :feature="feature" />
-    </v-container>
   </div>
 </template>
 

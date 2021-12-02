@@ -12,8 +12,8 @@
   "messages": {
     "welcome": "Welcome to WIS 2.0 in a box!"
   },
-  "chart": {
-    "options": "Chart Options",
-    "current": "Current Collection"
+  "station": {
+    "map": "Station Map",
+    "properties": "Station Properties"
   }
 }

@@ -12,8 +12,8 @@
   "messages": {
     "welcome": "Bienvenue à wis 2.0 dans une boîte!"
   },
-  "chart": {
-    "options": "Options de Graphique",
-    "current": "Collection Actuelle"
+  "station": {
+    "map": "Plan de la Gare",
+    "current": "Propriétés de la Gare"
   }
 }
