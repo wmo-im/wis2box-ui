@@ -119,10 +119,11 @@ export default {
       this.$root.toggleDialog();
       e.originalEvent.stopPropagation();
     },
-    loadStations() {
+    async loadStations() {
       this.loading = true;
       var self = this;
-      this.$root.axios({
+      await this.$root
+        .axios({
           method: "get",
           url: oapi + "/collections/stations/items",
           params: Object.assign({}, self.params_, self.params),
@@ -140,7 +141,6 @@ export default {
           self.loading = false;
           console.log("done");
         });
-      console.log(this.loading);
     },
   },
 };

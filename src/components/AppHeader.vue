@@ -22,7 +22,10 @@
                   {{ $t("navigation.homepage") }}
                 </router-link>
                 |
-                <a target="_window_catalogue" href="http://localhost:8999/pygeoapi">
+                <a
+                  target="_window_catalogue"
+                  href="http://localhost:8999/pygeoapi"
+                >
                   {{ $t("navigation.catalogue") }}
                 </a>
                 |

@@ -1,14 +1,15 @@
 <template id="chart-plot">
   <div class="chart-plot">
-    <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
-      <v-progress-linear striped indeterminate color="primary" />
-    </div>
-    <div
-      :style="{ visibility: !loading ? 'visible' : 'hidden' }"
-      class="text-center"
-    >
-      <div :id="'plotly-chart-' + datastream.id" />
-    </div>
+    <v-card>
+      <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
+        <v-progress-linear striped indeterminate color="primary" />
+      </div>
+      <div
+        :style="{ visibility: !loading ? 'visible' : 'hidden' }"
+      >
+        <div :id="'plotly-chart-' + datastream.id" />
+      </div>
+    </v-card>
   </div>
 </template>
 
@@ -59,6 +60,7 @@ export default {
     plot() {
       var plot = document.getElementById("plotly-chart-" + this.datastream.id);
       Plotly.newPlot(plot, this.data, this.layout);
+      this.loading = false;
     },
     getCol(features, key) {
       return features.map(function (row) {
@@ -70,21 +72,20 @@ export default {
       Trace.x = this.getCol(features, x);
       Trace.y = this.getCol(features, y);
       this.data.push(Trace);
-      console.log(this.data);
     },
     async loadDatastream(datastream) {
       this.loading = true;
       var self = this;
-      console.log(datastream);
       const range = datastream.properties.phenomenonTime.split("/");
       const title = datastream.properties.ObservedProperty.description;
-      const unit = datastream.properties.unitOfMeasurement.symbol
+      const unit = datastream.properties.unitOfMeasurement.symbol;
       this.layout.title = title;
       this.layout.yaxis.title = title + " (" + unit + ")";
       this.layout.xaxis.range = range;
       this.layout.xaxis.rangeslider = { range: range };
 
-      await this.$root.axios({
+      await this.$root
+        .axios({
           method: "get",
           url: oapi + "/collections/Observations/items",
           params: {
@@ -108,7 +109,8 @@ export default {
     async loadObservations(datastreamID, limit) {
       var self = this;
       this.loading = true;
-      this.$root.axios({
+      this.$root
+        .axios({
           method: "get",
           url: oapi + "/collections/Observations/items",
           params: {
@@ -128,7 +130,7 @@ export default {
           console.log(error);
         })
         .then(function () {
-          self.loading = false;
+          console.log("done");
         });
     },
   },

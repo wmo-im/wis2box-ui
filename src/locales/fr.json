@@ -14,6 +14,6 @@
   },
   "station": {
     "map": "Plan de la Gare",
-    "current": "Propriétés de la Gare"
+    "properties": "Propriétés de la Gare"
   }
 }
