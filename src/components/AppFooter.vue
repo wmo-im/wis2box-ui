@@ -22,7 +22,9 @@
 <script>
 import { name, version, homepage } from "../../package";
 
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: "AppFooter",
   template: "#app-footer",
   data: function () {
@@ -32,5 +34,5 @@ export default {
       homepage: homepage,
     };
   },
-};
+});
 </script>

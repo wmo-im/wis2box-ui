@@ -13,8 +13,9 @@
 <script>
 // https://www.digitalocean.com/community/tutorials/vuejs-vue-with-i18n
 import { loadLocale } from "../locales/i18n";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "SelectLocale",
   template: "#select-locale",
   data: function () {
@@ -22,5 +23,5 @@ export default {
       langs: Object.keys(loadLocale()),
     };
   },
-};
+});
 </script>

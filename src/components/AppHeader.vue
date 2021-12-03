@@ -53,8 +53,9 @@
 <script>
 import SelectLocale from "./SelectLocale.vue";
 import { documentation } from "../../package";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "AppHeader",
   template: "#app-header",
   components: {
@@ -66,5 +67,5 @@ export default {
       height: 110,
     };
   },
-};
+});
 </script>

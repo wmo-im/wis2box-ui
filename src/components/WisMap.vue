@@ -34,8 +34,9 @@ import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
 
 let oapi = process.env.VUE_APP_OAPI;
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "WisMap",
   template: "#wis-map",
   components: {
@@ -122,26 +123,25 @@ export default {
     async loadStations() {
       this.loading = true;
       var self = this;
-      await this.$root
-        .axios({
-          method: "get",
-          url: oapi + "/collections/stations/items",
-          params: Object.assign({}, self.params_, self.params),
-        })
-        .then(function (response) {
-          // handle success
-          self.geojson = response.data;
-          self.bounds = geoJSON(self.geojson).getBounds();
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          self.loading = false;
-          console.log("done");
-        });
+      await this.$http({
+        method: "get",
+        url: oapi + "/collections/stations/items",
+        params: Object.assign({}, self.params_, self.params),
+      })
+      .then(function (response) {
+        // handle success
+        self.geojson = response.data;
+        self.bounds = geoJSON(self.geojson).getBounds();
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      })
+      .then(function () {
+        self.loading = false;
+        console.log("done");
+      });
     },
   },
-};
+});
 </script>

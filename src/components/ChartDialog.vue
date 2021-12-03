@@ -66,10 +66,10 @@
 import WisMap from "./WisMap.vue";
 import ChartPlot from "./ChartPlot.vue";
 import { Tabs, Tab } from "vue3-tabs";
-
+import { defineComponent } from "vue";
 let oapi = process.env.VUE_APP_OAPI;
 
-export default {
+export default defineComponent({
   name: "ChartDialog",
   template: "#chart-dialog",
   components: {
@@ -92,27 +92,26 @@ export default {
       }
       this.selectedTab = 0;
       var self = this;
-      await this.$root
-        .axios({
-          method: "get",
-          url: oapi + "/collections/Datastreams/items",
-          params: {
-            f: "json",
-            Thing: self.feature_.station.id,
-            limit: self.feature_.station.properties.Datastreams.length,
-          },
-        })
-        .then(function (response) {
-          // handle success
-          self.feature_.datastreams = response.data.features;
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          console.log("done");
-        });
+      await this.$http({
+        method: "get",
+        url: oapi + "/collections/Datastreams/items",
+        params: {
+          f: "json",
+          Thing: self.feature_.station.id,
+          limit: self.feature_.station.properties.Datastreams.length,
+        },
+      })
+      .then(function (response) {
+        // handle success
+        self.feature_.datastreams = response.data.features;
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      })
+      .then(function () {
+        console.log("done");
+      });
     },
   },
   computed: {
@@ -124,7 +123,7 @@ export default {
       return this.feature_.datastreams;
     },
   },
-};
+});
 </script>
 
 <style scoped>

@@ -4,10 +4,12 @@
       <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
         <v-progress-linear striped indeterminate color="primary" />
       </div>
-      <div
-        :style="{ visibility: !loading ? 'visible' : 'hidden' }"
-      >
-        <div :id="'plotly-chart-' + datastream.id" />
+      <div :style="{ visibility: !loading ? 'visible' : 'hidden' }">
+        <v-container>
+          <v-row justify="center" align="end">
+            <div :id="'plotly-chart-' + datastream.id" />
+          </v-row>
+        </v-container>
       </div>
     </v-card>
   </div>
@@ -15,9 +17,12 @@
 
 <script>
 import Plotly from "plotly.js-dist-min";
-let oapi = process.env.VUE_APP_OAPI;
+import { mdiDownload } from "@mdi/js";
 
-export default {
+let oapi = process.env.VUE_APP_OAPI;
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: "ChartPlot",
   template: "#chart-plot",
   props: ["datastream"],
@@ -54,12 +59,15 @@ export default {
         },
         font: { size: 18 },
       },
+      config: {
+        modeBarButtonsToAdd: [],
+      },
     };
   },
   methods: {
     plot() {
       var plot = document.getElementById("plotly-chart-" + this.datastream.id);
-      Plotly.newPlot(plot, this.data, this.layout);
+      Plotly.newPlot(plot, this.data, this.layout, this.config);
       this.loading = false;
     },
     getCol(features, key) {
@@ -84,55 +92,66 @@ export default {
       this.layout.xaxis.range = range;
       this.layout.xaxis.rangeslider = { range: range };
 
-      await this.$root
-        .axios({
-          method: "get",
-          url: oapi + "/collections/Observations/items",
-          params: {
-            f: "json",
-            Datastream: datastream.id,
-            resulttype: "hits",
-          },
-        })
-        .then(function (response) {
-          // handle success
-          self.loadObservations(datastream.id, response.data.numberMatched);
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          console.log("done");
-        });
+      await this.$http({
+        method: "get",
+        url: oapi + "/collections/Observations/items",
+        params: {
+          f: "json",
+          Datastream: datastream.id,
+          resulttype: "hits",
+        },
+      })
+      .then(function (response) {
+        // handle success
+        self.loadObservations(datastream.id, response.data.numberMatched);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+        self.loading = false;
+      })
+      .then(function () {
+        console.log("done");
+      });
     },
     async loadObservations(datastreamID, limit) {
       var self = this;
       this.loading = true;
-      this.$root
-        .axios({
-          method: "get",
-          url: oapi + "/collections/Observations/items",
-          params: {
-            f: "json",
-            Datastream: datastreamID,
-            sortby: "-phenomenonTime",
-            limit: limit,
+      await this.$http({
+        method: "get",
+        url: oapi + "/collections/Observations/items",
+        params: {
+          f: "json",
+          Datastream: datastreamID,
+          sortby: "-phenomenonTime",
+          limit: limit,
+        },
+      })
+      .then(function (response) {
+        // handle success
+        self.config.modeBarButtonsToAdd.push({
+          name: "Data Source",
+          icon: {
+            'width': 24,
+            'height': 24,
+            'path': mdiDownload,
+          },
+          click: function () {
+            window.location.href = response.request.responseURL;
           },
         })
-        .then(function (response) {
-          // handle success
-          self.newTrace(response.data.features, "phenomenonTime", "result");
-          self.plot();
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          console.log("done");
-        });
+        self.newTrace(response.data.features, "phenomenonTime", "result");
+        self.plot();
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+        self.loading = false;
+      })
+      .then(function () {
+        console.log("done");
+      });
     },
   },
-};
+});
 </script>
