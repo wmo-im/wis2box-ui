@@ -101,18 +101,18 @@ export default defineComponent({
           resulttype: "hits",
         },
       })
-      .then(function (response) {
-        // handle success
-        self.loadObservations(datastream.id, response.data.numberMatched);
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-        self.loading = false;
-      })
-      .then(function () {
-        console.log("done");
-      });
+        .then(function (response) {
+          // handle success
+          self.loadObservations(datastream.id, response.data.numberMatched);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+          self.loading = false;
+        })
+        .then(function () {
+          console.log("done");
+        });
     },
     async loadObservations(datastreamID, limit) {
       var self = this;
@@ -127,30 +127,30 @@ export default defineComponent({
           limit: limit,
         },
       })
-      .then(function (response) {
-        // handle success
-        self.config.modeBarButtonsToAdd.push({
-          name: "Data Source",
-          icon: {
-            'width': 24,
-            'height': 24,
-            'path': mdiDownload,
-          },
-          click: function () {
-            window.location.href = response.request.responseURL;
-          },
+        .then(function (response) {
+          // handle success
+          self.config.modeBarButtonsToAdd.push({
+            name: "Data Source",
+            icon: {
+              width: 24,
+              height: 24,
+              path: mdiDownload,
+            },
+            click: function () {
+              window.location.href = response.request.responseURL;
+            },
+          });
+          self.newTrace(response.data.features, "phenomenonTime", "result");
+          self.plot();
         })
-        self.newTrace(response.data.features, "phenomenonTime", "result");
-        self.plot();
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-        self.loading = false;
-      })
-      .then(function () {
-        console.log("done");
-      });
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+          self.loading = false;
+        })
+        .then(function () {
+          console.log("done");
+        });
     },
   },
 });

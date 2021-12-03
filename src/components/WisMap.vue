@@ -128,19 +128,19 @@ export default defineComponent({
         url: oapi + "/collections/stations/items",
         params: Object.assign({}, self.params_, self.params),
       })
-      .then(function (response) {
-        // handle success
-        self.geojson = response.data;
-        self.bounds = geoJSON(self.geojson).getBounds();
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      })
-      .then(function () {
-        self.loading = false;
-        console.log("done");
-      });
+        .then(function (response) {
+          // handle success
+          self.geojson = response.data;
+          self.bounds = geoJSON(self.geojson).getBounds();
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .then(function () {
+          self.loading = false;
+          console.log("done");
+        });
     },
   },
 });

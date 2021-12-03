@@ -101,17 +101,17 @@ export default defineComponent({
           limit: self.feature_.station.properties.Datastreams.length,
         },
       })
-      .then(function (response) {
-        // handle success
-        self.feature_.datastreams = response.data.features;
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      })
-      .then(function () {
-        console.log("done");
-      });
+        .then(function (response) {
+          // handle success
+          self.feature_.datastreams = response.data.features;
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .then(function () {
+          console.log("done");
+        });
     },
   },
   computed: {
