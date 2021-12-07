@@ -1,10 +1,12 @@
-<template>
-  <div id="select-locale">
-    <select v-model="$i18n.locale">
-      <option v-for="(lang, i) in langs" :key="`lang-${i}`" :value="lang">
-        <v-btn class="mx-2" outlined rounded>
-          {{ lang }}
-        </v-btn>
+<template id="select-locale">
+  <div class="select-locale">
+    <select v-model="$i18n.locale" style="color: #FFFFFF">
+      <option 
+       v-for="(name, lang) in languages" 
+       :key="`lang-${name}`" 
+       :value="lang"
+      >
+        {{ name }}
       </option>
     </select>
   </div>
@@ -18,10 +20,14 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "SelectLocale",
   template: "#select-locale",
-  data: function () {
-    return {
-      langs: Object.keys(loadLocale()),
-    };
-  },
+  computed: {
+    languages: function () {
+      const temp = {};
+      for (const [key, value] of Object.entries(loadLocale())) {
+        temp[key] = value.language;
+      }
+      return temp;
+    }
+  }
 });
 </script>

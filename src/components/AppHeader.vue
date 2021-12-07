@@ -10,6 +10,10 @@
           }"
         >
           <v-container>
+            <v-row align="start">
+              <v-spacer />
+              <select-locale />
+            </v-row>
             <v-row align="end">
               <a
                 href="https://community.wmo.int/activity-areas/wis/wis2-implementation"
@@ -40,8 +44,6 @@
                   {{ $t("navigation.documentation") }}
                 </a>
               </div>
-              <v-spacer />
-              <select-locale />
             </v-row>
           </v-container>
         </v-card>

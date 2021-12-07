@@ -35,7 +35,7 @@
     "vue-i18n": "^9.2.0-beta.20",
     "vue-router": "^4.0.0-0",
     "vue3-tabs": "^0.1.12",
-    "vuetify": "^3.0.0-alpha.11",
+    "vuetify": "^3.0.0-alpha.12",
     "vuex": "^4.0.0-0",
     "webfontloader": "^1.0.0"
   },
