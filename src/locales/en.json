@@ -1,4 +1,5 @@
 {
+  "language": "English",
   "navigation": {
     "homepage": "Homepage",
     "plot": "Plot",
@@ -10,10 +11,10 @@
     "powered_by": "Powered by"
   },
   "messages": {
-    "welcome": "Welcome to WIS 2.0 node in box!"
+    "welcome": "Welcome to WIS 2.0 in a box!"
   },
-  "chart": {
-    "options": "Chart Options",
-    "current": "Current Collection"
+  "station": {
+    "map": "Station Map",
+    "properties": "Station Properties"
   }
 }

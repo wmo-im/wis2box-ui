@@ -1,49 +1,157 @@
-<template>
-  <v-container>
-    <div id="plotly-chart" />
-  </v-container>
+<template id="chart-plot">
+  <div class="chart-plot">
+    <v-card>
+      <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
+        <v-progress-linear striped indeterminate color="primary" />
+      </div>
+      <div :style="{ visibility: !loading ? 'visible' : 'hidden' }">
+        <v-container>
+          <v-row justify="center" align="end">
+            <div :id="'plotly-chart-' + datastream.id" />
+          </v-row>
+        </v-container>
+      </div>
+    </v-card>
+  </div>
 </template>
 
 <script>
 import Plotly from "plotly.js-dist-min";
+import { mdiDownload } from "@mdi/js";
 
-export default {
+let oapi = process.env.VUE_APP_OAPI;
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: "ChartPlot",
-  template: "#plotly-chart",
-  props: ["title"],
-  data() {
+  template: "#chart-plot",
+  props: ["datastream"],
+  mounted: function () {
+    this.$nextTick(() => {
+      this.loadDatastream(this.datastream);
+    });
+  },
+  data: function () {
     return {
-      data: [
-        {
-          x: [0, 1, 2, 3, 4],
-          y: [1, 5, 3, 7, 5],
-          mode: "lines+markers",
-          type: "scatter",
-        },
-      ],
+      trace: {
+        type: "scatter",
+        mode: "lines",
+        x: [],
+        y: [],
+        line: { color: "#17BECF" },
+      },
+      data: [],
+      loading: true,
       layout: {
-        title: null,
-        height: "450",
+        title: "",
+        height: "400",
         width: "700",
+        xaxis: {
+          autorange: true,
+          type: "date",
+          range: [null, null],
+          rangeslider: { range: [null, null] },
+        },
+        yaxis: {
+          type: "linear",
+          autorange: true,
+          title: null,
+        },
         font: { size: 18 },
       },
-      title_: this.title,
+      config: {
+        modeBarButtonsToAdd: [],
+      },
     };
   },
   methods: {
     plot() {
-      this.layout.title = this.title_;
-      Plotly.newPlot(this.$el, this.data, this.layout, {});
+      var plot = document.getElementById("plotly-chart-" + this.datastream.id);
+      Plotly.newPlot(plot, this.data, this.layout, this.config);
+      this.loading = false;
+    },
+    getCol(features, key) {
+      return features.map(function (row) {
+        return row["properties"][key];
+      });
+    },
+    newTrace(features, x, y) {
+      const Trace = JSON.parse(JSON.stringify(this.trace));
+      Trace.x = this.getCol(features, x);
+      Trace.y = this.getCol(features, y);
+      this.data.push(Trace);
+    },
+    async loadDatastream(datastream) {
+      this.loading = true;
+      var self = this;
+      const range = datastream.properties.phenomenonTime.split("/");
+      const title = datastream.properties.ObservedProperty.description;
+      const unit = datastream.properties.unitOfMeasurement.symbol;
+      this.layout.title = title;
+      this.layout.yaxis.title = title + " (" + unit + ")";
+      this.layout.xaxis.range = range;
+      this.layout.xaxis.rangeslider = { range: range };
+
+      await this.$http({
+        method: "get",
+        url: oapi + "/collections/Observations/items",
+        params: {
+          f: "json",
+          Datastream: datastream.id,
+          resulttype: "hits",
+        },
+      })
+        .then(function (response) {
+          // handle success
+          self.loadObservations(datastream.id, response.data.numberMatched);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+          self.loading = false;
+        })
+        .then(function () {
+          console.log("done");
+        });
+    },
+    async loadObservations(datastreamID, limit) {
+      var self = this;
+      this.loading = true;
+      await this.$http({
+        method: "get",
+        url: oapi + "/collections/Observations/items",
+        params: {
+          f: "json",
+          Datastream: datastreamID,
+          sortby: "-phenomenonTime",
+          limit: limit,
+        },
+      })
+        .then(function (response) {
+          // handle success
+          self.config.modeBarButtonsToAdd.push({
+            name: "Data Source",
+            icon: {
+              width: 24,
+              height: 24,
+              path: mdiDownload,
+            },
+            click: function () {
+              window.location.href = response.request.responseURL;
+            },
+          });
+          self.newTrace(response.data.features, "phenomenonTime", "result");
+          self.plot();
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+          self.loading = false;
+        })
+        .then(function () {
+          console.log("done");
+        });
     },
   },
-  mounted() {
-    this.plot();
-  },
-  watch: {
-    title(t) {
-      this.title_ = t;
-      this.plot();
-    },
-  },
-};
+});
 </script>

@@ -1,4 +1,5 @@
 {
+  "language": "",
   "navigation": {
     "homepage": "",
     "plot": "",
@@ -12,8 +13,8 @@
   "messages": {
     "welcome": ""
   },
-  "chart": {
-    "options": "",
-    "current": ""
+  "station": {
+    "map": "",
+    "properties": ""
   }
 }

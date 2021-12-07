@@ -12,8 +12,7 @@ function loadLocale() {
     }
   });
   return messages;
-};
-
+}
 
 export { loadLocale };
 
