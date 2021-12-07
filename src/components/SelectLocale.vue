@@ -1,10 +1,10 @@
 <template id="select-locale">
   <div class="select-locale">
-    <select v-model="$i18n.locale" style="color: #FFFFFF">
-      <option 
-       v-for="(name, lang) in languages" 
-       :key="`lang-${name}`" 
-       :value="lang"
+    <select v-model="$i18n.locale" style="color: #ffffff">
+      <option
+        v-for="(name, lang) in languages"
+        :key="`lang-${name}`"
+        :value="lang"
       >
         {{ name }}
       </option>
@@ -27,7 +27,7 @@ export default defineComponent({
         temp[key] = value.language;
       }
       return temp;
-    }
-  }
+    },
+  },
 });
 </script>
