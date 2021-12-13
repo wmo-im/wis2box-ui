@@ -2,9 +2,8 @@
   "language": "English",
   "navigation": {
     "homepage": "Homepage",
-    "plot": "Plot",
     "catalogue": "Catalogue",
-    "service_monitor": "Service Monitor",
+    "data": "Data",
     "documentation": "Documentation"
   },
   "footer": {

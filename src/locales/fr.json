@@ -2,9 +2,8 @@
   "language": "Français",
   "navigation": {
     "homepage": "Page d'accueil",
-    "plot": "Graphique",
     "catalogue": "Catalogue",
-    "service_monitor": "Moniteur de service",
+    "data": "Données",
     "documentation": "Documentation"
   },
   "footer": {
