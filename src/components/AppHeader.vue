@@ -28,16 +28,16 @@
                 |
                 <a
                   target="_window_catalogue"
-                  href="http://localhost:8999/pygeoapi"
+                  :href="oapi_url"
                 >
                   {{ $t("navigation.catalogue") }}
                 </a>
                 |
                 <a
-                  target="_window_service_monitor"
-                  href="http://localhost:8999/monitor"
+                  target="_window_data"
+                  :href="data_url"
                 >
-                  {{ $t("navigation.service_monitor") }}
+                  {{ $t("navigation.data") }}
                 </a>
                 |
                 <a target="_window_docs" :href="documentation">
@@ -65,6 +65,8 @@ export default defineComponent({
   },
   data: function () {
     return {
+      oapi_url: process.env.VUE_APP_OAPI,
+      data_url: process.env.VUE_APP_DATA,
       documentation: documentation,
       height: 110,
     };
