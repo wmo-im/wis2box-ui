@@ -35,7 +35,7 @@ jobs:
 
       - name: Log in to registry
         # This is where you will update the PAT to GHCR_BUILD_TOKEN
-        run: echo "${{ secrets.GHCR_BUILD_TOKEN }}" | docker login ghcr.io -u tomkralidis --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
 
       - name: Rename image for publication
         run: |
