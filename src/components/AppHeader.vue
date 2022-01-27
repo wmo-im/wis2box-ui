@@ -3,6 +3,7 @@
     <v-system-bar :height="height">
       <v-row justify="center">
         <v-card
+          flat
           :height="height - 1"
           width="1279"
           :style="{
@@ -26,19 +27,9 @@
                   {{ $t("navigation.homepage") }}
                 </router-link>
                 |
-                <a
-                  target="_window_catalogue"
-                  :href="oapi_url"
-                >
-                  {{ $t("navigation.catalogue") }}
-                </a>
-                |
-                <a
-                  target="_window_data"
-                  :href="data_url"
-                >
-                  {{ $t("navigation.data") }}
-                </a>
+                <router-link to="/services">
+                  {{ $t("navigation.services") }}
+                </router-link>
                 |
                 <a target="_window_docs" :href="documentation">
                   {{ $t("navigation.documentation") }}
@@ -65,8 +56,6 @@ export default defineComponent({
   },
   data: function () {
     return {
-      oapi_url: process.env.VUE_APP_OAPI,
-      data_url: process.env.VUE_APP_DATA,
       documentation: documentation,
       height: 110,
     };

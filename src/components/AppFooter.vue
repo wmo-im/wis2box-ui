@@ -1,7 +1,7 @@
 <template id="app-footer">
   <div class="app-footer">
-    <v-footer>
-      <v-card height="50">
+    <v-footer :height="50">
+      <v-card flat height="50">
         <v-row justify="center" align="center" no-gutters>
           <v-col cols="12">
             <img :src="`${require('@/assets/img/wmo-foot.png')}`" />
