@@ -1,7 +1,7 @@
 <template id="services">
     <v-row v-for="(v, k) in services" justify="center" align="center" :key="k">
         <v-col>{{ k }}</v-col>
-        <v-col>{{ v }}</v-col>
+        <v-col><a target="services" :title="k" :href="v">{{ v }}</a></v-col>
         <v-divider />
     </v-row>
 </template>
