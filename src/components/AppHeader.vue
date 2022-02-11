@@ -18,11 +18,11 @@
             <v-row align="end">
               <a
                 href="https://community.wmo.int/activity-areas/wis/wis2-implementation"
-                title="wis2node"
+                title="wis2box"
               >
                 <img :src="`${require('@/assets/img/logo.png')}`" />
               </a>
-              <div id="wis2node-nav">
+              <div id="wis2box-ui-nav">
                 <router-link to="/">
                   {{ $t("navigation.homepage") }}
                 </router-link>

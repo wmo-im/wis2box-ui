@@ -17,4 +17,4 @@ createApp(App)
   .use(vuetify)
   .use(i18n)
   .use(VueAxios, axios)
-  .mount("#wis2node-app");
+  .mount("#wis2box-ui-app");
