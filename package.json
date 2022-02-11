@@ -6,11 +6,11 @@
     "wmo",
     "wis 2.0"
   ],
-  "homepage": "https://github.com/wmo-im/wis2box",
+  "homepage": "https://github.com/wmo-im/wis2box-ui",
   "documentation": "https://wmo-im.github.io/wis2box",
-  "repository": "github:wmo-im/wis2box",
+  "repository": "github:wmo-im/wis2box-ui",
   "bugs": {
-    "url": "https://github.com/wmo-im/wis2box/issues",
+    "url": "https://github.com/wmo-im/wis2box-ui/issues",
     "email": "tomkralidis@gmail.com"
   },
   "license": "Apache-2.0",
