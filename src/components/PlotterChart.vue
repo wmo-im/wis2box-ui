@@ -1,6 +1,6 @@
 <template id="plotter-chart">
   <div class="plotter-chart">
-    <v-card min-height="600px">
+    <v-card>
       <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
         <v-progress-linear striped indeterminate color="primary" />
       </div>
@@ -18,7 +18,7 @@
 <script>
 import Plotly from "plotly.js-dist-min";
 import { defineComponent } from "vue";
-import { mdiDownload } from "@mdi/js";
+// import { mdiDownload } from "@mdi/js";
 
 let oapi = process.env.VUE_APP_OAPI;
 
@@ -29,11 +29,9 @@ export default defineComponent({
   watch: {
     choices_: {
       handler(newValue) {
-        if (newValue.collection !== "" && newValue.datastream !== "") {
-          this.data = [];
-          this.config.modeBarButtonsToAdd = [];
-          for (var station of this.choices_.station) {
-            this.loadCollection(newValue.collection, station);
+        if (newValue.collection !== "") {
+          for (const station of this.choices_.stations.features) {
+            this.loadCollection(newValue.collection, station.id);
           }
         }
       },
@@ -44,17 +42,18 @@ export default defineComponent({
     return {
       trace: {
         type: "scatter",
+        mode: "lines",
         x: [],
         y: [],
+        line: { color: "#17BECF" },
       },
       choices_: this.choices,
       data: [],
       loading: true,
       layout: {
         title: "",
-        height: "600",
+        height: "400",
         width: "700",
-        legend: { x: 1, xanchor: "right", y: 1 },
         xaxis: {
           autorange: true,
           type: "date",
@@ -66,6 +65,7 @@ export default defineComponent({
           autorange: true,
           title: null,
         },
+        font: { size: 18 },
       },
       config: {
         modeBarButtonsToAdd: [],
@@ -77,7 +77,6 @@ export default defineComponent({
       var plot = document.getElementById(
         "plotly-chart-" + this.choices.collection.id
       );
-      Plotly.purge(plot);
       Plotly.newPlot(plot, this.data, this.layout, this.config);
       this.loading = false;
     },
@@ -112,6 +111,7 @@ export default defineComponent({
       const range = collection.extent.temporal.interval;
       const title = collection.description;
       this.layout.title = title;
+      this.layout.yaxis.title = "Air Temperature (K)";
       this.layout.xaxis.range = range;
       this.layout.xaxis.rangeslider = { range: range };
 
@@ -145,54 +145,48 @@ export default defineComponent({
       if (limit === 0) {
         console.log(station_id + " has no observations in " + collection_id);
         return;
-      } else {
-        var self = this;
-        this.loading = true;
-        await this.$http({
-          method: "get",
-          url: oapi + "/collections/" + collection_id + "/items",
-          params: {
-            f: "json",
-            "wmo:wigos_station_identifier": station_id,
-            limit: limit,
-          },
-        })
-          .then(function (response) {
-            // handle success
-            self.config.modeBarButtonsToAdd.push({
-              name: "Data Source " + station_id,
-              icon: {
-                width: 24,
-                height: 24,
-                path: mdiDownload,
-              },
-              click: function () {
-                window.location.href = response.request.responseURL;
-              },
-            });
-            var title =
-              self.choices_.datastream.name +
-              " (" +
-              self.choices_.datastream.units +
-              ")";
-            self.layout.yaxis.title = title;
-            self.newTrace(
-              response.data.features,
-              "phenomenonTime",
-              "observations." + self.choices_.datastream.id + ".value",
-              station_id
-            );
-            self.plot();
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-            self.loading = false;
-          })
-          .then(function () {
-            console.log("done");
-          });
       }
+      var self = this;
+      this.loading = true;
+      await this.$http({
+        method: "get",
+        url: oapi + "/collections/" + collection_id + "/items",
+        params: {
+          f: "json",
+          "wmo:wigos_station_identifier": station_id,
+          limit: limit,
+        },
+      })
+        .then(function (response) {
+          // handle success
+          // self.config.modeBarButtonsToAdd.push({
+          //   name: "Data Source " + station_id,
+          //   icon: {
+          //     width: 24,
+          //     height: 24,
+          //     path: mdiDownload,
+          //   },
+          //   click: function () {
+          //     window.location.href = response.request.responseURL;
+          //   },
+          // });
+          self.layout.yaxis.title = self.choices_.data;
+          self.newTrace(
+            response.data.features,
+            "phenomenonTime",
+            "observations." + self.choices_.data + ".value",
+            station_id
+          );
+          self.plot();
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+          self.loading = false;
+        })
+        .then(function () {
+          console.log("done");
+        });
     },
   },
 });

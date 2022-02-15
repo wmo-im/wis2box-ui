@@ -20,8 +20,6 @@
   "chart": {
     "chart": "Gráfico",
     "options": "Opciones",
-    "collection": "Colección",
-    "datastream": "Flujo de datos",
-    "station": "Estación"
+    "collection": "Colección"
   }
 }
