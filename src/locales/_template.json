@@ -1,5 +1,6 @@
 {
   "language": "",
+  "code": "",
   "navigation": {
     "homepage": "",
     "services": "",
@@ -15,5 +16,10 @@
   "station": {
     "map": "",
     "properties": ""
+  },
+  "chart": {
+    "chart": "",
+    "options": "",
+    "collection": ""
   }
 }

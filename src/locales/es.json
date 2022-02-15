@@ -1,5 +1,6 @@
 {
   "language": "Español",
+  "code": "es",
   "navigation": {
     "homepage": "Página Principal",
     "services": "Servicios de datos",
@@ -15,5 +16,10 @@
   "station": {
     "map": "Mapa de la Estación",
     "properties": "Propiedades de la estación"
+  },
+  "chart": {
+    "chart": "Gráfico",
+    "options": "Opciones",
+    "collection": "Colección"
   }
 }

@@ -31,6 +31,10 @@
                   {{ $t("navigation.services") }}
                 </router-link>
                 |
+                <router-link to="/plotter">
+                  {{ $t("chart.chart") }}
+                </router-link>
+                |
                 <a target="_window_docs" :href="documentation">
                   {{ $t("navigation.documentation") }}
                 </a>

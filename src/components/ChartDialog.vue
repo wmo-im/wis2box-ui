@@ -27,7 +27,7 @@
               <div v-show="selectedTab === 0">
                 <wis-map
                   :feature="feature_"
-                  :params="{ '@iot.id': station.id }"
+                  :params="{ wigos_id: station.id }"
                 />
               </div>
               <div v-show="selectedTab === 1">
