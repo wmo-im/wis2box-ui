@@ -1,56 +1,59 @@
 <template id="plotter-navigation">
   <div class="plotter-navigation">
-    <v-navigation-drawer color="primary" absolute>
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title class="text-h6">
-            {{ $t("chart.options") }}
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            {{ $t("chart.collection") }}
-          </v-list-item-subtitle>
-          <v-spacer />
-          <v-menu absolute offset-y close-on-content-click>
-            <template v-slot:activator="{ props }">
-              <v-btn color="primary" dark v-bind="props">
-                {{ collections_choice_ }}
-              </v-btn>
-            </template>
+    <v-navigation-drawer color="primary" app absolute  position="left">
+      <v-list nav color="transparent">
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="text-h6" v-html="$t('chart.options')" />
 
-            <v-list>
-              <v-list-item
-                v-for="(item, index) in collections"
-                :key="index"
-                link
-              >
-                <v-btn dark @click="updateCollection(item)">
-                  <v-list-item-text v-html="item.id" />
-                </v-btn>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          <v-divider />
-          <v-menu absolute offset-y close-on-content-click>
-            <template v-slot:activator="{ props }">
-              <v-btn color="primary" dark v-bind="props">
-                {{ data_choice_ }}
-              </v-btn>
-            </template>
+            <v-list-item-subtitle v-html="$t('chart.collection')" />
+            <v-menu app offset-x close-on-click>
+              <template v-slot:activator="{ props }">
+                <v-container>
+                  <v-btn color="primary" dark text block v-bind="props">
+                    <v-list-item-text v-html="choices.collection.description" />
+                  </v-btn>
+                </v-container>
+              </template>
 
-            <v-list>
-              <v-list-item
-                v-for="(item, index) in observations"
-                :key="index"
-                link
-              >
-                <v-btn dark @click="updateData(item)">
-                  <v-list-item-text v-html="item" />
+              <v-list>
+                <v-list-item
+                  v-for="(item, i) in choices.collections"
+                  :key="i"
+                  link
+                >
+                  <v-btn dark @click="updateCollection(item)">
+                    <v-list-item-text v-html="item.id" />
+                  </v-btn>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+
+            <v-divider />
+
+            <v-list-item-subtitle v-html="$t('chart.datastream')" />
+            <v-menu absolute offset-y>
+              <template v-slot:activator="{ props }">
+                <v-btn color="primary" dark text block v-bind="props">
+                  <v-list-item-text v-html="choices.datastream.name" />
                 </v-btn>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-list-item-content>
-      </v-list-item>
+              </template>
+
+              <v-list>
+                <v-list-item
+                  v-for="(val, key, i) in choices.datastreams"
+                  :key="i"
+                  link
+                >
+                  <v-btn dark @click="updateData(key)">
+                    <v-list-item-text v-html="key" />
+                  </v-btn>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </v-navigation-drawer>
   </div>
 </template>
@@ -61,64 +64,30 @@ let oapi = process.env.VUE_APP_OAPI;
 export default {
   name: "PlotterNavigation",
   template: "#plotter-navigation",
-  props: ["choices", "collections_choice"],
+  props: ["choices"],
   data() {
     return {
       choices_: this.choices,
-      collections_choice_: this.collections_choice,
-      collections: [],
-      observations: [
-        "#1#nonCoordinatePressure",
-        "#1#pressureReducedToMeanSeaLevel",
-        "#1#3HourPressureChange",
-        "#1#characteristicOfPressureTendency",
-        "#1#airTemperature",
-        "#1#dewpointTemperature",
-        "#1#relativeHumidity",
-        "#1#totalSunshine",
-        "#2#totalSunshine",
-        "#1#totalPrecipitationOrTotalWaterEquivalent",
-        "#1#maximumTemperatureAtHeightAndOverPeriodSpecified",
-        "#1#minimumTemperatureAtHeightAndOverPeriodSpecified",
-        "#1#windDirection",
-        "#1#windSpeed",
-        "#1#maximumWindGustSpeed",
-        "#1#globalSolarRadiationIntegratedOverPeriodSpecified",
-        "#2#globalSolarRadiationIntegratedOverPeriodSpecified",
-      ],
     };
   },
   methods: {
-    updateCollection(newC) {
-      console.log(newC);
-      this.collections_choice_ = newC.id;
+    async updateCollection(newC) {
       this.choices_.collection = newC;
+      const response = await fetch(
+        oapi + "/collections/" + newC.id + "/items?f=json&limit=1"
+      );
+      const response_json = await response.json();
+      this.choices_.datastreams = await response_json.features[0].properties
+        .observations;
+      console.log(this.choices_);
+      console.log(this.choices);
     },
     updateData(newD) {
-      this.data_choice_ = newD;
-      this.choices_.data = newD;
+      console.log(newD);
+      this.choices_.datastream = this.choices_.datastreams[newD];
+      this.choices_.datastream.id = newD;
+      this.choices_.datastream.name = newD.slice(3);
     },
-  },
-  async created() {
-    this.loading = true;
-    const response = await fetch(oapi + "/collections?f=json");
-    const data = await response.json();
-    for (var c of data.collections) {
-      if (c.id === "stations") {
-        const response = await fetch(
-          oapi + "/collections/stations/items?f=json"
-        );
-        this.choices_.stations = await response.json();
-      } else if (c.id === "discovery-metadata") {
-        const response = await fetch(
-          oapi + "/collections/discovery-metadata/items?f=json"
-        );
-        this.choices_.discovery_metadata = await response;
-      } else {
-        this.collections.push(c);
-      }
-    }
-    this.loading = false;
   },
 };
 </script>

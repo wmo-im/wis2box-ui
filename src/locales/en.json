@@ -20,6 +20,7 @@
   "chart": {
     "chart": "Chart",
     "options": "Options",
-    "collection": "Collection"
+    "collection": "Collection",
+    "datastream": "Datastream"
   }
 }

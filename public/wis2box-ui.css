@@ -1,12 +1,21 @@
 body {
+  width: 100%;
   background-color: #ffffff;
   font-family: arial, verdana, sans-serif;
   text-align: left;
   float: left;
 }
-footer {
-  height: 2px;
-  border-width: 0;
+
+app-footer {
+  border-width: 2;
+  height: 50px;
+  color: gray;
+  background-color: gray;
+  text-align: center;
+}
+app-header {
+  border-width: 2;
+  height: 140px;
   color: gray;
   background-color: gray;
   text-align: center;

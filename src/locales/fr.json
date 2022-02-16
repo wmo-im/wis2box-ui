@@ -20,6 +20,7 @@
   "chart": {
     "chart": "Graphique",
     "options": "Choix",
-    "collection": "Collection"
+    "collection": "Collection",
+    "datastream": ""
   }
 }

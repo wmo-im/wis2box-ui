@@ -1,14 +1,14 @@
 <template>
   <v-app id="v-app">
-    <app-header></app-header>
+    <app-header />
+
     <v-main>
-      <v-card>
-        <v-container>
-          <router-view />
-        </v-container>
-      </v-card>
+      <v-container fluid>
+        <router-view />
+      </v-container>
     </v-main>
-    <app-footer></app-footer>
+
+    <app-footer />
   </v-app>
 </template>
 
