@@ -1,15 +1,15 @@
 <template id="app-footer">
   <div class="app-footer">
-    <v-footer :height="50">
-      <v-card flat height="50">
-        <v-row justify="center" align="center" no-gutters>
-          <v-col cols="12">
+    <v-footer app>
+      <v-card flat>
+        <v-row justify="center">
+          <v-col class="primary text-center" cols="12">
             <img :src="`${require('@/assets/img/wmo-foot.png')}`" />
           </v-col>
           <v-col class="primary text-center" cols="12">
             <p>
               {{ $t("footer.powered_by") }}
-              <a :title="name" :href="homepage">{{ name }}</a>
+              <a :title="name" :href="homepage" v-html="name" />
               {{ version }}
             </p>
           </v-col>

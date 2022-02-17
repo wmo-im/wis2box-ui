@@ -1,5 +1,6 @@
 {
   "language": "Français",
+  "code": "fr",
   "navigation": {
     "homepage": "Page d'accueil",
     "services": "Services de données",
@@ -15,5 +16,12 @@
   "station": {
     "map": "Plan de la Gare",
     "properties": "Propriétés de la Gare"
+  },
+  "chart": {
+    "chart": "Graphique",
+    "options": "Choix",
+    "collection": "Collection",
+    "datastream": "Flux de données",
+    "station": ""
   }
 }

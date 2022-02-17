@@ -1,10 +1,10 @@
 <template id="app-header">
   <div class="app-header">
-    <v-system-bar :height="height">
+    <v-system-bar app height="110">
       <v-row justify="center">
         <v-card
           flat
-          :height="height - 1"
+          height="109"
           width="1279"
           :style="{
             'background-image': `url(${require('@/assets/img/wmo-banner.png')})`,
@@ -57,7 +57,6 @@ export default defineComponent({
   data: function () {
     return {
       documentation: documentation,
-      height: 110,
     };
   },
 });

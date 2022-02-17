@@ -1,5 +1,6 @@
 {
   "language": "English",
+  "code": "en",
   "navigation": {
     "homepage": "Homepage",
     "services": "Data services",
@@ -15,5 +16,12 @@
   "station": {
     "map": "Station Map",
     "properties": "Station Properties"
+  },
+  "chart": {
+    "chart": "Chart",
+    "options": "Options",
+    "collection": "Collection",
+    "datastream": "Datastream",
+    "station": "Stations"
   }
 }

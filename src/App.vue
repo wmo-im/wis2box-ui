@@ -1,14 +1,16 @@
 <template>
   <v-app id="v-app">
-    <app-header></app-header>
+    <app-header />
+    <v-divider class="my-1" />
+
     <v-main>
-      <v-card>
-        <v-container>
-          <router-view />
-        </v-container>
-      </v-card>
+      <v-container fluid>
+        <router-view />
+      </v-container>
     </v-main>
-    <app-footer></app-footer>
+
+    <v-divider class="my-1" />
+    <app-footer />
   </v-app>
 </template>
 
@@ -30,7 +32,6 @@ export default {
   },
   methods: {
     toggleDialog: function () {
-      console.log(this.dialog);
       this.dialog = this.dialog === true ? false : true;
     },
   },
