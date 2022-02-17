@@ -21,6 +21,7 @@
     "chart": "Chart",
     "options": "Options",
     "collection": "Collection",
-    "datastream": "Datastream"
+    "datastream": "Datastream",
+    "station": "Stations"
   }
 }

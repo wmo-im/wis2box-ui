@@ -21,6 +21,7 @@
     "chart": "Graphique",
     "options": "Choix",
     "collection": "Collection",
-    "datastream": ""
+    "datastream": "Flux de données",
+    "station": ""
   }
 }
