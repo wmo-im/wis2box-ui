@@ -1,6 +1,7 @@
 <template>
   <v-app id="v-app">
     <app-header />
+    <v-divider class="my-1" />
 
     <v-main>
       <v-container fluid>
@@ -8,6 +9,7 @@
       </v-container>
     </v-main>
 
+    <v-divider class="my-1" />
     <app-footer />
   </v-app>
 </template>
@@ -30,7 +32,6 @@ export default {
   },
   methods: {
     toggleDialog: function () {
-      console.log(this.dialog);
       this.dialog = this.dialog === true ? false : true;
     },
   },

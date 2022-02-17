@@ -32,8 +32,8 @@ export default defineComponent({
         if (newValue.collection !== "" && newValue.datastream !== "") {
           this.data = [];
           this.config.modeBarButtonsToAdd = [];
-          for (const station of this.choices_.stations.features) {
-            this.loadCollection(newValue.collection, station.id);
+          for (var station of this.choices_.station) {
+            this.loadCollection(newValue.collection, station);
           }
         }
       },

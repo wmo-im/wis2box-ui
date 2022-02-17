@@ -2,7 +2,7 @@
   <v-container>
     <chart-dialog :feature="feature" />
   </v-container>
-  <div class="home">
+  <div class="home" :style="{ opacity: $root.dialog ? '0' : '1' }">
     <h1>{{ $t("messages.welcome") }}</h1>
     <v-card>
       <wis-map :feature="feature" :params="{ limit: 25 }" />

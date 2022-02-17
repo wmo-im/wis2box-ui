@@ -1,5 +1,5 @@
-<template id="plotter">
-  <div class="plotter">
+<template id="plotter-dialog">
+  <div class="plotter-dialog">
     <v-container fluid>
       <v-row fill-height>
         <v-col cols="3">
@@ -13,13 +13,18 @@
   </div>
 </template>
 
+
+
 <script>
 import PlotterChart from "@/components/PlotterChart.vue";
 import PlotterNavigation from "@/components/PlotterNavigation.vue";
 let oapi = process.env.VUE_APP_OAPI;
+import { defineComponent } from "vue";
 
-export default {
-  name: "Plotter",
+export default defineComponent({
+  name: "PlotterDialog",
+  template: "#plotter-dialog",
+  props: ["station"],
   components: {
     PlotterChart,
     PlotterNavigation,
@@ -30,6 +35,7 @@ export default {
         collection: "",
         datastream: "",
         discovery_metadata: "",
+        station: new Set([this.station]),
         stations: [],
         collections: [],
         datastreams: [],
@@ -62,5 +68,5 @@ export default {
     }
     this.loading = false;
   },
-};
+});
 </script>
