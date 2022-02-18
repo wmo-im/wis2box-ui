@@ -14,9 +14,9 @@
     "welcome": "Welcome to WIS 2.0 in a box!"
   },
   "station": {
-    "map": "Station Map",
-    "properties": "Station Properties",
-    "wigos_id": "WIGOS identifier",
+    "map": "Station map",
+    "properties": "Station properties",
+    "wigos_id": "WIGOS station identifier",
     "name": "Station name",
     "status": "Operating status"
   },

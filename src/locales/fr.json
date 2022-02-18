@@ -14,9 +14,9 @@
     "welcome": "Bienvenue à wis 2.0 dans une boîte!"
   },
   "station": {
-    "map": "Plan de la Gare",
-    "properties": "Propriétés de la Gare",
-    "wigos_id": " Identifiant WIGOS",
+    "map": "Plan de la station",
+    "properties": "Propriétés de la station",
+    "wigos_id": "Identifiant la station WIGOS",
     "name": "Nom de la station",
     "status": "État de fonctionnement"
   },
