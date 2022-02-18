@@ -1,6 +1,6 @@
 <template id="plotter-navigation">
   <div class="plotter-navigation">
-    <v-navigation-drawer color="primary" absolute :width="325">
+    <v-navigation-drawer color="primary" permanent absolute :width="325">
       <v-list nav color="transparent">
         <v-list-item>
           <v-list-item-content>
@@ -26,7 +26,7 @@
                       dark
                       block
                       @click="updateCollection(item)"
-                      v-html="item.id"
+                      v-html="item.title"
                     />
                   </v-list-item>
                 </v-list>
@@ -49,50 +49,16 @@
                     :key="i"
                     link
                   >
-                    <v-btn dark block @click="updateData(key)" v-html="key" />
+                    <v-btn
+                      dark
+                      block
+                      @click="updateData(key)"
+                      v-html="clean(key)"
+                    />
                   </v-list-item>
                 </v-list>
               </v-card>
             </v-menu>
-
-            <v-divider class="my-4" />
-
-            <v-menu app offset-x close-on-click>
-              <template v-slot:activator="{ props }">
-                <v-btn color="primary" dark text block v-bind="props">
-                  <v-list-item-text v-html="$t('chart.station')" />
-                </v-btn>
-              </template>
-              <v-card>
-                <v-list>
-                  <v-list-item
-                    v-for="(item, i) in choices.stations.features"
-                    :key="i"
-                    link
-                  >
-                    <v-row justify="center">
-                      <template v-if="choices.station.has(item.id)">
-                        <v-chip
-                          class="mr-2"
-                          @click="updateStation(item.id)"
-                          color="primary"
-                          v-html="item.id"
-                        />
-                      </template>
-                      <template v-else>
-                        <v-chip
-                          class="mr-2"
-                          @click="updateStation(item.id)"
-                          v-html="item.id"
-                        />
-                      </template>
-                    </v-row>
-                  </v-list-item>
-                </v-list>
-              </v-card>
-            </v-menu>
-
-            <v-divider class="my-2" />
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -125,12 +91,10 @@ export default {
     updateData(newD) {
       this.choices_.datastream = this.choices_.datastreams[newD];
       this.choices_.datastream.id = newD;
-      this.choices_.datastream.name = newD.slice(3);
+      this.choices_.datastream.name = this.clean(newD);
     },
-    updateStation(newS) {
-      if (!this.choices_.station.delete(newS)) {
-        this.choices_.station.add(newS);
-      }
+    clean(word) {
+      return word.replaceAll("_", " ");
     },
   },
 };

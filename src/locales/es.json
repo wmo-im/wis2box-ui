@@ -14,8 +14,11 @@
     "welcome": "¡Bienvenido al WIS 2.0 en caja!"
   },
   "station": {
-    "map": "Mapa de la Estación",
-    "properties": "Propiedades de la estación"
+    "map": "Mapa de la estación",
+    "properties": "Propiedades de la estación",
+    "wigos_id": "Identificador de la estación WIGOS",
+    "name": "Nombre de estación",
+    "status": "Estado operativo"
   },
   "chart": {
     "chart": "Gráfico",

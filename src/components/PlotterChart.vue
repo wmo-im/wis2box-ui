@@ -54,7 +54,6 @@ export default defineComponent({
         title: "",
         height: "600",
         width: "700",
-        legend: { x: 1, xanchor: "right", y: 1 },
         xaxis: {
           autorange: true,
           type: "date",
@@ -70,6 +69,7 @@ export default defineComponent({
       config: {
         modeBarButtonsToAdd: [],
       },
+      font: { size: 14 },
     };
   },
   methods: {
