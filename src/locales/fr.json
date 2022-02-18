@@ -15,13 +15,16 @@
   },
   "station": {
     "map": "Plan de la Gare",
-    "properties": "Propriétés de la Gare"
+    "properties": "Propriétés de la Gare",
+    "wigos_id": " Identifiant WIGOS",
+    "name": "Nom de la station",
+    "status": "État de fonctionnement"
   },
   "chart": {
     "chart": "Graphique",
     "options": "Choix",
     "collection": "Collection",
     "datastream": "Flux de données",
-    "station": ""
+    "station": "Station"
   }
 }

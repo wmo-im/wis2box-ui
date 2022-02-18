@@ -1,8 +1,8 @@
 <template id="chart-dialog">
   <div class="chart-dialog">
-    <v-row justify="center">
-      <v-dialog v-model="$root.dialog" fullscreen overlay-opacity="0">
-        <v-card width="100%" max-height="800">
+    <v-dialog v-model="$root.dialog" app content-class="chart-dialog">
+      <v-row justify="center">
+        <v-card min-width="1200" min-height="600" max-height="800" style="position: fixed; top: -400px;">
           <v-card-actions>
             <v-row>
               <v-spacer />
@@ -33,13 +33,6 @@
                     v-html="$t('chart.chart')"
                   />
                 </tab>
-                <tab v-for="(d, i) in datastreams" :key="`t${i}`" :val="i + 3">
-                  <v-btn
-                    flat
-                    @click="selectedTab = i + 3"
-                    v-html="d.properties.ObservedProperty.name"
-                  />
-                </tab>
               </tabs>
             </v-card>
             <v-card min-height="450">
@@ -51,13 +44,25 @@
               </div>
               <div v-show="selectedTab === 1">
                 <v-card class="text-center">
-                  <table class="striped">
-                    <tr v-for="(v, k) in station.properties" :key="k">
-                      <th>{{ k }}</th>
-                      <td style="word-wrap: break-word">{{ v }}</td>
-                      <v-divider />
-                    </tr>
-                  </table>
+                  <v-row justify="center" align="center">
+                    <v-col v-html="$t('station.wigos_id')" />
+                    <v-col v-html="station.properties.wigos_id" />
+                    <v-divider />
+                  </v-row>
+                  <v-row justify="center" align="center">
+                    <v-col v-html="$t('station.name')" />
+                    <v-col>
+                      <a :href="station.properties.url">{{
+                        station.properties.name
+                      }}</a>
+                    </v-col>
+                    <v-divider />
+                  </v-row>
+                  <v-row justify="center" align="center">
+                    <v-col v-html="$t('station.status')" />
+                    <v-col v-html="station.properties.status" />
+                    <v-divider />
+                  </v-row>
                 </v-card>
               </div>
               <div v-show="selectedTab === 2">
@@ -65,28 +70,19 @@
                   <plotter-dialog :station="station.id" />
                 </v-container>
               </div>
-              <div
-                v-for="(d, i) in datastreams"
-                :key="`tp${i}`"
-                v-show="selectedTab === i + 3"
-              >
-                <chart-plot :datastream="d" />
-              </div>
             </v-card>
           </v-card-text>
         </v-card>
-      </v-dialog>
-    </v-row>
+      </v-row>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import WisMap from "./WisMap.vue";
-import ChartPlot from "./ChartPlot.vue";
 import PlotterDialog from "./PlotterDialog.vue";
 import { Tabs, Tab } from "vue3-tabs";
 import { defineComponent } from "vue";
-let oapi = process.env.VUE_APP_OAPI;
 
 export default defineComponent({
   name: "ChartDialog",
@@ -94,7 +90,6 @@ export default defineComponent({
   components: {
     PlotterDialog,
     WisMap,
-    ChartPlot,
     Tabs,
     Tab,
   },
@@ -105,38 +100,8 @@ export default defineComponent({
       feature_: this.feature,
     };
   },
-  methods: {
-    async loadDatastreams() {
-      if (this.feature_.station === null) {
-        return;
-      }
-      this.selectedTab = 0;
-      var self = this;
-      await this.$http({
-        method: "get",
-        url: oapi + "/collections/Datastreams/items",
-        params: {
-          f: "json",
-          Thing: self.feature_.station.id,
-          limit: self.feature_.station.properties.Datastreams.length,
-        },
-      })
-        .then(function (response) {
-          // handle success
-          self.feature_.datastreams = response.data.features;
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          console.log("done");
-        });
-    },
-  },
   computed: {
     station: function () {
-      this.loadDatastreams();
       return this.feature_.station;
     },
     datastreams: function () {

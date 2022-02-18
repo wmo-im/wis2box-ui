@@ -15,7 +15,10 @@
   },
   "station": {
     "map": "Station Map",
-    "properties": "Station Properties"
+    "properties": "Station Properties",
+    "wigos_id": "WIGOS identifier",
+    "name": "Station name",
+    "status": "Operating status"
   },
   "chart": {
     "chart": "Chart",

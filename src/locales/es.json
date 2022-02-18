@@ -15,7 +15,10 @@
   },
   "station": {
     "map": "Mapa de la Estación",
-    "properties": "Propiedades de la estación"
+    "properties": "Propiedades de la estación",
+    "wigos_id": "Identificador del WIGOS",
+    "name": "Nombre de estación",
+    "status": "Estado operativo"
   },
   "chart": {
     "chart": "Gráfico",
