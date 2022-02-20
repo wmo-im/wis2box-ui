@@ -2,7 +2,7 @@
   "language": "Français",
   "code": "fr",
   "navigation": {
-    "homepage": "Page d'accueil",
+    "home": "Page d'accueil",
     "services": "Services de données",
     "data": "Données",
     "documentation": "Documentation"

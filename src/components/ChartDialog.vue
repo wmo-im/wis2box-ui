@@ -45,14 +45,9 @@
               <div v-show="selectedTab === 1">
                 <v-card class="text-center">
                   <v-row justify="center" align="center">
-                    <v-col v-html="$t('station.wigos_id')" />
-                    <v-col v-html="station.properties.wigos_id" />
-                    <v-divider />
-                  </v-row>
-                  <v-row justify="center" align="center">
                     <v-col v-html="$t('station.name')" />
                     <v-col>
-                      <a :href="station.properties.url">{{
+                      <a target="_blank" :href="station.properties.url">{{
                         station.properties.name
                       }}</a>
                     </v-col>
@@ -61,6 +56,11 @@
                   <v-row justify="center" align="center">
                     <v-col v-html="$t('station.status')" />
                     <v-col v-html="station.properties.status" />
+                    <v-divider />
+                  </v-row>
+                  <v-row justify="center" align="center">
+                    <v-col v-html="$t('station.wigos_id')" />
+                    <v-col v-html="station.properties.wigos_id" />
                     <v-divider />
                   </v-row>
                 </v-card>
