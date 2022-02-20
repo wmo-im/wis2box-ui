@@ -119,7 +119,7 @@ export default defineComponent({
         url: oapi + "/collections/" + collection.id + "/items",
         params: {
           f: "json",
-          "wmo:wigos_station_identifier": station_id,
+          "wigos_station_identifier": station_id,
           resulttype: "hits",
         },
       })
@@ -152,7 +152,7 @@ export default defineComponent({
           url: oapi + "/collections/" + collection_id + "/items",
           params: {
             f: "json",
-            "wmo:wigos_station_identifier": station_id,
+            "wigos_station_identifier": station_id,
             limit: limit,
           },
         })
