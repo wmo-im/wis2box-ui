@@ -17,7 +17,7 @@ export default {
       services: {
         API: process.env.VUE_APP_OAPI,
         MQTT: process.env.VUE_APP_MQTT,
-        WAF: '/data/'
+        WAF: process.env.VUE_APP_WAF
       },
     };
   },
