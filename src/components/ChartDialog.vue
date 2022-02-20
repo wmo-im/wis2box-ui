@@ -45,11 +45,6 @@
               <div v-show="selectedTab === 1">
                 <v-card class="text-center">
                   <v-row justify="center" align="center">
-                    <v-col v-html="$t('station.wigos_id')" />
-                    <v-col v-html="station.properties.wigos_id" />
-                    <v-divider />
-                  </v-row>
-                  <v-row justify="center" align="center">
                     <v-col v-html="$t('station.name')" />
                     <v-col>
                       <a target="_blank" :href="station.properties.url">{{
