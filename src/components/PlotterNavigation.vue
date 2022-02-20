@@ -1,14 +1,15 @@
 <template id="plotter-navigation">
   <div class="plotter-navigation">
-    <v-navigation-drawer color="primary" permanent absolute :width="325">
+    <v-navigation-drawer color="primary" permanent absolute>
       <v-list nav color="transparent">
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title class="text-h6" v-html="$t('chart.options')" />
 
-            <v-divider class="my-2" />
+            <v-divider class="my-4" />
 
             <v-list-item-subtitle v-html="$t('chart.collection')" />
+            <v-divider class="mb-2" />
             <v-menu app offset-x close-on-click>
               <template v-slot:activator="{ props }">
                 <v-btn color="primary" dark text block v-bind="props">
@@ -33,9 +34,10 @@
               </v-card>
             </v-menu>
 
-            <v-divider class="my-2" />
+            <v-divider class="my-4" />
 
-            <v-list-item-subtitle v-html="$t('chart.datastream')" />
+            <v-list-item-subtitle v-html="$t('chart.observed_property')" />
+            <v-divider class="mb-2" />
             <v-menu absolute offset-y>
               <template v-slot:activator="{ props }">
                 <v-btn color="primary" dark text block v-bind="props">

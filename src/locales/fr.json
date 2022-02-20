@@ -24,7 +24,7 @@
     "chart": "Graphique",
     "options": "Choix",
     "collection": "Collection",
-    "datastream": "Flux de données",
+    "observed_property": "Propriété observée",
     "station": "Station"
   }
 }
