@@ -24,7 +24,7 @@
               </a>
               <div id="wis2box-ui-nav">
                 <router-link to="/">
-                  {{ $t("navigation.homepage") }}
+                  {{ $t("navigation.home") }}
                 </router-link>
                 |
                 <router-link to="/services">

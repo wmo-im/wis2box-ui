@@ -9,7 +9,7 @@
           <v-col class="primary text-center" cols="12">
             <p>
               {{ $t("footer.powered_by") }}
-              <a :title="name" :href="homepage" v-html="name" />
+              <a :title="name" :href="home" v-html="name" />
               {{ version }}
             </p>
           </v-col>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { name, version, homepage } from "../../package";
+import { name, version, home} from "../../package";
 
 import { defineComponent } from "vue";
 
@@ -31,7 +31,7 @@ export default defineComponent({
     return {
       version: version,
       name: name,
-      homepage: homepage,
+      home: home,
     };
   },
 });
