@@ -24,7 +24,7 @@
     "chart": "Chart",
     "options": "Options",
     "collection": "Collection",
-    "datastream": "Datastream",
+    "observed_property": "Observed Property",
     "station": "Stations"
   }
 }

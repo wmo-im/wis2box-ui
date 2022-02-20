@@ -36,6 +36,7 @@ export default defineComponent({
             this.loadCollection(newValue.collection, station);
           }
         }
+        this.loading = false;
       },
       deep: true,
     },
@@ -52,8 +53,6 @@ export default defineComponent({
       loading: true,
       layout: {
         title: "",
-        height: "600",
-        width: "700",
         xaxis: {
           autorange: true,
           type: "date",

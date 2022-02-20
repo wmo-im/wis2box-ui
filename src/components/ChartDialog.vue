@@ -2,7 +2,7 @@
   <div class="chart-dialog">
     <v-dialog v-model="$root.dialog" app content-class="chart-dialog">
       <v-row justify="center">
-        <v-card min-width="1200" min-height="600" max-height="800" style="position: fixed; top: -400px;">
+        <v-card min-width="1100" height="700" style="position: fixed; top: -350px;">
           <v-card-actions>
             <v-row>
               <v-spacer />
