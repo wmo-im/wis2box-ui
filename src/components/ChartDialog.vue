@@ -5,12 +5,13 @@
         <v-card min-width="1100" height="700" style="position: fixed; top: -350px;">
           <v-card-actions>
             <v-row>
+              <v-card-title class="ml-2 mt-2" v-html="station.properties.name" />
               <v-spacer />
-              <v-btn large rounded dark @click="$root.toggleDialog"> X </v-btn>
+              <v-btn  class="mr-2 mt-2" large rounded dark @click="$root.toggleDialog"> X </v-btn>
             </v-row>
           </v-card-actions>
           <v-card-text>
-            <v-card max-height="200">
+            <v-card flat max-height="200">
               <tabs v-model="selectedTab">
                 <tab :val="0">
                   <v-btn
@@ -35,7 +36,7 @@
                 </tab>
               </tabs>
             </v-card>
-            <v-card min-height="450">
+            <v-card flat min-height="450">
               <div v-show="selectedTab === 0">
                 <wis-map
                   :feature="feature_"
