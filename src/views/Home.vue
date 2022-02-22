@@ -1,7 +1,7 @@
 <template id="home">
-  <v-container>
+  <div class="dialog" :style="{ opacity: $root.dialog ? '1' : '0' }">
     <chart-dialog :feature="feature" />
-  </v-container>
+  </div>
   <div class="home" :style="{ opacity: $root.dialog ? '0' : '1' }">
     <h1>{{ $t("messages.welcome") }}</h1>
     <v-card>
