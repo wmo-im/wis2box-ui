@@ -36,7 +36,7 @@
                 </tab>
               </tabs>
             </v-card>
-            <v-card flat min-height="450">
+            <v-card flat height="590">
               <div v-show="selectedTab === 0">
                 <wis-map
                   :feature="feature_"

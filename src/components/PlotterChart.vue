@@ -45,6 +45,7 @@ export default defineComponent({
     return {
       trace: {
         type: "scatter",
+        mode: "lines+markers",
         x: [],
         y: [],
       },

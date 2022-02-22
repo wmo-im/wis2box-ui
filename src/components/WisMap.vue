@@ -13,7 +13,7 @@
           :zoom="zoom"
           :center="center"
           :bounds="bounds"
-          maxZoom="10"
+          maxZoom="16"
           style="height: 80vh"
         >
           <l-geo-json
@@ -63,10 +63,14 @@ export default defineComponent({
         [84, -52],
       ],
       geojson: null,
-      geojsonLayer: geoJSON(null, null),
       geojsonOptions: {
         onEachFeature: function (feature, layer) {
-          layer.bindTooltip(feature.properties.name);
+          layer.on("mouseover", function (e) {
+            layer.bindPopup(feature.properties.name).openPopup(e.latLng);
+          });
+          layer.on("mouseout", function () {
+            layer.closePopup().unbindPopup();
+          });
         },
         pointToLayer: function (feature, latLng) {
           // style markers according to properties
