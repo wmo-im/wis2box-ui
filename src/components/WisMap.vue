@@ -10,10 +10,11 @@
       <p>
         <l-map
           ref="wisMap"
+          @ready="onReady"
           :zoom="zoom"
           :center="center"
           :bounds="bounds"
-          maxZoom="10"
+          maxZoom="16"
           style="height: 80vh"
         >
           <l-geo-json
@@ -29,7 +30,6 @@
 </template>
 
 <script>
-import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
 
@@ -45,78 +45,81 @@ export default defineComponent({
     LGeoJson,
   },
   props: ["feature", "params"],
-  mounted: function () {
-    this.$nextTick(() => {
-      this.loadStations();
-    });
-  },
   data: function () {
     return {
       feature_: this.feature,
+      geojson: {
+        type: "FeatureCollection",
+        features: [],
+      },
+      geojsonOptions: {
+        onEachFeature: function (feature, layer) {
+          layer.bindTooltip(feature.properties.name);
+        },
+      },
       loading: true,
       params_: {
         f: "json",
         limit: 10,
       },
+      center: [0, 0],
       bounds: [
         [42, -142],
         [84, -52],
       ],
-      geojson: null,
-      geojsonLayer: geoJSON(null, null),
-      geojsonOptions: {
-        onEachFeature: function (feature, layer) {
-          layer.bindTooltip(feature.properties.name);
-        },
-        pointToLayer: function (feature, latLng) {
-          // style markers according to properties
-          let fillColor;
-          let lineColor;
-          switch (feature.properties.status) {
-            case "operational":
-              fillColor = "SpringGreen";
-              lineColor = "SeaGreen";
-              break;
-            case "nonReporting":
-              fillColor = "Salmon";
-              lineColor = "FireBrick";
-              break;
-            case "closed":
-              fillColor = "SlateGrey";
-              lineColor = "DimGrey";
-              break;
-            default:
-              // undefined status
-              fillColor = "Tan";
-              lineColor = "Sienna";
-          }
-          if (feature.properties.active) {
-            fillColor = "SpringGreen";
-            lineColor = "SeaGreen";
-          }
-          const markerStyle = {
-            radius: 10,
-            fillColor: fillColor,
-            color: lineColor,
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.8,
-          };
-          return circleMarker(latLng, markerStyle);
-        },
-      },
       attribution:
         '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      center: [0, 0],
       zoom: 1,
     };
   },
+  async beforeMount() {
+    const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
+
+    this.geojsonOptions.pointToLayer = (feature, latLng) => {
+      // style markers according to properties
+      let fillColor;
+      let lineColor;
+      switch (feature.properties.status) {
+        case "operational":
+          fillColor = "SpringGreen";
+          lineColor = "SeaGreen";
+          break;
+        case "nonReporting":
+          fillColor = "Salmon";
+          lineColor = "FireBrick";
+          break;
+        case "closed":
+          fillColor = "SlateGrey";
+          lineColor = "DimGrey";
+          break;
+        default:
+          // undefined status
+          fillColor = "Tan";
+          lineColor = "Sienna";
+      }
+      const markerStyle = {
+        radius: 10,
+        fillColor: fillColor,
+        color: lineColor,
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8,
+      };
+      return circleMarker(latLng, markerStyle);
+    };
+  },
   methods: {
+    async onReady() {
+      this.$nextTick(() => {
+        this.map = this.$refs.wisMap,
+        this.loadStations();
+      });
+    },
     mapClick(e) {
       this.feature_.station = e.layer.feature;
       this.feature_.datastreams.length = 0;
-      this.bounds = geoJSON(this.geojson).getBounds();
+      this.bounds = this.map.leafletObject.getBounds();
       this.$root.toggleDialog();
       e.originalEvent.stopPropagation();
     },
@@ -130,8 +133,9 @@ export default defineComponent({
       })
         .then(function (response) {
           // handle success
-          self.geojson = response.data;
-          self.bounds = geoJSON(self.geojson).getBounds();
+          console.log(response.data);
+          self.geojson = response.data.features;
+          self.bounds = self.map.leafletObject.getBounds();
         })
         .catch(function (error) {
           // handle error
