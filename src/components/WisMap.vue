@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import * as L from "leaflet/dist/leaflet-src.esm";
+import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
 
@@ -64,6 +64,14 @@ export default defineComponent({
       ],
       geojson: null,
       geojsonOptions: {
+        onEachFeature: function (feature, layer) {
+          layer.on("mouseover", function (e) {
+            layer.bindPopup(feature.properties.name).openPopup(e.latLng);
+          });
+          layer.on("mouseout", function () {
+            layer.closePopup().unbindPopup();
+          });
+        },
         pointToLayer: function (feature, latLng) {
           // style markers according to properties
           let fillColor;
@@ -98,15 +106,7 @@ export default defineComponent({
             opacity: 1,
             fillOpacity: 0.8,
           };
-          return new L.circleMarker(latLng, markerStyle);
-        },
-        onEachFeature: function (feature, layer) {
-          layer.on("mouseover", function (e) {
-            layer.bindPopup(feature.properties.name).openPopup(e.latLng);
-          });
-          layer.on("mouseout", function () {
-            layer.closePopup().unbindPopup();
-          });
+          return circleMarker(latLng, markerStyle);
         },
       },
       attribution:
@@ -120,7 +120,7 @@ export default defineComponent({
     mapClick(e) {
       this.feature_.station = e.layer.feature;
       this.feature_.datastreams.length = 0;
-      this.bounds = L.geoJSON(this.geojson).getBounds();
+      this.bounds = geoJSON(this.geojson).getBounds();
       this.$root.toggleDialog();
       e.originalEvent.stopPropagation();
     },
@@ -135,7 +135,7 @@ export default defineComponent({
         .then(function (response) {
           // handle success
           self.geojson = response.data;
-          self.bounds = L.geoJSON(self.geojson).getBounds();
+          self.bounds = geoJSON(self.geojson).getBounds();
         })
         .catch(function (error) {
           // handle error
