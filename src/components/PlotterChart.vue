@@ -109,7 +109,7 @@ export default defineComponent({
     async loadCollection(collection, station_id) {
       this.loading = true;
       var self = this;
-      const range = collection.extent.temporal.interval;
+      const range = this.layout.xaxis.range;
       const title = collection.description;
       this.layout.title = title;
       this.layout.xaxis.range = range;
@@ -120,7 +120,7 @@ export default defineComponent({
         url: oapi + "/collections/" + collection.id + "/items",
         params: {
           f: "json",
-          "wigos_station_identifier": station_id,
+          wigos_station_identifier: station_id,
           resulttype: "hits",
         },
       })
@@ -153,7 +153,8 @@ export default defineComponent({
           url: oapi + "/collections/" + collection_id + "/items",
           params: {
             f: "json",
-            "wigos_station_identifier": station_id,
+            wigos_station_identifier: station_id,
+            sortby: "-phenomenonTime",
             limit: limit,
           },
         })
