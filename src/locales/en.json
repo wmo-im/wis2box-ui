@@ -26,5 +26,9 @@
     "collection": "Collection",
     "observed_property": "Observed Property",
     "station": "Stations"
+  },
+  "table": {
+    "table": "Table",
+    "time": "Phenomenon Time"
   }
 }

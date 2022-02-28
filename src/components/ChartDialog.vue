@@ -7,7 +7,7 @@
             <v-row>
               <v-card-title class="ml-2 mt-2" v-html="station.properties.name" />
               <v-spacer />
-              <v-btn  class="mr-2 mt-2" large rounded dark @click="$root.toggleDialog"> X </v-btn>
+              <v-btn class="mr-2 mt-2" @click="$root.toggleDialog"> X </v-btn>
             </v-row>
           </v-card-actions>
           <v-card-text>
@@ -34,8 +34,16 @@
                     v-html="$t('chart.chart')"
                   />
                 </tab>
+                <tab :val="3">
+                  <v-btn
+                    flat
+                    @click="selectedTab = 3"
+                    v-html="$t('table.table')"
+                  />
+                </tab>
               </tabs>
             </v-card>
+
             <v-card flat height="590">
               <div v-show="selectedTab === 0">
                 <wis-map
@@ -66,9 +74,9 @@
                   </v-row>
                 </v-card>
               </div>
-              <div v-show="selectedTab === 2">
+              <div v-show="selectedTab === 2 || selectedTab === 3">
                 <v-container fluid>
-                  <plotter-dialog :station="station.id" />
+                  <plotter-dialog :choice="selectedTab" :station="station.id" />
                 </v-container>
               </div>
             </v-card>

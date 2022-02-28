@@ -2,11 +2,14 @@
   <div class="plotter-dialog">
     <v-container fluid>
       <v-row fill-height>
-        <v-col cols="3">
-          <plotter-navigation :choices="choices" />
-        </v-col>
+        <plotter-navigation :choices="choices" />
         <v-col cols="9" offset="3">
-          <plotter-chart :choices="choices" />
+          <template v-if="choice === 2">
+            <plotter-chart :choices="choices" />
+          </template>
+          <template v-else-if="choice === 3">
+            <data-table :choices="choices" />
+          </template>
         </v-col>
       </v-row>
     </v-container>
@@ -18,16 +21,18 @@
 <script>
 import PlotterChart from "@/components/PlotterChart.vue";
 import PlotterNavigation from "@/components/PlotterNavigation.vue";
+import DataTable from "@/components/DataTable.vue";
 let oapi = process.env.VUE_APP_OAPI;
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "PlotterDialog",
   template: "#plotter-dialog",
-  props: ["station"],
+  props: ["station", "choice"],
   components: {
     PlotterChart,
     PlotterNavigation,
+    DataTable,
   },
   data() {
     return {
@@ -45,6 +50,14 @@ export default defineComponent({
   methods: {
     goBack() {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
+    },
+  },
+  watch: {
+    choice: {
+      handler() {
+        this.choices.datastream = "";
+        this.choices.collection = "";
+      }
     },
   },
   async created() {

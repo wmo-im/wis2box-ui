@@ -22,13 +22,9 @@
                     v-for="(item, i) in choices.collections"
                     :key="i"
                     link
+                    @click="updateCollection(item)"
                   >
-                    <v-btn
-                      dark
-                      block
-                      @click="updateCollection(item)"
-                      v-html="item.title"
-                    />
+                    <v-list-item-title v-html="clean(item.title)" />
                   </v-list-item>
                 </v-list>
               </v-card>
@@ -38,7 +34,7 @@
 
             <v-list-item-subtitle v-html="$t('chart.observed_property')" />
             <v-divider class="mb-2" />
-            <v-menu absolute offset-y>
+            <v-menu app offset-x close-on-click>
               <template v-slot:activator="{ props }">
                 <v-btn color="primary" dark text block v-bind="props">
                   <v-list-item-text v-html="choices.datastream.name" />
@@ -50,13 +46,9 @@
                     v-for="(val, key, i) in choices.datastreams"
                     :key="i"
                     link
+                    @click="updateData(key)"
                   >
-                    <v-btn
-                      dark
-                      block
-                      @click="updateData(key)"
-                      v-html="clean(key)"
-                    />
+                    <v-list-item-text v-html="clean(key)" />
                   </v-list-item>
                 </v-list>
               </v-card>
@@ -96,7 +88,11 @@ export default {
       this.choices_.datastream.name = this.clean(newD);
     },
     clean(word) {
-      return word.replaceAll("_", " ");
+      if (typeof word === "string") {
+        return (
+          word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        ).replaceAll("_", " ");
+      }
     },
   },
 };
