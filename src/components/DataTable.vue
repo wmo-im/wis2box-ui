@@ -76,6 +76,7 @@ export default defineComponent({
       return new Date(date).toLocaleString(this.$t("code"), {
         timeZoneName: "short",
         timeZone: "UTC",
+        hour12: false,
       });
     },
     getCol(features, key) {
