@@ -11,7 +11,8 @@
     "powered_by": ""
   },
   "messages": {
-    "welcome": ""
+    "welcome": "",
+    "no_observations_in_collection": ""
   },
   "station": {
     "map": "",
@@ -26,5 +27,9 @@
     "collection": "",
     "observed_property'": "",
     "station": ""
+  },
+  "table": {
+    "table": "",
+    "time": ""
   }
 }

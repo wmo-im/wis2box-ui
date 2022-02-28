@@ -11,7 +11,8 @@
     "powered_by": "Alimenté par"
   },
   "messages": {
-    "welcome": "Bienvenue à wis 2.0 dans une boîte!"
+    "welcome": "Bienvenue à wis 2.0 dans une boîte!",
+    "no_observations_in_collection": " n'a pas d'observations dans la collection: "
   },
   "station": {
     "map": "Plan de la station",
@@ -26,5 +27,9 @@
     "collection": "Collection",
     "observed_property": "Propriété observée",
     "station": "Station"
+  },
+  "table": {
+    "table": "Tableau",
+    "time": "Heure du phénomène"
   }
 }

@@ -11,7 +11,8 @@
     "powered_by": "Powered by"
   },
   "messages": {
-    "welcome": "Welcome to WIS 2.0 in a box!"
+    "welcome": "Welcome to WIS 2.0 in a box!",
+    "no_observations_in_collection": " has no observations in collection: "
   },
   "station": {
     "map": "Station map",
@@ -26,5 +27,9 @@
     "collection": "Collection",
     "observed_property": "Observed Property",
     "station": "Stations"
+  },
+  "table": {
+    "table": "Table",
+    "time": "Phenomenon Time"
   }
 }

@@ -11,7 +11,8 @@
     "powered_by": "Desarrollada por"
   },
   "messages": {
-    "welcome": "¡Bienvenido al WIS 2.0 en caja!"
+    "welcome": "¡Bienvenido al WIS 2.0 en caja!",
+    "no_observations_in_collection": " no tiene observaciones en la colección: "
   },
   "station": {
     "map": "Mapa de la estación",
@@ -26,5 +27,9 @@
     "collection": "Colección",
     "observed_property": "Propiedad observada",
     "station": "Estación"
+  },
+  "table": {
+    "table": "Tabla",
+    "time": "Tiempo de fenómeno"
   }
 }
