@@ -118,6 +118,8 @@ export default defineComponent({
       const range = this.layout.xaxis.range;
       const title = collection.description;
       this.layout.title = title;
+      this.alert.msg =
+        station_id + this.$t("messages.no_observations_in_collection") + title;
       this.layout.xaxis.range = range;
       this.layout.xaxis.rangeslider = { range: range };
 
@@ -149,8 +151,6 @@ export default defineComponent({
     },
     async loadObservations(collection_id, limit, station_id) {
       if (limit === 0) {
-        this.alert.msg =
-          station_id + " has no observations in collection: " + collection_id;
         this.alert.value = true;
         this.loading = false;
         return;

@@ -103,6 +103,10 @@ export default defineComponent({
       this.loading = false;
     },
     async loadCollection(collection, station_id) {
+      const title = collection.description;
+      this.alert.msg =
+        station_id + this.$t("messages.no_observations_in_collection") + title;
+
       this.loading = true;
       var self = this;
 
@@ -134,8 +138,6 @@ export default defineComponent({
     },
     async loadObservations(collection_id, limit, station_id) {
       if (limit === 0) {
-        this.alert.msg =
-          station_id + " has no observations in collection: " + collection_id;
         this.alert.value = true;
         return;
       } else {
