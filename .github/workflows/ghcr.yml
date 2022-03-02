@@ -56,12 +56,12 @@ jobs:
           echo IMAGE_ID=$IMAGE_ID >> $GITHUB_ENV
           echo VERSION=$VERSION >> $GITHUB_ENV
 
-    - name: Build and push
-      uses: docker/build-push-action@v2.7.0
-      with:
-        context: ./
-        file: ./Dockerfile
-        platforms: linux/arm64, linux/amd64
-        push: true
-        tags: |
-          ghcr.io/${{ env.IMAGE_ID }}:${{ env.VERSION }}
+      - name: Build and push
+        uses: docker/build-push-action@v2.7.0
+        with:
+          context: ./
+          file: ./Dockerfile
+          platforms: linux/arm64, linux/amd64
+          push: true
+          tags: |
+            ${{ env.IMAGE_ID }}:${{ env.VERSION }}
