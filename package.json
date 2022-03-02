@@ -1,7 +1,7 @@
 {
   "name": "wis2box-ui",
   "version": "0.1.0",
-  "description": "wis2box-ui is the web application component of the WIS 2.0 node in a box project",
+  "description": "wis2box-ui is the web application component of the WIS 2.0 in a box project",
   "keywords": [
     "wmo",
     "wis 2.0"
