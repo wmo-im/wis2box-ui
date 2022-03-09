@@ -61,7 +61,7 @@
 </template>
 
 <script>
-let oapi = process.env.VUE_APP_OAPI;
+let oapi = window.VUE_APP_OAPI;
 
 export default {
   name: "PlotterNavigation",

@@ -22,7 +22,7 @@
 import PlotterChart from "@/components/PlotterChart.vue";
 import PlotterNavigation from "@/components/PlotterNavigation.vue";
 import DataTable from "@/components/DataTable.vue";
-let oapi = process.env.VUE_APP_OAPI;
+let oapi = window.VUE_APP_OAPI;
 import { defineComponent } from "vue";
 
 export default defineComponent({
