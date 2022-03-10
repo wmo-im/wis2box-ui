@@ -33,7 +33,7 @@ import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
 
-let oapi = process.env.VUE_APP_OAPI;
+let oapi = window.VUE_APP_OAPI;
 import { defineComponent } from "vue";
 
 export default defineComponent({

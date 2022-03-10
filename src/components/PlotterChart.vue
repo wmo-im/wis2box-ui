@@ -22,7 +22,7 @@ import Plotly from "plotly.js-dist-min";
 import { defineComponent } from "vue";
 import { mdiDownload } from "@mdi/js";
 
-let oapi = process.env.VUE_APP_OAPI;
+let oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
   name: "PlotterChart",
