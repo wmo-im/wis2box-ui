@@ -13,7 +13,7 @@
   "messages": {
     "welcome": "Welcome to WIS 2.0 in a box!",
     "no_observations_in_collection": " has no observations in collection: ",
-    "not_authorized": "Topic requires authentication to view"
+    "not_authorized": "Dataset requires authorization"
   },
   "station": {
     "map": "Station map",
