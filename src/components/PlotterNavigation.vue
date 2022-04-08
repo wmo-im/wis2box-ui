@@ -66,21 +66,42 @@ let oapi = window.VUE_APP_OAPI;
 export default {
   name: "PlotterNavigation",
   template: "#plotter-navigation",
-  props: ["choices"],
+  props: ["choices", "alert"],
   data() {
     return {
       choices_: this.choices,
+      alert_: this.alert,
     };
   },
   methods: {
     async updateCollection(newC) {
       this.choices_.collection = newC;
-      const response = await fetch(
-        oapi + "/collections/" + newC.id + "/items?f=json&limit=1"
-      );
-      const response_json = await response.json();
-      this.choices_.datastreams = await response_json.features[0].properties
-        .observations;
+      var self = this;
+      await this.$http({
+        method: "get",
+        url: oapi + "/collections/" + newC.id + "/items",
+        params: {
+          f: "json",
+          limit: 1,
+        },
+      })
+        .then(function (response) {
+          // handle success
+          self.choices_.datastreams =
+            response.data.features[0].properties.observations;
+        })
+        .catch(function (error) {
+          // handle error
+          if (error.response.status === 401) {
+            self.alert_.msg = self.$t("messages.not_authorized");
+            self.alert_.value = true;
+          }
+          console.log(error);
+          self.loading = false;
+        })
+        .then(function () {
+          console.log("done");
+        });
     },
     updateData(newD) {
       this.choices_.datastream = this.choices_.datastreams[newD];

@@ -12,7 +12,8 @@
   },
   "messages": {
     "welcome": "¡Bienvenido al WIS 2.0 en caja!",
-    "no_observations_in_collection": " no tiene observaciones en la colección: "
+    "no_observations_in_collection": " no tiene observaciones en la colección: ",
+    "not_authorized": "Tema requiere autenticación para verlo"
   },
   "station": {
     "map": "Mapa de la estación",

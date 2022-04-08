@@ -2,13 +2,13 @@
   <div class="plotter-dialog">
     <v-container fluid>
       <v-row fill-height>
-        <plotter-navigation :choices="choices" />
+        <plotter-navigation :choices="choices" :alert="alert" />
         <v-col cols="9" offset="3">
           <template v-if="choice === 2">
-            <plotter-chart :choices="choices" />
+            <plotter-chart :choices="choices" :alert="alert" />
           </template>
           <template v-else-if="choice === 3">
-            <data-table :choices="choices" />
+            <data-table :choices="choices" :alert="alert" />
           </template>
         </v-col>
       </v-row>
@@ -45,6 +45,10 @@ export default defineComponent({
         collections: [],
         datastreams: [],
       },
+      alert: {
+        value: false,
+        msg: "",
+      },
     };
   },
   methods: {
@@ -57,7 +61,8 @@ export default defineComponent({
       handler() {
         this.choices.datastream = "";
         this.choices.collection = "";
-      }
+        this.alert.value = false;
+      },
     },
   },
   async created() {
