@@ -12,7 +12,8 @@
   },
   "messages": {
     "welcome": "",
-    "no_observations_in_collection": ""
+    "no_observations_in_collection": "",
+    "not_authorized": ""
   },
   "station": {
     "map": "",

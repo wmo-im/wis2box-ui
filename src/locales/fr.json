@@ -12,7 +12,8 @@
   },
   "messages": {
     "welcome": "Bienvenue à wis 2.0 dans une boîte!",
-    "no_observations_in_collection": " n'a pas d'observations dans la collection: "
+    "no_observations_in_collection": " n'a pas d'observations dans la collection: ",
+    "not_authorized": "L'ensemble de données nécessite une autorisation"
   },
   "station": {
     "map": "Plan de la station",

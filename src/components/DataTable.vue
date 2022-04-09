@@ -36,7 +36,7 @@ let oapi = window.VUE_APP_OAPI;
 export default defineComponent({
   name: "DataTable",
   template: "#data-table",
-  props: ["choices"],
+  props: ["choices", "alert"],
   watch: {
     choices: {
       handler(newValue) {
@@ -62,10 +62,7 @@ export default defineComponent({
       loading: false,
       title: "",
       headerOverflow: 0,
-      alert: {
-        value: false,
-        msg: "",
-      },
+      alert_: this.alert,
     };
   },
   methods: {
@@ -104,7 +101,7 @@ export default defineComponent({
     },
     async loadCollection(collection, station_id) {
       const title = collection.description;
-      this.alert.msg =
+      this.alert_.msg =
         station_id + this.$t("messages.no_observations_in_collection") + title;
 
       this.loading = true;
@@ -129,6 +126,10 @@ export default defineComponent({
         })
         .catch(function (error) {
           // handle error
+          if (error.response.status === 401) {
+            self.alert_.msg = self.$t("messages.not_authorized");
+            self.alert_.value = true;
+          }
           console.log(error);
           self.loading = false;
         })
@@ -138,7 +139,8 @@ export default defineComponent({
     },
     async loadObservations(collection_id, limit, station_id) {
       if (limit === 0) {
-        this.alert.value = true;
+        this.alert_.value = true;
+        this.loading = false;
         return;
       } else {
         var self = this;

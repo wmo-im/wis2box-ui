@@ -27,7 +27,7 @@ let oapi = window.VUE_APP_OAPI;
 export default defineComponent({
   name: "PlotterChart",
   template: "#plotter-chart",
-  props: ["choices"],
+  props: ["choices", "alert"],
   watch: {
     choices_: {
       handler(newValue) {
@@ -72,10 +72,7 @@ export default defineComponent({
         modeBarButtonsToAdd: [],
       },
       font: { size: 14 },
-      alert: {
-        value: false,
-        msg: "",
-      },
+      alert_: this.alert,
     };
   },
   methods: {
@@ -117,9 +114,9 @@ export default defineComponent({
       var self = this;
       const range = this.layout.xaxis.range;
       const title = collection.description;
+      this.alert_.msg =
+          station_id + this.$t("messages.no_observations_in_collection") + title;
       this.layout.title = title;
-      this.alert.msg =
-        station_id + this.$t("messages.no_observations_in_collection") + title;
       this.layout.xaxis.range = range;
       this.layout.xaxis.rangeslider = { range: range };
 
@@ -142,6 +139,10 @@ export default defineComponent({
         })
         .catch(function (error) {
           // handle error
+          if (error.response.status === 401) {
+            self.alert_.msg = self.$t("messages.not_authorized");
+            self.alert_.value = true;
+          }
           console.log(error);
           self.loading = false;
         })
@@ -151,7 +152,7 @@ export default defineComponent({
     },
     async loadObservations(collection_id, limit, station_id) {
       if (limit === 0) {
-        this.alert.value = true;
+        this.alert_.value = true;
         this.loading = false;
         return;
       } else {
