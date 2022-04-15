@@ -14,7 +14,7 @@
 
 <script>
 // https://www.digitalocean.com/community/tutorials/vuejs-vue-with-i18n
-import { loadLocale } from "../locales/i18n";
+import { loadLocale } from "@/locales/i18n";
 import { defineComponent } from "vue";
 
 export default defineComponent({

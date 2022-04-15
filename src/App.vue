@@ -1,7 +1,6 @@
 <template>
   <v-app id="v-app">
     <app-header />
-    <v-divider class="my-1" />
 
     <v-main>
       <v-container fluid>
@@ -9,14 +8,13 @@
       </v-container>
     </v-main>
 
-    <v-divider class="my-1" />
     <app-footer />
   </v-app>
 </template>
 
 <script>
-import AppHeader from "@/components/AppHeader.vue";
-import AppFooter from "@/components/AppFooter.vue";
+import AppHeader from "@/components/util/AppHeader.vue";
+import AppFooter from "@/components/util/AppFooter.vue";
 
 import { useI18n } from "vue-i18n";
 
