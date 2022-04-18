@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import AppHeader from "@/components/util/AppHeader.vue";
-import AppFooter from "@/components/util/AppFooter.vue";
+import AppHeader from "@/components/app/AppHeader.vue";
+import AppFooter from "@/components/app/AppFooter.vue";
 
 import { useI18n } from "vue-i18n";
 
