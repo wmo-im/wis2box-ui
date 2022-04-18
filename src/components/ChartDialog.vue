@@ -2,10 +2,17 @@
   <div class="chart-dialog">
     <v-dialog v-model="$root.dialog" app content-class="chart-dialog">
       <v-row justify="center">
-        <v-card min-width="1100" height="700" style="position: fixed; top: -350px;">
+        <v-card
+          min-width="1100"
+          height="700"
+          style="position: fixed; top: -350px"
+        >
           <v-card-actions>
             <v-row>
-              <v-card-title class="ml-2 mt-2" v-html="station.properties.name" />
+              <v-card-title
+                class="ml-2 mt-2"
+                v-html="station.properties.name"
+              />
               <v-spacer />
               <v-btn class="mr-2 mt-2" @click="$root.toggleDialog"> X </v-btn>
             </v-row>
@@ -75,9 +82,7 @@
                 </v-card>
               </div>
               <div v-show="selectedTab === 2 || selectedTab === 3">
-                <v-container fluid>
-                  <plotter-dialog :choice="selectedTab" :station="station.id" />
-                </v-container>
+                <data-viewer :choice="selectedTab" :station="station.id" />
               </div>
             </v-card>
           </v-card-text>
@@ -89,7 +94,7 @@
 
 <script>
 import WisMap from "./WisMap.vue";
-import PlotterDialog from "./PlotterDialog.vue";
+import DataViewer from "./data/DataViewer.vue";
 import { Tabs, Tab } from "vue3-tabs";
 import { defineComponent } from "vue";
 
@@ -97,7 +102,7 @@ export default defineComponent({
   name: "ChartDialog",
   template: "#chart-dialog",
   components: {
-    PlotterDialog,
+    DataViewer,
     WisMap,
     Tabs,
     Tab,

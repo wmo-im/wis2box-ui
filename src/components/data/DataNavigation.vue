@@ -1,57 +1,72 @@
-<template id="plotter-navigation">
-  <div class="plotter-navigation">
-    <v-navigation-drawer color="primary" permanent absolute>
+<template id="data-navigation">
+  <div class="data-navigation">
+    <v-navigation-drawer v-model="drawer" absolute color="#d5e3f0">
       <v-list nav color="transparent">
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title class="text-h6" v-html="$t('chart.options')" />
+            <v-list-item-title
+              class="text-h6 py-2"
+              v-html="$t('chart.options')"
+            />
 
-            <v-divider class="my-4" />
+            <v-divider class="my-2" />
 
             <v-list-item-subtitle v-html="$t('chart.collection')" />
-            <v-divider class="mb-2" />
-            <v-menu app offset-x close-on-click>
+            <v-menu>
               <template v-slot:activator="{ props }">
-                <v-btn color="primary" dark text block v-bind="props">
-                  <v-list-item-text v-html="choices.collection.description" />
-                </v-btn>
-              </template>
-              <v-card>
-                <v-list>
-                  <v-list-item
-                    v-for="(item, i) in choices.collections"
-                    :key="i"
-                    link
-                    @click="updateCollection(item)"
+                <v-container fluid>
+                  <v-btn
+                    block
+                    variant="text"
+                    class="font-weight-bold"
+                    v-bind="props"
                   >
-                    <v-list-item-title v-html="clean(item.title)" />
-                  </v-list-item>
-                </v-list>
-              </v-card>
+                    {{
+                      choices.collection.description || $t("chart.collection")
+                    }}
+                  </v-btn>
+                </v-container>
+              </template>
+              <v-list>
+                <v-list-item
+                  v-for="(item, i) in choices.collections"
+                  :key="i"
+                  link
+                  @click="updateCollection(item)"
+                >
+                  <v-list-item-title v-html="clean(item.title)" />
+                </v-list-item>
+              </v-list>
             </v-menu>
 
-            <v-divider class="my-4" />
+            <v-divider class="my-2" />
 
             <v-list-item-subtitle v-html="$t('chart.observed_property')" />
-            <v-divider class="mb-2" />
-            <v-menu app offset-x close-on-click>
+            <v-menu class="my-2">
               <template v-slot:activator="{ props }">
-                <v-btn color="primary" dark text block v-bind="props">
-                  <v-list-item-text v-html="choices.datastream.name" />
-                </v-btn>
-              </template>
-              <v-card>
-                <v-list>
-                  <v-list-item
-                    v-for="(val, key, i) in choices.datastreams"
-                    :key="i"
-                    link
-                    @click="updateData(key)"
+                <v-container fluid>
+                  <v-btn
+                    block
+                    variant="text"
+                    class="font-weight-bold"
+                    v-bind="props"
                   >
-                    <v-list-item-text v-html="clean(key)" />
-                  </v-list-item>
-                </v-list>
-              </v-card>
+                    {{
+                      choices.datastream.name || $t("chart.observed_property")
+                    }}
+                  </v-btn>
+                </v-container>
+              </template>
+              <v-list>
+                <v-list-item
+                  v-for="(val, key, i) in choices.datastreams"
+                  :key="i"
+                  link
+                  @click="updateData(key)"
+                >
+                  <v-list-item-text v-html="clean(key)" />
+                </v-list-item>
+              </v-list>
             </v-menu>
           </v-list-item-content>
         </v-list-item>
@@ -64,11 +79,12 @@
 let oapi = window.VUE_APP_OAPI;
 
 export default {
-  name: "PlotterNavigation",
-  template: "#plotter-navigation",
+  name: "DataNavigation",
+  template: "#data-navigation",
   props: ["choices", "alert"],
   data() {
     return {
+      drawer: true,
       choices_: this.choices,
       alert_: this.alert,
     };
