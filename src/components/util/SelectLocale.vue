@@ -1,14 +1,21 @@
 <template id="select-locale">
   <div class="select-locale">
-    <select v-model="$i18n.locale" style="color: #ffffff">
-      <option
-        v-for="(name, lang) in languages"
-        :key="`lang-${name}`"
-        :value="lang"
-      >
-        {{ name }}
-      </option>
-    </select>
+    <v-menu>
+      <template v-slot:activator="{ props }">
+        <v-btn color="#FFFFFF" class="font-weight-bold" v-bind="props">
+          {{ $t('language') }}
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item
+          v-for="(name, lang) in languages"
+          :key="`lang-${name}`"
+          @click="$i18n.locale = lang"
+        >
+          <v-list-item-title>{{ name }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </div>
 </template>
 

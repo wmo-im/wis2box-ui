@@ -7,9 +7,9 @@
 import { createVuetify } from "vuetify";
 
 // i18n
-import { loadLocale } from "../locales/i18n";
-// import { createVueI18nAdapter } from 'vuetify/locale/adapters'
-// import { useI18n } from 'vue-i18n'
+import i18n from "../locales/i18n";
+import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n';
+import { useI18n } from 'vue-i18n';
 
 export default createVuetify({
   // icons: {
@@ -20,25 +20,27 @@ export default createVuetify({
   //   },
   // },
   theme: {
-    dark: false,
+    themes: {
+      light: {
+        dark: false,
+        primary: "#014e9e",
+        secondary: "#75b942",
+        accent: "#d5e3f0",
+        warning: "#f8a700",
+        error: "#B00020"
+      },
+      dark: {
+        light: false,
+        primary: "#01aad3",
+        secondary: "#75b942",
+        accent: "#d5e3f0",
+        warning: "#f8a700",
+        error: "#B00020"
+      },
+    }
   },
-  themes: {
-    light: {
-      primary: "#4682b4",
-      secondary: "#b0bec5",
-      accent: "#8c9eff",
-      error: "#b71c1c",
-    },
-  },
-  locale: {
-    legacy: false, // Vuetify does not support the legacy mode of vue-i18n
-    defaultLocale: "en",
-    fallbackLocale: "en",
-    globalInjection: true,
-    messages: loadLocale(),
-  },
-  // locale: createVueI18nAdapter({ // Pending https://github.com/vuetifyjs/vuetify/issues/14408
-  //   i18n,
-  //   useI18n
-  // }),
+  locale: createVueI18nAdapter({
+    i18n,
+    useI18n
+  }),
 });

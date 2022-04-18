@@ -1,6 +1,6 @@
 <template id="app-footer">
   <div class="app-footer">
-    <v-footer app extended flat height="110">
+    <v-footer flat height="110">
       <v-row justify="center">
         <v-col cols="12">
           <v-img :src="foot" cover />

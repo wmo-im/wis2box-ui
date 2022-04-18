@@ -1,14 +1,16 @@
 <template>
   <v-app id="v-app">
-    <app-header />
+    <app-header app />
 
     <v-main>
-      <v-container fluid>
-        <router-view />
-      </v-container>
+      <v-row justify="center">
+        <v-card flat width="80%" class="pt-4">
+          <router-view />
+        </v-card>
+      </v-row>
     </v-main>
 
-    <app-footer />
+    <app-footer app class="pt-4" />
   </v-app>
 </template>
 
