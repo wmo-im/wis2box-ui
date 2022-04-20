@@ -1,23 +1,14 @@
 <template id="chart-dialog">
   <div class="chart-dialog">
-    <v-dialog v-model="$root.dialog" app content-class="chart-dialog">
+    <v-dialog v-model="$root.dialog" fullscreen>
       <v-row justify="center">
-        <v-card
-          min-width="1100"
-          height="700"
-          style="position: fixed; top: -350px"
-        >
+        <v-card min-width="1100" class="mt-16 pa-4">
           <v-toolbar>
-            <v-toolbar-title v-html="station.properties.name" />
+            <v-toolbar-title v-text="station.properties.name" />
             <v-spacer />
-            <v-btn @click="$root.toggleDialog" close icon> X </v-btn>
+            <v-btn @click="$root.toggleDialog" icon> X </v-btn>
             <template v-slot:extension>
-              <v-tabs
-                align-with-title
-                v-model="selectedTab"
-                color="#014e9e"
-                grow
-              >
+              <v-tabs v-model="selectedTab" color="#014e9e" grow>
                 <v-tab v-for="(item, i) in tabs" :value="i" :key="i">
                   {{ $t(item) }}
                 </v-tab>
@@ -92,15 +83,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.tab {
-  padding: 10px 0px;
-  margin: 10px 20px;
-}
-.active-tab {
-  border-width: 0px;
-  border-top-width: 2px;
-  border-style: solid;
-}
-</style>
