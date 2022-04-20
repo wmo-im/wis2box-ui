@@ -1,8 +1,8 @@
 <template id="chart-dialog">
   <div class="chart-dialog">
-    <v-dialog v-model="$root.dialog" fullscreen>
-      <v-row justify="center">
-        <v-card min-width="1100" class="mt-16 pa-4">
+    <v-overlay v-model="$root.dialog" class="align-center justify-center">
+      <div>
+        <v-card min-width="1100" class="pa-4">
           <v-toolbar>
             <v-toolbar-title v-text="station.properties.name" />
             <v-spacer />
@@ -48,8 +48,8 @@
             </div>
           </v-card>
         </v-card>
-      </v-row>
-    </v-dialog>
+      </div>
+    </v-overlay>
   </div>
 </template>
 
