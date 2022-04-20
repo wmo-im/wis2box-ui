@@ -1,15 +1,17 @@
 <template id="services">
-  <v-row justify="center" align="center">
-    <v-card class="text-center" width="60%">
-      <v-row v-for="(v, k) in services" :key="k">
-        <v-col>{{ k }}</v-col>
-        <v-col
-          ><a :target="k" :title="k" :href="v">{{ v }}</a></v-col
-        >
-        <v-divider />
-      </v-row>
-    </v-card>
-  </v-row>
+  <div class="services">
+    <v-row justify="center">
+      <v-card class="text-center py-4" width="60%">
+        <v-row v-for="(v, k) in services" :key="k">
+          <v-col>{{ k }}</v-col>
+          <v-col
+            ><a :target="k" :title="k" :href="v">{{ v }}</a></v-col
+          >
+          <v-divider />
+        </v-row>
+      </v-card>
+    </v-row>
+  </div>
 </template>
 
 <script>
