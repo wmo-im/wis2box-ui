@@ -1,39 +1,53 @@
-<template id="plotter-chart">
-  <div class="plotter-chart">
-    <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
-
+<template id="data-table">
+  <div class="data-table">
     <v-card min-height="600px">
-      <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
-        <v-progress-linear striped indeterminate color="primary" />
-      </div>
-      <div :style="{ visibility: !loading ? 'visible' : 'hidden' }">
-        <v-container>
-          <v-row justify="center" align="end">
-            <div :id="'plotly-chart-' + choices_.collection.id" />
-          </v-row>
-        </v-container>
-      </div>
+      <v-table v-show="title !== ''">
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th class="text-center" v-html="$t('table.time')" />
+              <th class="text-center" v-html="title" />
+            </tr>
+          </thead>
+        </template>
+      </v-table>
+
+      <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
+
+      <v-card id="scroll-target" class="overflow-y-auto" max-height="500">
+        <v-table v-scroll:#scroll-target="onScroll">
+          <template v-slot:default>
+            <tbody>
+              <tr v-for="(date, index) in data.time" :key="index">
+                <td v-html="formatDate(date)" />
+                <td v-html="data.value[index]" />
+              </tr>
+            </tbody>
+          </template>
+        </v-table>
+      </v-card>
     </v-card>
   </div>
 </template>
 
 <script>
-import Plotly from "plotly.js-dist-min";
 import { defineComponent } from "vue";
-import { mdiDownload } from "@mdi/js";
 
 let oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
-  name: "PlotterChart",
-  template: "#plotter-chart",
+  name: "DataTable",
+  template: "#data-table",
   props: ["choices", "alert"],
   watch: {
-    choices_: {
+    choices: {
       handler(newValue) {
+        if (this.loading === true) {
+          return;
+        }
+        this.loading = true;
         if (newValue.collection !== "" && newValue.datastream !== "") {
-          this.data = [];
-          this.config.modeBarButtonsToAdd = [];
+          this.data = {};
           for (var station of this.choices_.station) {
             this.loadCollection(newValue.collection, station);
           }
@@ -45,44 +59,24 @@ export default defineComponent({
   },
   data: function () {
     return {
-      trace: {
-        type: "scatter",
-        mode: "lines+markers",
-        x: [],
-        y: [],
-      },
       choices_: this.choices,
-      data: [],
+      data: {},
       loading: false,
-      layout: {
-        title: "",
-        xaxis: {
-          autorange: true,
-          type: "date",
-          range: [null, null],
-          rangeslider: { range: [null, null] },
-        },
-        yaxis: {
-          type: "linear",
-          autorange: true,
-          title: null,
-        },
-      },
-      config: {
-        modeBarButtonsToAdd: [],
-      },
-      font: { size: 14 },
+      title: "",
+      headerOverflow: 0,
       alert_: this.alert,
     };
   },
   methods: {
-    plot() {
-      var plot = document.getElementById(
-        "plotly-chart-" + this.choices.collection.id
-      );
-      Plotly.purge(plot);
-      Plotly.newPlot(plot, this.data, this.layout, this.config);
-      this.loading = false;
+    onScroll(e) {
+      this.headerOverflow = e.target.scrollTop;
+    },
+    formatDate(date) {
+      return new Date(date).toLocaleString(this.$t("code"), {
+        timeZoneName: "short",
+        timeZone: "UTC",
+        hour12: false,
+      });
     },
     getCol(features, key) {
       if (key.includes(".")) {
@@ -102,23 +96,18 @@ export default defineComponent({
         });
       }
     },
-    newTrace(features, x, y, station_id) {
-      const Trace = JSON.parse(JSON.stringify(this.trace));
-      Trace.x = this.getCol(features, x);
-      Trace.y = this.getCol(features, y);
-      Trace.name = station_id;
-      this.data.push(Trace);
+    newTable(features, colName) {
+      this.data.time = this.getCol(features, "phenomenonTime");
+      this.data.value = this.getCol(features, colName);
+      this.loading = false;
     },
     async loadCollection(collection, station_id) {
-      this.loading = true;
-      var self = this;
-      const range = this.layout.xaxis.range;
       const title = collection.description;
       this.alert_.msg =
-          station_id + this.$t("messages.no_observations_in_collection") + title;
-      this.layout.title = title;
-      this.layout.xaxis.range = range;
-      this.layout.xaxis.rangeslider = { range: range };
+        station_id + this.$t("messages.no_observations_in_collection") + title;
+
+      this.loading = true;
+      var self = this;
 
       await this.$http({
         method: "get",
@@ -170,30 +159,15 @@ export default defineComponent({
         })
           .then(function (response) {
             // handle success
-            self.config.modeBarButtonsToAdd.push({
-              name: "Data Source " + station_id,
-              icon: {
-                width: 24,
-                height: 24,
-                path: mdiDownload,
-              },
-              click: function () {
-                window.location.href = response.request.responseURL;
-              },
-            });
-            var title =
+            self.title =
               self.choices_.datastream.name +
               " (" +
               self.choices_.datastream.units +
               ")";
-            self.layout.yaxis.title = title;
-            self.newTrace(
+            self.newTable(
               response.data.features,
-              "phenomenonTime",
-              "observations." + self.choices_.datastream.id + ".value",
-              station_id
+              "observations." + self.choices_.datastream.id + ".value"
             );
-            self.plot();
           })
           .catch(function (error) {
             // handle error

@@ -1,41 +1,40 @@
-<template id="plotter-dialog">
-  <div class="plotter-dialog">
-    <v-container fluid>
-      <v-row fill-height>
-        <plotter-navigation :choices="choices" :alert="alert" />
-        <v-col cols="9" offset="3">
+<template id="data-viewer">
+  <div class="data-viewer">
+    <v-card>
+      <v-layout>
+        <data-navigation :choices="choices" :alert="alert" />
+        <v-main>
           <template v-if="choice === 2">
-            <plotter-chart :choices="choices" :alert="alert" />
+            <data-plotter :choices="choices" :alert="alert" />
           </template>
           <template v-else-if="choice === 3">
             <data-table :choices="choices" :alert="alert" />
           </template>
-        </v-col>
-      </v-row>
-    </v-container>
+        </v-main>
+      </v-layout>
+    </v-card>
   </div>
 </template>
 
-
-
 <script>
-import PlotterChart from "@/components/PlotterChart.vue";
-import PlotterNavigation from "@/components/PlotterNavigation.vue";
-import DataTable from "@/components/DataTable.vue";
+import DataPlotter from "./DataPlotter.vue";
+import DataNavigation from "./DataNavigation.vue";
+import DataTable from "./DataTable.vue";
 let oapi = window.VUE_APP_OAPI;
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "PlotterDialog",
-  template: "#plotter-dialog",
+  name: "DataViewer",
+  template: "#data-viewer",
   props: ["station", "choice"],
   components: {
-    PlotterChart,
-    PlotterNavigation,
+    DataPlotter,
+    DataNavigation,
     DataTable,
   },
   data() {
     return {
+      drawer: true,
       choices: {
         collection: "",
         datastream: "",

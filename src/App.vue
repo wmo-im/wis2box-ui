@@ -1,22 +1,22 @@
 <template>
   <v-app id="v-app">
-    <app-header />
-    <v-divider class="my-1" />
+    <app-header app />
 
     <v-main>
-      <v-container fluid>
-        <router-view />
-      </v-container>
+      <v-row justify="center">
+        <v-card flat width="80%" class="pt-4">
+          <router-view />
+        </v-card>
+      </v-row>
     </v-main>
 
-    <v-divider class="my-1" />
-    <app-footer />
+    <app-footer app class="pt-4" />
   </v-app>
 </template>
 
 <script>
-import AppHeader from "@/components/AppHeader.vue";
-import AppFooter from "@/components/AppFooter.vue";
+import AppHeader from "@/components/app/AppHeader.vue";
+import AppFooter from "@/components/app/AppFooter.vue";
 
 import { useI18n } from "vue-i18n";
 
