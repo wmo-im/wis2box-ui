@@ -61,6 +61,8 @@ jobs:
         with:
           context: ./
           file: ./Dockerfile
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           platforms: linux/arm64, linux/amd64
           push: true
           tags: |
