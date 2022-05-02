@@ -6,7 +6,9 @@
           <v-toolbar>
             <v-toolbar-title v-text="station.properties.name" />
             <v-spacer />
-            <v-btn @click="$root.toggleDialog" icon> X </v-btn>
+            <v-btn @click="$root.toggleDialog" icon>
+              <v-icon>mdiClose</v-icon>
+            </v-btn>
             <template v-slot:extension>
               <v-tabs v-model="selectedTab" color="#014e9e" grow>
                 <v-tab v-for="(item, i) in tabs" :value="i" :key="i">
@@ -16,37 +18,42 @@
             </template>
           </v-toolbar>
 
-          <v-card flat height="590">
-            <div v-show="selectedTab === 0">
-              <wis-map :feature="feature_" :params="{ wigos_id: station.id }" />
-            </div>
-            <div v-show="selectedTab === 1">
-              <v-card class="text-center">
-                <v-row justify="center" align="center">
-                  <v-col v-html="$t('station.name')" />
-                  <v-col>
-                    <a target="_blank" :href="station.properties.url">{{
-                      station.properties.name
-                    }}</a>
-                  </v-col>
-                  <v-divider />
-                </v-row>
-                <v-row justify="center" align="center">
-                  <v-col v-html="$t('station.status')" />
-                  <v-col v-html="station.properties.status" />
-                  <v-divider />
-                </v-row>
-                <v-row justify="center" align="center">
-                  <v-col v-html="$t('station.wigos_id')" />
-                  <v-col v-html="station.properties.wigos_id" />
-                  <v-divider />
-                </v-row>
-              </v-card>
-            </div>
-            <div v-show="selectedTab === 2 || selectedTab === 3">
-              <data-viewer :choice="selectedTab" :station="station.id" />
-            </div>
-          </v-card>
+          <v-responsive height="590">
+            <v-card class="pa-2">
+              <div v-show="selectedTab === 0">
+                <wis-map
+                  :feature="feature_"
+                  :params="{ wigos_id: station.id }"
+                />
+              </div>
+              <div v-show="selectedTab === 1">
+                <v-card class="text-center">
+                  <v-row justify="center" align="center">
+                    <v-col v-html="$t('station.name')" />
+                    <v-col>
+                      <a target="_blank" :href="station.properties.url">{{
+                        station.properties.name
+                      }}</a>
+                    </v-col>
+                    <v-divider />
+                  </v-row>
+                  <v-row justify="center" align="center">
+                    <v-col v-html="$t('station.status')" />
+                    <v-col v-html="station.properties.status" />
+                    <v-divider />
+                  </v-row>
+                  <v-row justify="center" align="center">
+                    <v-col v-html="$t('station.wigos_id')" />
+                    <v-col v-html="station.properties.wigos_id" />
+                    <v-divider />
+                  </v-row>
+                </v-card>
+              </div>
+              <div v-show="selectedTab === 2 || selectedTab === 3">
+                <data-viewer :choice="selectedTab" :station="station.id" />
+              </div>
+            </v-card>
+          </v-responsive>
         </v-card>
       </div>
     </v-overlay>
