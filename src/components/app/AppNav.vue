@@ -41,6 +41,11 @@ export default defineComponent({
           href: undefined,
         },
         {
+          text: "datasets",
+          target: "/datasets",
+          href: undefined
+        },
+        {
           text: "services",
           target: "/services",
           href: undefined,
