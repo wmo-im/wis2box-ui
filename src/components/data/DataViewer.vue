@@ -4,12 +4,8 @@
       <v-layout>
         <data-navigation :choices="choices" :alert="alert" />
         <v-main>
-          <template v-if="choice === 2">
-            <data-plotter :choices="choices" :alert="alert" />
-          </template>
-          <template v-else-if="choice === 3">
-            <data-table :choices="choices" :alert="alert" />
-          </template>
+            <data-plotter v-show="choice === 2" :choices="choices" :alert="alert" />
+            <data-table v-show="choice === 3" :choices="choices" :alert="alert" />
         </v-main>
       </v-layout>
     </v-card>
@@ -58,8 +54,6 @@ export default defineComponent({
   watch: {
     choice: {
       handler() {
-        this.choices.datastream = "";
-        this.choices.collection = "";
         this.alert.value = false;
       },
     },

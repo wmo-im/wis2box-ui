@@ -11,6 +11,7 @@
                 :target="`_window_${item.text}`"
                 :color="btnColor(isHovering)"
                 class="font-weight-bold"
+                variant="text"
                 v-bind="props"
               >
                 {{ $t(`navigation.${item.text}`) }}

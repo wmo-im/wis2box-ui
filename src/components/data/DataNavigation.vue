@@ -1,7 +1,7 @@
 <template id="data-navigation">
   <div class="data-navigation">
-    <v-navigation-drawer v-model="drawer" absolute color="#d5e3f0">
-      <v-list nav color="transparent">
+    <v-navigation-drawer floating permanent color="#d5e3f0">
+      <v-list nav color="#d5e3f0">
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title
@@ -84,7 +84,6 @@ export default {
   props: ["choices", "alert"],
   data() {
     return {
-      drawer: true,
       choices_: this.choices,
       alert_: this.alert,
     };

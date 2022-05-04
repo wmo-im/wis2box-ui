@@ -1,41 +1,36 @@
 <template id="datasets">
   <div class="datasets">
     <v-responsive justify-center>
-      <v-table
-        ><tbody>
-          <tr
-            class="pa-2 my-4"
-            v-for="(item, i) in datasets"
-            :key="i"
-            :contained-text="i % 2 === 0 ? True : False"
-          >
+      <v-table>
+        <tbody>
+          <tr class="pa-2 my-4" v-for="(item, i) in datasets" :key="i">
             <th>
-              <v-col>
-                <v-btn
-                  variant="text"
-                  class="font-weight-bold"
-                  block
-                  title="OARec"
-                  :href="item._oarec_url"
-                  target="_window_OARec"
-                >
-                  {{ item.properties.title }}
-                </v-btn>
-                <v-row justify-center>
-                  <v-card width="250px">
+              <v-btn
+                variant="text"
+                class="font-weight-bold"
+                block
+                title="OARec"
+                :href="item._oarec_url"
+                target="_window_OARec"
+              >
+                {{ item.properties.title }}
+              </v-btn>
+              <v-container>
+                <v-row justify="center" fill-height>
+                  <v-card width="240px" flat>
                     <l-map
                       :ref="item.id"
                       :zoom="item._zoom"
-                      :bounds="item.bbox"
                       :center="item._center"
-                      style="height: 200px"
+                      :options="{ zoomControl: false }"
+                      style="height: 160px"
                     >
                       <l-geo-json :geojson="item" />
                       <l-tile-layer :url="url" :attribution="attribution" />
                     </l-map>
                   </v-card>
                 </v-row>
-              </v-col>
+              </v-container>
             </th>
             <td>
               <v-col cols="12" class="text-left">
@@ -82,17 +77,14 @@ export default {
   },
   data: function () {
     return {
-      window: 0,
       datasets: [],
       attribution:
         '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      zoom: 8,
     };
   },
   async created() {
     this.loading = true;
-    this.window = 0;
     const response = await fetch(
       oapi + "/collections/discovery-metadata/items?f=json"
     );
@@ -112,7 +104,7 @@ export default {
       }
       let [x1, y1, x2, y2] = c.bbox;
       c._center = [(y2 + y1) / 2, (x2 + x1) / 2];
-      c._zoom = 5;
+      c._zoom = 4;
       this.datasets.push(c);
     }
     this.loading = false;
