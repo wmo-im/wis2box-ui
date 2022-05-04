@@ -1,7 +1,7 @@
 <template id="services">
   <div class="services">
     <v-row justify="center">
-      <v-card class="text-center py-4" width="60%">
+      <v-card class="text-center pa-4" width="60%">
         <v-row v-for="(v, k) in services" :key="k">
           <v-col>{{ k }}</v-col>
           <v-col
