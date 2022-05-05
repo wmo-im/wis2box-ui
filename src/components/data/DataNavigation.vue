@@ -1,76 +1,51 @@
 <template id="data-navigation">
   <div class="data-navigation">
     <v-navigation-drawer floating permanent color="#d5e3f0">
-      <v-list nav color="#d5e3f0">
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title
-              class="text-h6 py-2"
-              v-html="$t('chart.options')"
-            />
+      <v-container>
+        <v-list-item-title class="text-h6 py-2" v-html="$t('chart.options')" />
 
-            <v-divider class="my-2" />
+        <v-divider class="my-2" />
 
-            <v-list-item-subtitle v-html="$t('chart.collection')" />
-            <v-menu>
-              <template v-slot:activator="{ props }">
-                <v-container fluid>
-                  <v-btn
-                    block
-                    variant="text"
-                    class="font-weight-bold"
-                    v-bind="props"
-                  >
-                    {{
-                      choices.collection.description || $t("chart.collection")
-                    }}
-                  </v-btn>
-                </v-container>
-              </template>
-              <v-list>
-                <v-list-item
-                  v-for="(item, i) in choices.collections"
-                  :key="i"
-                  link
-                  @click="updateCollection(item)"
-                >
-                  <v-list-item-title v-html="clean(item.title)" />
-                </v-list-item>
-              </v-list>
-            </v-menu>
+        <v-list-item-subtitle v-html="$t('chart.collection')" />
+        <v-menu>
+          <template v-slot:activator="{ props }">
+            <v-list-item class="font-weight-bold text-center py-3" v-bind="props">
+              {{ choices.collection.description || $t("chart.collection") }}
+            </v-list-item>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="(item, i) in choices.collections"
+              :key="i"
+              link
+              @click="updateCollection(item)"
+            >
+              <v-list-item-title v-html="clean(item.title)" />
+            </v-list-item>
+          </v-list>
+        </v-menu>
 
-            <v-divider class="my-2" />
+        <v-divider class="my-2" />
 
-            <v-list-item-subtitle v-html="$t('chart.observed_property')" />
-            <v-menu class="my-2">
-              <template v-slot:activator="{ props }">
-                <v-container fluid>
-                  <v-btn
-                    block
-                    variant="text"
-                    class="font-weight-bold"
-                    v-bind="props"
-                  >
-                    {{
-                      choices.datastream.name || $t("chart.observed_property")
-                    }}
-                  </v-btn>
-                </v-container>
-              </template>
-              <v-list>
-                <v-list-item
-                  v-for="(val, key, i) in choices.datastreams"
-                  :key="i"
-                  link
-                  @click="updateData(key)"
-                >
-                  <v-list-item-text v-html="clean(key)" />
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+        <v-list-item-subtitle v-html="$t('chart.observed_property')" />
+        <v-menu>
+          <template v-slot:activator="{ props }">
+            <v-list-item class="font-weight-bold text-center py-3" v-bind="props">
+              {{ choices.datastream.name || $t("chart.observed_property") }}
+            </v-list-item>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="(val, key, i) in choices.datastreams"
+              :key="i"
+              link
+              @click="updateData(key)"
+            >
+              <v-list-item-text v-html="clean(key)" />
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-container>
     </v-navigation-drawer>
   </div>
 </template>
