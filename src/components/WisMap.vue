@@ -65,11 +65,34 @@ export default defineComponent({
       geojson: null,
       geojsonOptions: {
         onEachFeature: function (feature, layer) {
-          layer.on("mouseover", function (e) {
-            layer.bindPopup(feature.properties.name).openPopup(e.latLng);
-          });
-          layer.on("mouseout", function () {
-            layer.closePopup().unbindPopup();
+          layer.on("mouseover", async function (e) {
+            var request_url = `${feature.links[0].href}/items?f=json&sortby=-phenomenonTime&wigos_station_identifier=${feature.id}&limit=1`;
+            const response = await fetch(request_url);
+            const data = await response.json();
+            var result = data.features[0];
+            var tableContent = "";
+            for (const [obs, vals] of Object.entries(
+              result.properties.observations
+            )) {
+              tableContent +=
+                "<tr>" +
+                `<th> ${obs} </th>` +
+                `<td> ${vals.value} ${vals.units} </td>` +
+                "<tr>";
+            }
+            console.log(tableContent);
+            var content = `
+              <div>
+                <b> ${feature.properties.name} </b><br>
+                at ${result.properties.phenomenonTime}
+                <table>
+                  ${tableContent}
+                </table>
+              </div>
+            `;
+            layer
+              .bindPopup(content, { maxWidth: "400px;" })
+              .openPopup(e.latLng);
           });
         },
         pointToLayer: function (feature, latLng) {
