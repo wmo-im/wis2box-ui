@@ -15,7 +15,7 @@ const routes = [
     component: Datasets,
   },
   {
-    path: "/services",
+    path: "/data-services",
     name: "Services",
     component: Services,
   },

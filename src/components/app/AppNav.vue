@@ -48,7 +48,7 @@ export default defineComponent({
         },
         {
           text: "services",
-          target: "/services",
+          target: "/data-services",
           href: undefined,
         },
         {
