@@ -49,7 +49,7 @@
                 </v-btn>
               </v-col>
               <v-col cols="12" class="text-left">
-                <v-btn title="MQP" :href="item._mqp_url" target="_window_MQP">
+                <v-btn :title="item._mqp_url">
                   PubSub
                 </v-btn>
               </v-col>
