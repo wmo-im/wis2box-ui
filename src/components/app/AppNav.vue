@@ -2,14 +2,14 @@
   <div class="app-nav">
     <v-app-bar flat>
       <template v-slot:prepend>
-        <v-btn-group divided>
+        <v-btn-toggle divided>
           <template v-for="(item, i) in items" :key="i">
             <v-hover v-slot="{ isHovering, props }">
               <v-btn
                 :href="item.href"
                 :to="item.target"
                 :target="`_window_${item.text}`"
-                :color="btnColor(isHovering)"
+                :color="isHovering ? '#014e9e' : undefined"
                 class="font-weight-bold"
                 variant="text"
                 v-bind="props"
@@ -18,7 +18,7 @@
               </v-btn>
             </v-hover>
           </template>
-        </v-btn-group>
+        </v-btn-toggle>
       </template>
     </v-app-bar>
   </div>
@@ -34,7 +34,6 @@ export default defineComponent({
   template: "#app-nav",
   data: function () {
     return {
-      documentation: documentation,
       items: [
         {
           text: "home",
@@ -44,7 +43,7 @@ export default defineComponent({
         {
           text: "datasets",
           target: "/datasets",
-          href: undefined
+          href: undefined,
         },
         {
           text: "services",
@@ -63,11 +62,6 @@ export default defineComponent({
         },
       ],
     };
-  },
-  methods: {
-    btnColor(isHovering) {
-      return isHovering ? "#014e9e" : undefined;
-    },
   },
 });
 </script>
