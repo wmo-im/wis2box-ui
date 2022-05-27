@@ -9,7 +9,10 @@
         <v-list-item-subtitle v-html="$t('chart.collection')" />
         <v-menu>
           <template v-slot:activator="{ props }">
-            <v-list-item class="font-weight-bold text-center py-3" v-bind="props">
+            <v-list-item
+              class="font-weight-bold text-center py-3"
+              v-bind="props"
+            >
               {{ choices.collection.description || $t("chart.collection") }}
             </v-list-item>
           </template>
@@ -30,18 +33,21 @@
         <v-list-item-subtitle v-html="$t('chart.observed_property')" />
         <v-menu>
           <template v-slot:activator="{ props }">
-            <v-list-item class="font-weight-bold text-center py-3" v-bind="props">
+            <v-list-item
+              class="font-weight-bold text-center py-3"
+              v-bind="props"
+            >
               {{ choices.datastream.name || $t("chart.observed_property") }}
             </v-list-item>
           </template>
           <v-list>
             <v-list-item
-              v-for="(val, key, i) in choices.datastreams"
+              v-for="(item, i) in choices.datastreams"
               :key="i"
               link
-              @click="updateData(key)"
+              @click="updateData(item)"
             >
-              <v-list-item-text v-html="clean(key)" />
+              <v-list-item-text v-html="this.clean(item.name)" />
             </v-list-item>
           </v-list>
         </v-menu>
@@ -66,19 +72,29 @@ export default {
   methods: {
     async updateCollection(newC) {
       this.choices_.collection = newC;
+      const [station] = this.choices_.station;
+      console.log(station);
+      var request_url = `${oapi}/collections/${newC.id}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station}&properties=resultTime&limit=1`;
+      var response = await fetch(request_url);
+      var data = await response.json();
+      var resultTime = data.features[0].properties.resultTime;
+      var resultCount = data.numberMatched;
       var self = this;
       await this.$http({
         method: "get",
         url: oapi + "/collections/" + newC.id + "/items",
         params: {
+          wigos_station_identifier: station,
+          datetime: `${resultTime}/..`,
           f: "json",
-          limit: 1,
+          limit: resultCount,
         },
       })
         .then(function (response) {
           // handle success
-          self.choices_.datastreams =
-            response.data.features[0].properties.observations;
+          for (const item of response.data.features) {
+            self.choices_.datastreams.push(item.properties);
+          }
         })
         .catch(function (error) {
           // handle error
@@ -94,9 +110,11 @@ export default {
         });
     },
     updateData(newD) {
-      this.choices_.datastream = this.choices_.datastreams[newD];
-      this.choices_.datastream.id = newD;
-      this.choices_.datastream.name = this.clean(newD);
+      this.choices_.datastream = {
+        id: newD.name,
+        name: this.clean(newD.name),
+        units: newD.units,
+      }
     },
     clean(word) {
       if (typeof word === "string") {
