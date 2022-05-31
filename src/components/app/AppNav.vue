@@ -52,6 +52,12 @@ export default defineComponent({
           href: undefined,
         },
         {
+          text: "monitoring",
+          target: "/monitoring",
+          href: undefined,
+        },
+        {
+        {
           text: "documentation",
           target: undefined,
           href: documentation,
