@@ -114,6 +114,8 @@ export default defineComponent({
       var self = this;
       const range = this.layout.xaxis.range;
       const title = collection.description;
+      const datastream = this.choices_.datastream;
+
       this.alert_.msg =
         station_id + this.$t("messages.no_observations_in_collection") + title;
       this.layout.title = title;
@@ -125,6 +127,7 @@ export default defineComponent({
         url: oapi + "/collections/" + collection.id + "/items",
         params: {
           f: "json",
+          name: datastream.id,
           wigos_station_identifier: station_id,
           resulttype: "hits",
         },
@@ -134,6 +137,7 @@ export default defineComponent({
           self.loadObservations(
             collection.id,
             response.data.numberMatched,
+            datastream,
             station_id
           );
         })
@@ -150,7 +154,7 @@ export default defineComponent({
           console.log("done");
         });
     },
-    async loadObservations(collection_id, limit, station_id) {
+    async loadObservations(collection_id, limit, datastream, station_id) {
       if (limit === 0) {
         this.alert_.value = true;
         this.loading = false;
@@ -163,8 +167,9 @@ export default defineComponent({
           url: oapi + "/collections/" + collection_id + "/items",
           params: {
             f: "json",
+            name: datastream.id,
             wigos_station_identifier: station_id,
-            sortby: "-phenomenonTime",
+            sortby: "-resultTime",
             limit: limit,
           },
         })
@@ -181,16 +186,11 @@ export default defineComponent({
                 window.location.href = response.request.responseURL;
               },
             });
-            var title =
-              self.choices_.datastream.name +
-              " (" +
-              self.choices_.datastream.units +
-              ")";
-            self.layout.yaxis.title = title;
+            self.layout.yaxis.title = `${datastream.name} (${datastream.units})`;
             self.newTrace(
               response.data.features,
-              "phenomenonTime",
-              "observations." + self.choices_.datastream.id + ".value",
+              "resultTime",
+              "value",
               station_id
             );
             self.plot();

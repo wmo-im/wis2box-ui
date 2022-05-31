@@ -28,6 +28,16 @@
   </div>
 </template>
 
+<style>
+tr:nth-child(even) {
+  background-color: #d5e3f0;
+}
+th,
+td {
+  padding: 10px;
+}
+</style>
+
 <script>
 import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
 import "leaflet/dist/leaflet.css";
@@ -66,32 +76,38 @@ export default defineComponent({
       geojsonOptions: {
         onEachFeature: function (feature, layer) {
           layer.on("mouseover", async function (e) {
-            var request_url = `${feature.links[0].href}/items?f=json&sortby=-phenomenonTime&wigos_station_identifier=${feature.id}&limit=1`;
-            const response = await fetch(request_url);
-            const data = await response.json();
-            var result = data.features[0];
+            var request_url = `${feature.links[0].href}/items?f=json&sortby=-resultTime&wigos_station_identifier=${feature.id}&properties=resultTime&limit=1`;
+            var response = await fetch(request_url);
+            var data = await response.json();
+            var resultTime = data.features[0].properties.resultTime;
+            var resultCount = data.numberMatched;
+            request_url = `${feature.links[0].href}/items?f=json&wigos_station_identifier=${feature.id}&datetime=${resultTime}/..&limit=${resultCount}`;
+            response = await fetch(request_url);
+            data = await response.json();
+
             var tableContent = "";
-            for (const [obs, vals] of Object.entries(
-              result.properties.observations
-            )) {
-              tableContent +=
-                "<tr>" +
-                `<th> ${obs} </th>` +
-                `<td> ${vals.value} ${vals.units} </td>` +
-                "<tr>";
+            function clean(word) {
+              return (
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+              ).replaceAll("_", " ");
             }
-            console.log(tableContent);
+            for (const item of data.features) {
+              tableContent += `<tr> <th> ${clean(item.properties.name)} </th>
+                <td> ${item.properties.value} ${
+                item.properties.units
+              } </td> </tr>`;
+            }
             var content = `
               <div>
-                <b> ${feature.properties.name} </b><br>
-                at ${result.properties.phenomenonTime}
+                <h2> ${feature.properties.name} </h2>
+                <h5> from ${new Date(resultTime).toUTCString()} </h5>
                 <table>
                   ${tableContent}
                 </table>
               </div>
             `;
             layer
-              .bindPopup(content, { maxWidth: "400px;" })
+              .bindPopup(content, { maxWidth: "400", maxHeight: "400" })
               .openPopup(e.latLng);
           });
         },
@@ -146,6 +162,11 @@ export default defineComponent({
       this.bounds = geoJSON(this.geojson).getBounds();
       this.$root.toggleDialog();
       e.originalEvent.stopPropagation();
+    },
+    clean(word) {
+      if (typeof word === "string") {
+        return;
+      }
     },
     async loadStations() {
       this.loading = true;
