@@ -1,6 +1,6 @@
 <template id="home">
   <div class="dialog" :style="{ opacity: $root.dialog ? '1' : '0' }">
-    <chart-dialog :feature="feature" />
+    <chart-dialog :features="features" />
   </div>
   <div class="home" :style="{ opacity: $root.dialog ? '0' : '1' }">
     <v-alert
@@ -12,14 +12,14 @@
     </v-alert>
 
     <v-card>
-      <wis-map :feature="feature" :params="{ limit: 25 }" />
+      <wis-map :features="features" :params="{ limit: 25 }" />
     </v-card>
   </div>
 </template>
 
 <script>
 import ChartDialog from "../components/ChartDialog.vue";
-import WisMap from "../components/WisMap.vue";
+import WisMap from "../components/leaflet/WisMap.vue";
 
 export default {
   name: "Home",
@@ -30,7 +30,7 @@ export default {
   },
   data: function () {
     return {
-      feature: {
+      features: {
         station: null,
         datastreams: [],
       },

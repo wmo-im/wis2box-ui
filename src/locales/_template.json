@@ -14,7 +14,10 @@
   "messages": {
     "welcome": "",
     "no_observations_in_collection": "",
-    "not_authorized": ""
+    "not_authorized": "",
+    "no_linked_collections": "",
+    "how_to_link_station": "",
+    "from": ""
   },
   "station": {
     "map": "",

@@ -22,7 +22,7 @@
             <v-card class="pa-2">
               <div v-show="selectedTab === 0">
                 <wis-map
-                  :feature="feature_"
+                  :features="features_"
                   :params="{ wigos_id: station.id }"
                 />
               </div>
@@ -31,9 +31,9 @@
                   <v-row justify="center" align="center">
                     <v-col v-html="$t('station.name')" />
                     <v-col>
-                      <a target="_blank" :href="station.properties.url">{{
-                        station.properties.name
-                      }}</a>
+                      <a target="_blank" :href="station.properties.url">
+                        {{ station.properties.name }}
+                      </a>
                     </v-col>
                     <v-divider />
                   </v-row>
@@ -61,8 +61,9 @@
 </template>
 
 <script>
-import WisMap from "./WisMap.vue";
 import DataViewer from "./data/DataViewer.vue";
+import WisMap from "./leaflet/WisMap.vue";
+
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -72,20 +73,20 @@ export default defineComponent({
     DataViewer,
     WisMap,
   },
-  props: ["feature"],
+  props: ["features"],
   data: function () {
     return {
       selectedTab: 0,
       tabs: ["station.map", "station.properties", "chart.chart", "table.table"],
-      feature_: this.feature,
+      features_: this.features,
     };
   },
   computed: {
     station: function () {
-      return this.feature_.station;
+      return this.features_.station;
     },
     datastreams: function () {
-      return this.feature_.datastreams;
+      return this.features_.datastreams;
     },
   },
 });

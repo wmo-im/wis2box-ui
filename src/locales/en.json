@@ -15,7 +15,10 @@
   "messages": {
     "welcome": "Welcome to WIS 2.0 in a box!",
     "no_observations_in_collection": " has no observations in collection: ",
-    "not_authorized": "Dataset requires authorization"
+    "not_authorized": "Dataset requires authorization",
+    "no_linked_collections": "has no linked collections",
+    "how_to_link_station": "To link a collection, republish the station(s) after wis2box has published an observation from the station",
+    "from": "from"
   },
   "station": {
     "map": "Station map",
