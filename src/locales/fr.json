@@ -15,7 +15,10 @@
   "messages": {
     "welcome": "Bienvenue à WIS 2.0 in a box!",
     "no_observations_in_collection": " n'a pas d'observations dans la collection: ",
-    "not_authorized": "L'ensemble de données nécessite une autorisation"
+    "not_authorized": "L'ensemble de données nécessite une autorisation",
+    "no_linked_collections": "n'a pas de collections liées",
+    "how_to_link_station": "Pour lier une collection, republiez la ou les stations après que wis2box a publié une observation de la station",
+    "from": "depuis"
   },
   "station": {
     "map": "Plan de la station",

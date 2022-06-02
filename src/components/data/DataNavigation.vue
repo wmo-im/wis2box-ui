@@ -23,7 +23,7 @@
               link
               @click="updateCollection(item)"
             >
-              <v-list-item-title v-html="clean(item.title)" />
+              <v-list-item-title v-html="$root.clean(item.title)" />
             </v-list-item>
           </v-list>
         </v-menu>
@@ -47,7 +47,7 @@
               link
               @click="updateData(item)"
             >
-              <v-list-item-text v-html="this.clean(item.name)" />
+              <v-list-item-text v-html="$root.clean(item.name)" />
             </v-list-item>
           </v-list>
         </v-menu>
@@ -112,15 +112,8 @@ export default {
     updateData(newD) {
       this.choices_.datastream = {
         id: newD.name,
-        name: this.clean(newD.name),
+        name: this.$root.clean(newD.name),
         units: newD.units,
-      }
-    },
-    clean(word) {
-      if (typeof word === "string") {
-        return (
-          word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-        ).replaceAll("_", " ");
       }
     },
   },

@@ -92,14 +92,11 @@ export default {
     for (var c of data.features) {
       for (var link of c.links) {
         if (link.type === "OARec") {
-          c._oarec_url = link.url;
-        }
-      }
-      for (var associations of c.properties.associations) {
-        if (associations.type === "OAFeat") {
-          c._oafeat_url = associations.href;
-        } else if (associations.type === "MQTT") {
-          c._mqp_url = associations.href;
+          c._oarec_url = link.href;
+        } else if (link.type === "OAFeat") {
+          c._oafeat_url = link.href;
+        } else if (link.type === "MQTT") {
+          c._mqp_url = link.href;
         }
       }
       let [x1, y1, x2, y2] = c.bbox;

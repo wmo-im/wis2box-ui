@@ -34,6 +34,13 @@ export default {
     toggleDialog: function () {
       this.dialog = this.dialog === true ? false : true;
     },
+    clean(word) {
+      if (typeof word === "string") {
+        return (
+          word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        ).replaceAll("_", " ");
+      }
+    },
   },
   setup() {
     const { t } = useI18n();
