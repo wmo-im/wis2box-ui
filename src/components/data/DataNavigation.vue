@@ -2,17 +2,9 @@
   <div class="data-navigation">
     <v-navigation-drawer floating permanent color="#d5e3f0">
       <v-container>
-        <v-list-item-title class="text-h6 py-2" v-html="$t('chart.options')" />
-
-        <v-divider class="my-2" />
-
-        <v-list-item-subtitle v-html="$t('chart.collection')" />
         <v-menu>
           <template v-slot:activator="{ props }">
-            <v-list-item
-              class="font-weight-bold text-center py-3"
-              v-bind="props"
-            >
+            <v-list-item class="pa-2 text-h6 text-center" v-bind="props">
               {{ choices.collection.description || $t("chart.collection") }}
             </v-list-item>
           </template>
@@ -20,6 +12,7 @@
             <v-list-item
               v-for="(item, i) in choices.collections"
               :key="i"
+              :value="item.title"
               link
               @click="updateCollection(item)"
             >
@@ -31,26 +24,18 @@
         <v-divider class="my-2" />
 
         <v-list-item-subtitle v-html="$t('chart.observed_property')" />
-        <v-menu>
-          <template v-slot:activator="{ props }">
-            <v-list-item
-              class="font-weight-bold text-center py-3"
-              v-bind="props"
-            >
-              {{ choices.datastream.name || $t("chart.observed_property") }}
-            </v-list-item>
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="(item, i) in choices.datastreams"
-              :key="i"
-              link
-              @click="updateData(item)"
-            >
-              <v-list-item-text v-html="$root.clean(item.name)" />
-            </v-list-item>
-          </v-list>
-        </v-menu>
+        <v-list-item-group v-model="model">
+          <v-list-item
+            v-for="(item, i) in choices.datastreams"
+            :key="i"
+            :value="i"
+            active-color="#014e9e"
+            link
+            @click="updateData(item)"
+          >
+            <v-list-item-text v-html="$root.clean(item.name)" />
+          </v-list-item>
+        </v-list-item-group>
       </v-container>
     </v-navigation-drawer>
   </div>
@@ -67,13 +52,13 @@ export default {
     return {
       choices_: this.choices,
       alert_: this.alert,
+      model: 1
     };
   },
   methods: {
     async updateCollection(newC) {
       this.choices_.collection = newC;
       const [station] = this.choices_.station;
-      console.log(station);
       var request_url = `${oapi}/collections/${newC.id}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station}&properties=resultTime&limit=1`;
       var response = await fetch(request_url);
       var data = await response.json();
