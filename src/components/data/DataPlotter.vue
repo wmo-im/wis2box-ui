@@ -192,10 +192,9 @@ export default defineComponent({
               },
               click: function () {
                 const [start, end] = self.layout.xaxis.range;
-                var timeExtent = `
-                  ${new Date(`${start}Z`).toISOString()}/
-                  ${new Date(`${end}Z`).toISOString()}
-                `;
+                var timeExtent = `${new Date(
+                  start + "Z"
+                ).toISOString()}/${new Date(end + "Z").toISOString()}`;
                 window.location.href =
                   response.request.responseURL + `&datetime=${timeExtent}`;
               },

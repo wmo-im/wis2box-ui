@@ -145,7 +145,7 @@ export default defineComponent({
                   var props = item.properties;
                   tableContent += `
                     <tr>
-                      <th> ${self.$root.clean(props.name)} </th>
+                      <th> ${self.$root.parseForNameAndTime(props)} </th>
                       <td> ${props.value} ${props.units} </td>
                     </tr>
                   `;
