@@ -155,7 +155,10 @@ export default defineComponent({
                     <h2> ${feature.properties.name} </h2>
                     <h5>
                       ${self.$t("messages.from")}
-                      ${new Date(resultTime).toUTCString()}
+                      ${new Date(resultTime).toLocaleString(self.$t("code"), {
+                        timeZone: "UTC",
+                        hour12: false,
+                      })}
                     </h5>
                     <table>
                       ${tableContent}
