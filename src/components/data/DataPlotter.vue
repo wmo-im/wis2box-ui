@@ -108,19 +108,17 @@ export default defineComponent({
       Trace.y = this.getCol(features, y);
       Trace.name = station_id;
       this.data.push(Trace);
+      this.setDateLayout(features[features.length - 1])
     },
     async loadCollection(collection, station_id) {
       this.loading = true;
       var self = this;
-      const range = this.layout.xaxis.range;
       const title = collection.description;
       const datastream = this.choices_.datastream;
 
       this.alert_.msg =
         station_id + this.$t("messages.no_observations_in_collection") + title;
       this.layout.title = title;
-      this.layout.xaxis.range = range;
-      this.layout.xaxis.rangeslider = { range: range };
 
       await this.$http({
         method: "get",
@@ -204,6 +202,12 @@ export default defineComponent({
             console.log("done");
           });
       }
+    },
+    setDateLayout(f) {
+      var startTime = new Date(new Date(f.properties.resultTime).setUTCHours(0, 0, 0, 0)).toISOString();
+      var endTime = new Date(new Date().setUTCHours(23, 59, 59, 999)).toISOString();
+      this.layout.xaxis.range = [startTime, endTime];
+      this.layout.xaxis.rangeslider.range = [startTime, endTime];
     },
   },
 });
