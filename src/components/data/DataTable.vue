@@ -107,6 +107,7 @@ export default defineComponent({
         params: {
           f: "json",
           name: datastream.id,
+          index: datastream.index,
           wigos_station_identifier: station_id,
           resulttype: "hits",
         },
@@ -147,6 +148,7 @@ export default defineComponent({
           params: {
             f: "json",
             name: datastream.id,
+            index: datastream.index,
             wigos_station_identifier: station_id,
             sortby: "-resultTime",
             limit: limit,

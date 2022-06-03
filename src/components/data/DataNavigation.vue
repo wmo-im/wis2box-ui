@@ -38,7 +38,7 @@
             class="text-left text-body-2"
             @click="updateData(item, i)"
           >
-            {{ $root.clean(item.name) }}
+            {{ parseForNameAndTime(item) }}
           </v-list-item>
           <v-divider
             class="pb-1 mx-2"
@@ -120,10 +120,29 @@ export default {
     updateData(newD, index) {
       this.choices_.datastream = {
         id: newD.name,
-        name: this.$root.clean(newD.name),
+        index: newD.index,
+        name: this.parseForNameAndTime(newD),
         units: newD.units,
       };
+
       this.model = index;
+    },
+    parseForNameAndTime(datastream) {
+      var name = datastream.name;
+      if (datastream.phenomenonTime.includes("/")) {
+        const splitTime = datastream.phenomenonTime.split("/");
+        var startDate = new Date(splitTime[0]);
+        var endDate = new Date(splitTime[1]);
+        var timeDifference = endDate.getTime() - startDate.getTime();
+        var hourDifference = Math.floor(timeDifference / (1000 * 3600));
+        if (hourDifference > 0){
+          name = `${name} (${hourDifference} hr)`;
+        } else {
+          var minuteDifference = Math.floor(timeDifference / (1000 * 60));
+          name = `${name} (${minuteDifference} min)`;
+        }
+      }
+      return this.$root.clean(name);
     },
   },
 };
