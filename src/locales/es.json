@@ -32,11 +32,12 @@
     "options": "Opciones",
     "collection": "Colección",
     "observed_property": "Propiedad observada",
-    "station": "Estación"
+    "station": "Estación",
+    "data_source": "Fuente de datos"
   },
   "table": {
     "table": "Tabla",
-    "time": "Tiempo de fenómeno"
+    "time": "Tiempo de resulto"
   },
   "datasets": {
     "topic": "Tema"

@@ -70,6 +70,7 @@ export default defineComponent({
       },
       config: {
         modeBarButtonsToAdd: [],
+        modeBarButtonsToRemove: ["zoom2d", "pan2d", "select2d", "lasso2d", "zoomIn2d", "zoomOut2d", "autoScale2d"],
       },
       font: { size: 14 },
       alert_: this.alert,
@@ -174,14 +175,16 @@ export default defineComponent({
           .then(function (response) {
             // handle success
             self.config.modeBarButtonsToAdd.push({
-              name: "Data Source " + station_id,
+              name: self.$t("chart.data_source") + " " + station_id,
               icon: {
                 width: 24,
                 height: 24,
                 path: mdiDownload,
               },
               click: function () {
-                window.location.href = response.request.responseURL;
+                const [start, end] = self.layout.xaxis.range;
+                var timeExtent = `${new Date(start + "Z").toISOString()}/${new Date(end + "Z").toISOString()}`
+                window.location.href = response.request.responseURL + `&datetime=${timeExtent}`;
               },
             });
             self.layout.yaxis.title = `${datastream.name} (${datastream.units})`;
