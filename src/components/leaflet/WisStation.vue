@@ -202,7 +202,6 @@ export default defineComponent({
       })
         .then(function (response) {
           // handle success
-          console.log(response.data);
           ret = response.data.features;
         })
         .catch(function (error) {

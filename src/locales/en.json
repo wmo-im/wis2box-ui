@@ -28,7 +28,7 @@
     "status": "Operating status"
   },
   "chart": {
-    "chart": "Chart",
+    "chart": "Plot",
     "options": "Options",
     "collection": "Collection",
     "observed_property": "Observed Property",

@@ -16,7 +16,7 @@
               link
               @click="updateCollection(item)"
             >
-              <v-list-item-title v-html="$root.clean(item.title)" />
+              <v-list-item-title v-html="prepareCollection(item)" />
             </v-list-item>
           </v-list>
         </v-menu>
@@ -24,18 +24,16 @@
         <v-divider class="my-2" />
 
         <v-list-item-subtitle v-html="$t('chart.observed_property')" />
-        <v-list-item-group v-model="model">
-          <v-list-item
-            v-for="(item, i) in choices.datastreams"
-            :key="i"
-            :value="i"
-            active-color="#014e9e"
-            link
-            @click="updateData(item)"
-          >
-            <v-list-item-text v-html="$root.clean(item.name)" />
-          </v-list-item>
-        </v-list-item-group>
+        <v-list-item
+          v-for="(item, i) in choices.datastreams"
+          :key="i"
+          :value="i"
+          active-color="#014e9e"
+          :active="model === i"
+          @click="updateData(item, i)"
+        >
+          <v-list-item-text v-html="$root.clean(item.name)" />
+        </v-list-item>
       </v-container>
     </v-navigation-drawer>
   </div>
@@ -47,18 +45,24 @@ let oapi = window.VUE_APP_OAPI;
 export default {
   name: "DataNavigation",
   template: "#data-navigation",
-  props: ["choices", "alert"],
+  props: ["choices", "alert", "station"],
   data() {
     return {
       choices_: this.choices,
       alert_: this.alert,
-      model: 1
+      model: -1,
     };
   },
   methods: {
+    prepareCollection(item) {
+      if (this.station.id === item.title) {
+        this.updateCollection(item);
+      }
+      return this.$root.clean(item.title);
+    },
     async updateCollection(newC) {
       this.choices_.collection = newC;
-      const [station] = this.choices_.station;
+      var station = this.station.id;
       var request_url = `${oapi}/collections/${newC.id}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station}&properties=resultTime&limit=1`;
       var response = await fetch(request_url);
       var data = await response.json();
@@ -94,12 +98,13 @@ export default {
           console.log("done");
         });
     },
-    updateData(newD) {
+    updateData(newD, index) {
       this.choices_.datastream = {
         id: newD.name,
         name: this.$root.clean(newD.name),
         units: newD.units,
-      }
+      };
+      this.model = index;
     },
   },
 };
