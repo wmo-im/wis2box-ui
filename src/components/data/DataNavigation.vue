@@ -1,40 +1,51 @@
 <template id="data-navigation">
   <div class="data-navigation">
-    <v-navigation-drawer floating permanent color="#d5e3f0">
-      <v-container>
-        <v-menu>
-          <template v-slot:activator="{ props }">
-            <v-list-item class="pa-2 text-h6 text-center" v-bind="props">
-              {{ choices.collection.description || $t("chart.collection") }}
-            </v-list-item>
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="(item, i) in choices.collections"
-              :key="i"
-              :value="item.title"
-              link
-              @click="updateCollection(item)"
-            >
-              <v-list-item-title v-html="prepareCollection(item)" />
-            </v-list-item>
-          </v-list>
-        </v-menu>
+    <v-navigation-drawer permanent absolute color="#d5e3f0" class="text-center">
+      <v-menu>
+        <template v-slot:activator="{ props }">
+          <v-list-item class="pa-2 text-h6" v-bind="props">
+            {{ choices.collection.description || $t("chart.collection") }}
+          </v-list-item>
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="(item, i) in choices.collections"
+            :key="i"
+            :value="item.title"
+            @click="updateCollection(item)"
+          >
+            <v-list-item-title v-html="$root.clean(item.title)" />
+          </v-list-item>
+        </v-list>
+      </v-menu>
 
-        <v-divider class="my-2" />
+      <v-divider />
 
-        <v-list-item-subtitle v-html="$t('chart.observed_property')" />
-        <v-list-item
+      <v-list-item-subtitle
+        class="mt-2"
+        v-html="$t('chart.observed_property')"
+      />
+      <v-list nav max-height="480px" bg-color="#d5e3f0">
+        <template
           v-for="(item, i) in choices.datastreams"
           :key="i"
-          :value="i"
-          active-color="#014e9e"
-          :active="model === i"
-          @click="updateData(item, i)"
+          class="mr-3"
         >
-          <v-list-item-text v-html="$root.clean(item.name)" />
-        </v-list-item>
-      </v-container>
+          <v-list-item
+            :value="i"
+            active-color="#014e9e"
+            :active="model === i"
+            class="text-left text-body-2"
+            @click="updateData(item, i)"
+          >
+            {{ $root.clean(item.name) }}
+          </v-list-item>
+          <v-divider
+            class="pb-1 mx-2"
+            v-if="i < choices.datastreams.length - 1"
+          />
+        </template>
+      </v-list>
     </v-navigation-drawer>
   </div>
 </template>
@@ -54,7 +65,7 @@ export default {
     };
   },
   watch: {
-    'choices.collections': {
+    "choices.collections": {
       handler(c) {
         if (this.station.links.length > 0) {
           for (const item of c) {
@@ -63,16 +74,11 @@ export default {
             }
           }
         }
-      }, deep: true
-    }
+      },
+      deep: true,
+    },
   },
   methods: {
-    prepareCollection(item) {
-      if (this.station.id === item.title) {
-        this.updateCollection(item);
-      }
-      return this.$root.clean(item.title);
-    },
     async updateCollection(newC) {
       this.choices_.collection = newC;
       var station = this.station.id;
