@@ -6,9 +6,7 @@
           <v-toolbar>
             <v-toolbar-title v-text="station.properties.name" />
             <v-spacer />
-            <v-btn @click="$root.toggleDialog" icon>
-              <v-icon>mdiClose</v-icon>
-            </v-btn>
+            <v-btn @click="$root.toggleDialog" icon v-html="'X'" />
             <template v-slot:extension>
               <v-tabs v-model="selectedTab" color="#014e9e" grow>
                 <v-tab v-for="(item, i) in tabs" :value="i" :key="i">
@@ -49,8 +47,8 @@
                   </v-row>
                 </v-card>
               </div>
-              <div v-show="selectedTab === 2 || selectedTab === 3">
-                <data-viewer :choice="selectedTab" :station="station.id" />
+              <div v-show="selectedTab === 2">
+                <data-viewer :station="station" />
               </div>
             </v-card>
           </v-responsive>
@@ -77,7 +75,7 @@ export default defineComponent({
   data: function () {
     return {
       selectedTab: 0,
-      tabs: ["station.map", "station.properties", "chart.chart", "table.table"],
+      tabs: ["station.map", "station.properties", "navigation.data"],
       features_: this.features,
     };
   },

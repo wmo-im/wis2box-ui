@@ -3,11 +3,13 @@
     <app-header app />
 
     <v-main>
-      <v-row justify="center">
-        <v-card flat width="80%" class="pt-4">
-          <router-view />
-        </v-card>
-      </v-row>
+      <v-card flat class="py-3">
+        <v-row justify="center">
+          <v-responsive width="90%" max-width="1130">
+            <router-view />
+          </v-responsive>
+        </v-row>
+      </v-card>
     </v-main>
 
     <app-footer app class="pt-4" />
@@ -15,15 +17,15 @@
 </template>
 
 <script>
-import AppHeader from "@/components/app/AppHeader.vue";
 import AppFooter from "@/components/app/AppFooter.vue";
+import AppHeader from "@/components/app/AppHeader.vue";
 
 import { useI18n } from "vue-i18n";
 
 export default {
   components: {
-    AppHeader,
     AppFooter,
+    AppHeader,
   },
   data() {
     return {

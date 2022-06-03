@@ -39,6 +39,15 @@ export default defineComponent({
   name: "DataTable",
   template: "#data-table",
   props: ["choices", "alert"],
+  mounted: function () {
+    this.$nextTick(() => {
+      if (this.choices_.collection !== "" && this.choices_.datastream !== "") {
+        for (var station of this.choices_.station) {
+          this.loadCollection(this.choices_.collection, station);
+        }
+      }
+    });
+  },
   watch: {
     choices: {
       handler(newValue) {
