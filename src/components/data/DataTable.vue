@@ -1,6 +1,6 @@
 <template id="data-table">
   <div class="data-table">
-    <v-card min-height="600px" class="pa-2">
+    <v-card min-height="600px" class="ma-4">
       <v-table v-show="title !== ''">
         <template v-slot:default>
           <thead>
@@ -81,11 +81,7 @@ export default defineComponent({
       this.headerOverflow = e.target.scrollTop;
     },
     formatDate(date) {
-      return new Date(date).toLocaleString(this.$t("code"), {
-        timeZoneName: "short",
-        timeZone: "UTC",
-        hour12: false,
-      });
+      return new Date(date).toISOString();
     },
     getCol(features, key) {
       if (key.includes(".")) {
