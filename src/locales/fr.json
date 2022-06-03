@@ -37,7 +37,8 @@
   },
   "table": {
     "table": "Tableau",
-    "time": "Temps de résultat"
+    "result_time": "Temps de résultat",
+    "phenomenon_time": "Temps du phénomène"
   },
   "datasets": {
     "topic": "Sujet"

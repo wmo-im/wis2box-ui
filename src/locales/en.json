@@ -37,7 +37,8 @@
   },
   "table": {
     "table": "Table",
-    "time": "Result Time"
+    "result_time": "Result time",
+    "phenomenon_time": "Phenomenon time"
   },
   "datasets": {
     "topic": "Topic"

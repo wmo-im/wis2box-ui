@@ -36,7 +36,8 @@
   },
   "table": {
     "table": "",
-    "time": ""
+    "result_time": "",
+    "phenomenon_time": ""
   },
   "datasets": {
     "topic": ""
