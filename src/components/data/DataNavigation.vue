@@ -53,6 +53,19 @@ export default {
       model: -1,
     };
   },
+  watch: {
+    'choices.collections': {
+      handler(c) {
+        if (this.station.links.length > 0) {
+          for (const item of c) {
+            if (this.station.links[0].title === item.id) {
+              this.updateCollection(item);
+            }
+          }
+        }
+      }, deep: true
+    }
+  },
   methods: {
     prepareCollection(item) {
       if (this.station.id === item.title) {
