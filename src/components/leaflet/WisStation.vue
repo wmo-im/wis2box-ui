@@ -145,7 +145,7 @@ export default defineComponent({
                   var props = item.properties;
                   tableContent += `
                     <tr>
-                      <th> ${self.$root.clean(props.name)} </th>
+                      <th> ${self.$root.parseForNameAndTime(props)} </th>
                       <td> ${props.value} ${props.units} </td>
                     </tr>
                   `;
@@ -155,7 +155,10 @@ export default defineComponent({
                     <h2> ${feature.properties.name} </h2>
                     <h5>
                       ${self.$t("messages.from")}
-                      ${new Date(resultTime).toUTCString()}
+                      ${new Date(resultTime).toLocaleString(self.$t("code"), {
+                        timeZone: "UTC",
+                        hour12: false,
+                      })}
                     </h5>
                     <table>
                       ${tableContent}
@@ -219,7 +222,7 @@ export default defineComponent({
 
 <style>
 tr:nth-child(even) {
-  background-color: #d5e3f0;
+  background-color: #eeeeee;
 }
 th,
 td {

@@ -32,11 +32,13 @@
     "options": "Options",
     "collection": "Collection",
     "observed_property": "Observed Property",
-    "station": "Stations"
+    "station": "Stations",
+    "data_source": "Data source"
   },
   "table": {
     "table": "Table",
-    "time": "Phenomenon Time"
+    "result_time": "Result time",
+    "phenomenon_time": "Phenomenon time"
   },
   "datasets": {
     "topic": "Topic"

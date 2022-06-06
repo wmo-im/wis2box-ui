@@ -1,31 +1,24 @@
 <template id="data-table">
   <div class="data-table">
-    <v-card min-height="600px" class="pa-2">
-      <v-table v-show="title !== ''">
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-center" v-html="$t('table.time')" />
-              <th class="text-center" v-html="title" />
-            </tr>
-          </thead>
-        </template>
-      </v-table>
-
+    <v-card min-height="600px" class="ma-4">
       <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
 
-      <v-card id="scroll-target" class="overflow-y-auto" max-height="500">
-        <v-table v-scroll:#scroll-target="onScroll">
-          <template v-slot:default>
-            <tbody>
-              <tr v-for="(date, index) in data.time" :key="index">
-                <td v-html="formatDate(date)" />
-                <td v-html="data.value[index]" />
-              </tr>
-            </tbody>
-          </template>
-        </v-table>
-      </v-card>
+      <v-table v-show="title !== ''" fixed-header height="600px">
+        <thead>
+          <tr>
+            <th class="text-center" v-html="$t('table.result_time')" />
+            <th class="text-center" v-html="$t('table.phenomenon_time')" />
+            <th class="text-center" v-html="title" />
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(date, i) in data.time" :key="i">
+            <td v-html="date" />
+             <td v-html="data.phenomenonTime[i]" />
+            <td v-html="data.value[i]" />
+          </tr>
+        </tbody>
+      </v-table>
     </v-card>
   </div>
 </template>
@@ -80,13 +73,6 @@ export default defineComponent({
     onScroll(e) {
       this.headerOverflow = e.target.scrollTop;
     },
-    formatDate(date) {
-      return new Date(date).toLocaleString(this.$t("code"), {
-        timeZoneName: "short",
-        timeZone: "UTC",
-        hour12: false,
-      });
-    },
     getCol(features, key) {
       if (key.includes(".")) {
         const split = key.split(".");
@@ -121,6 +107,7 @@ export default defineComponent({
         params: {
           f: "json",
           name: datastream.id,
+          index: datastream.index,
           wigos_station_identifier: station_id,
           resulttype: "hits",
         },
@@ -161,6 +148,7 @@ export default defineComponent({
           params: {
             f: "json",
             name: datastream.id,
+            index: datastream.index,
             wigos_station_identifier: station_id,
             sortby: "-resultTime",
             limit: limit,
@@ -170,6 +158,10 @@ export default defineComponent({
             // handle success
             self.title = `${datastream.name} (${datastream.units})`;
             self.data.time = self.getCol(response.data.features, "resultTime");
+            self.data.phenomenonTime = self.getCol(
+              response.data.features,
+              "phenomenonTime"
+            );
             self.data.value = self.getCol(response.data.features, "value");
           })
           .catch(function (error) {

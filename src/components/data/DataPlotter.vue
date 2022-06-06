@@ -70,6 +70,15 @@ export default defineComponent({
       },
       config: {
         modeBarButtonsToAdd: [],
+        modeBarButtonsToRemove: [
+          "zoom2d",
+          "pan2d",
+          "select2d",
+          "lasso2d",
+          "zoomIn2d",
+          "zoomOut2d",
+          "autoScale2d",
+        ],
       },
       font: { size: 14 },
       alert_: this.alert,
@@ -108,19 +117,16 @@ export default defineComponent({
       Trace.y = this.getCol(features, y);
       Trace.name = station_id;
       this.data.push(Trace);
+      this.setDateLayout(features[features.length - 1]);
     },
     async loadCollection(collection, station_id) {
       this.loading = true;
       var self = this;
-      const range = this.layout.xaxis.range;
       const title = collection.description;
       const datastream = this.choices_.datastream;
 
       this.alert_.msg =
         station_id + this.$t("messages.no_observations_in_collection") + title;
-      this.layout.title = title;
-      this.layout.xaxis.range = range;
-      this.layout.xaxis.rangeslider = { range: range };
 
       await this.$http({
         method: "get",
@@ -128,6 +134,7 @@ export default defineComponent({
         params: {
           f: "json",
           name: datastream.id,
+          index: datastream.index,
           wigos_station_identifier: station_id,
           resulttype: "hits",
         },
@@ -168,6 +175,7 @@ export default defineComponent({
           params: {
             f: "json",
             name: datastream.id,
+            index: datastream.index,
             wigos_station_identifier: station_id,
             sortby: "-resultTime",
             limit: limit,
@@ -176,23 +184,29 @@ export default defineComponent({
           .then(function (response) {
             // handle success
             self.config.modeBarButtonsToAdd.push({
-              name: "Data Source " + station_id,
+              name: self.$t("chart.data_source") + " " + station_id,
               icon: {
                 width: 24,
                 height: 24,
                 path: mdiDownload,
               },
               click: function () {
-                window.location.href = response.request.responseURL;
+                const [start, end] = self.layout.xaxis.range;
+                var timeExtent = `${new Date(
+                  start + "Z"
+                ).toISOString()}/${new Date(end + "Z").toISOString()}`;
+                window.location.href =
+                  response.request.responseURL + `&datetime=${timeExtent}`;
               },
             });
-            self.layout.yaxis.title = `${datastream.name} (${datastream.units})`;
             self.newTrace(
               response.data.features,
               "resultTime",
               "value",
               station_id
             );
+            self.layout.yaxis.title = datastream.units;
+            self.layout.title = datastream.name;
             self.plot();
           })
           .catch(function (error) {
@@ -204,6 +218,16 @@ export default defineComponent({
             console.log("done");
           });
       }
+    },
+    setDateLayout(f) {
+      var startTime = new Date(
+        new Date(f.properties.resultTime).setUTCHours(0, 0, 0, 0)
+      ).toISOString();
+      var endTime = new Date(
+        new Date().setUTCHours(23, 59, 59, 999)
+      ).toISOString();
+      this.layout.xaxis.range = [startTime, endTime];
+      this.layout.xaxis.rangeslider.range = [startTime, endTime];
     },
   },
 });
