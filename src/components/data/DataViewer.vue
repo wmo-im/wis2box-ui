@@ -72,13 +72,6 @@ export default defineComponent({
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
     },
   },
-  watch: {
-    tab: {
-      handler() {
-        this.alert.value = false;
-      },
-    },
-  },
   async created() {
     this.loading = true;
     const response = await fetch(oapi + "/collections?f=json");

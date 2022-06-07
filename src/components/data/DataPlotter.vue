@@ -1,8 +1,8 @@
 <template id="data-plotter">
   <div class="data-plotter">
-    <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
+    <v-card min-height="600px" class="ma-4">
+      <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
 
-    <v-card min-height="600px">
       <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
         <v-progress-linear striped indeterminate color="primary" />
       </div>

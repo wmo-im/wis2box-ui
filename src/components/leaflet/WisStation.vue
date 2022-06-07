@@ -12,7 +12,6 @@
 import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
 import { LGeoJson } from "@vue-leaflet/vue-leaflet";
 
-let oapi = window.VUE_APP_OAPI;
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -94,7 +93,7 @@ export default defineComponent({
       var self = this;
       await this.$http({
         method: "get",
-        url: oapi + "/collections/stations/items",
+        url: "/collections/stations/items",
         params: Object.assign({}, self.params_, self.params),
       })
         .then(function (response) {
@@ -117,10 +116,7 @@ export default defineComponent({
       layer.on("mouseover", async function (e) {
         if (feature.links.length > 0) {
           link = feature.links[0].href;
-        } else {
-          link = oapi;
         }
-
         await self
           .$http({
             method: "get",
@@ -173,11 +169,19 @@ export default defineComponent({
           .catch(function (error) {
             // handle error
             console.log(error);
+            let msg;
+            if (error.response.status === 401) {
+              msg = self.$t("messages.not_authorized");
+            } else {
+              msg = `
+                <h5> ${self.$t("messages.no_linked_collections")} </h5>
+                ${self.$t("messages.how_to_link_station")}
+                `;
+            }
             content = `
               <div>
                 <h2> ${feature.properties.name} </h2>
-                <h5> ${self.$t("messages.no_linked_collections")} </h5>
-                ${self.$t("messages.how_to_link_station")}
+                ${msg}
               </div>
             `;
             layer
