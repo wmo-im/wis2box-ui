@@ -14,6 +14,7 @@
             <v-container fluid>
               <v-row>
                 <v-spacer />
+                <token-auth class="pt-4" />
                 <select-locale class="pt-4 pr-4" />
               </v-row>
               <v-row>
@@ -37,6 +38,7 @@
 <script>
 import SelectLocale from "./SelectLocale.vue";
 import AppNav from "./AppNav.vue";
+import TokenAuth from "./TokenAuth.vue";
 import logo from "@/assets/img/logo.png";
 import banner from "@/assets/img/wmo-banner.png";
 import foot from "@/assets/img/wmo-foot.png";
@@ -49,6 +51,7 @@ export default defineComponent({
   components: {
     AppNav,
     SelectLocale,
+    TokenAuth,
   },
   data: function () {
     return {

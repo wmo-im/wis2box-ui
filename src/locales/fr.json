@@ -9,6 +9,11 @@
     "data": "Données",
     "documentation": "Documentation"
   },
+  "util": {
+    "token": "Jeton d'accès",
+    "cancel": "Annuler",
+    "save": "Conserver"
+  },
   "footer": {
     "powered_by": "Alimenté par"
   },

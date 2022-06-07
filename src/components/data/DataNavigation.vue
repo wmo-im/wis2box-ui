@@ -51,8 +51,6 @@
 </template>
 
 <script>
-let oapi = window.VUE_APP_OAPI;
-
 export default {
   name: "DataNavigation",
   template: "#data-navigation",
@@ -80,22 +78,51 @@ export default {
   },
   methods: {
     async updateCollection(newC) {
+      this.alert_value = false;
       this.choices_.collection = newC;
-      var station = this.station.id;
-      var request_url = `${oapi}/collections/${newC.id}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station}&properties=resultTime&limit=1`;
-      var response = await fetch(request_url);
-      var data = await response.json();
-      var resultTime = data.features[0].properties.resultTime;
-      var resultCount = data.numberMatched;
       var self = this;
       await this.$http({
         method: "get",
-        url: oapi + "/collections/" + newC.id + "/items",
+        url: `/collections/${newC.id}/items`,
         params: {
-          wigos_station_identifier: station,
+          wigos_station_identifier: self.station.id,
+          properties: "resultTime",
+          sortby: "-resultTime",
+          f: "json",
+          limit: 1,
+        },
+      })
+        .then(function (response) {
+          // handle success
+          self.fetchCollectionItems(
+            `${newC.id}`,
+            response.data.features[0].properties.resultTime,
+            response.data.numberMatched
+          );
+        })
+        .catch(function (error) {
+          // handle error
+          if (error.response.status === 401) {
+            self.alert_.msg = self.$t("messages.not_authorized");
+            self.alert_.value = true;
+          }
+          console.log(error);
+          self.loading = false;
+        })
+        .then(function () {
+          console.log("done");
+        });
+    },
+    async fetchCollectionItems(collection_id, resultTime, limit) {
+      var self = this;
+      await this.$http({
+        method: "get",
+        url: `/collections/${collection_id}/items`,
+        params: {
+          wigos_station_identifier: self.station.id,
           datetime: `${resultTime}/..`,
           f: "json",
-          limit: resultCount,
+          limit: limit,
         },
       })
         .then(function (response) {
@@ -106,10 +133,6 @@ export default {
         })
         .catch(function (error) {
           // handle error
-          if (error.response.status === 401) {
-            self.alert_.msg = self.$t("messages.not_authorized");
-            self.alert_.value = true;
-          }
           console.log(error);
           self.loading = false;
         })

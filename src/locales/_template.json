@@ -5,8 +5,14 @@
     "home": "",
     "datasets": "",
     "services": "",
+    "monitoring": "",
     "data": "",
     "documentation": ""
+  },
+  "util": {
+    "token": "",
+    "cancel": "",
+    "save": ""
   },
   "footer": {
     "powered_by": ""

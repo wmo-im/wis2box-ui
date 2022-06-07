@@ -1,8 +1,8 @@
 <template id="data-plotter">
   <div class="data-plotter">
-    <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
+    <v-card min-height="600px" class="ma-4">
+      <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
 
-    <v-card min-height="600px">
       <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
         <v-progress-linear striped indeterminate color="primary" />
       </div>
@@ -21,8 +21,6 @@
 import Plotly from "plotly.js-dist-min";
 import { defineComponent } from "vue";
 import { mdiDownload } from "@mdi/js";
-
-let oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
   name: "DataPlotter",
@@ -130,7 +128,7 @@ export default defineComponent({
 
       await this.$http({
         method: "get",
-        url: oapi + "/collections/" + collection.id + "/items",
+        url: `/collections/${collection.id}/items`,
         params: {
           f: "json",
           name: datastream.id,
@@ -171,7 +169,7 @@ export default defineComponent({
         this.loading = true;
         await this.$http({
           method: "get",
-          url: oapi + "/collections/" + collection_id + "/items",
+          url: `/collections/${collection_id}/items`,
           params: {
             f: "json",
             name: datastream.id,
