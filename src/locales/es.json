@@ -9,6 +9,11 @@
     "data": "Datos",
     "documentation": "Documentación"
   },
+  "util": {
+    "token": "Autentificador",
+    "cancel": "Anular",
+    "save": "Guardar"
+  },
   "footer": {
     "powered_by": "Desarrollada por"
   },

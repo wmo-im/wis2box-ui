@@ -9,6 +9,11 @@
     "data": "Data",
     "documentation": "Documentation"
   },
+  "util": {
+    "token": "Token",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
   "footer": {
     "powered_by": "Powered by"
   },
