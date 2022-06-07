@@ -45,7 +45,6 @@ export default {
     },
     parseForNameAndTime(datastream) {
       var name = datastream.name;
-      console.log(datastream);
       if (datastream.phenomenonTime.includes("/")) {
         const splitTime = datastream.phenomenonTime.split("/");
         var startDate = new Date(splitTime[0]);

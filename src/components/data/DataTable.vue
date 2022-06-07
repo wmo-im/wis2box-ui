@@ -14,7 +14,7 @@
         <tbody>
           <tr v-for="(date, i) in data.time" :key="i">
             <td v-html="date" />
-             <td v-html="data.phenomenonTime[i]" />
+            <td v-html="data.phenomenonTime[i]" />
             <td v-html="data.value[i]" />
           </tr>
         </tbody>
@@ -25,8 +25,6 @@
 
 <script>
 import { defineComponent } from "vue";
-
-let oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
   name: "DataTable",
@@ -103,7 +101,7 @@ export default defineComponent({
 
       await this.$http({
         method: "get",
-        url: oapi + "/collections/" + collection.id + "/items",
+        url: `/collections/${collection.id}/items`,
         params: {
           f: "json",
           name: datastream.id,
@@ -144,7 +142,7 @@ export default defineComponent({
         this.loading = true;
         await this.$http({
           method: "get",
-          url: oapi + "/collections/" + collection_id + "/items",
+          url: `/collections/${collection_id}/items`,
           params: {
             f: "json",
             name: datastream.id,
