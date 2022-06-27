@@ -27,42 +27,7 @@ export default defineComponent({
       loading: true,
       geojsonOptions: {
         onEachFeature: this.onEachFeature,
-        pointToLayer: function (feature, latLng) {
-          // style markers according to properties
-          let fillColor;
-          let lineColor;
-          switch (feature.properties.status) {
-            case "operational":
-              fillColor = "SpringGreen";
-              lineColor = "SeaGreen";
-              break;
-            case "nonReporting":
-              fillColor = "Salmon";
-              lineColor = "FireBrick";
-              break;
-            case "closed":
-              fillColor = "SlateGrey";
-              lineColor = "DimGrey";
-              break;
-            default:
-              // undefined status
-              fillColor = "Tan";
-              lineColor = "Sienna";
-          }
-          if (feature.properties.active) {
-            fillColor = "SpringGreen";
-            lineColor = "SeaGreen";
-          }
-          const markerStyle = {
-            radius: 10,
-            fillColor: fillColor,
-            color: lineColor,
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.8,
-          };
-          return circleMarker(latLng, markerStyle);
-        },
+        pointToLayer: this.pointToLayer,
       },
     };
   },
@@ -73,13 +38,100 @@ export default defineComponent({
       this.$root.toggleDialog();
       e.originalEvent.stopPropagation();
     },
-    async onEachFeature(feature, layer) {
+    onEachFeature(feature, layer) {
       this.loading = true;
       var self = this;
       layer.on("mouseover", function (e) {
         self.features_.station = feature;
         layer.bindPopup(feature.properties.name).openPopup(e.latLng);
       });
+      this.getStationStyle(feature, layer);
+    },
+    pointToLayer(feature, latLng) {
+      const markerStyle = {
+        radius: 10,
+        fillColor: "SlateGrey",
+        color: "DimGrey",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8,
+      };
+      return circleMarker(latLng, markerStyle);
+    },
+    async getStationStyle(feature, layer) {
+      var self = this;
+      let fillColor;
+      let color;
+      if (feature.links.length === 0) {
+        return;
+      }
+      await this.$http({
+        method: "get",
+        url: feature.links[0].href + "/items",
+        params: {
+          f: "json",
+          sortby: "-resultTime",
+          wigos_station_identifier: feature.id,
+          limit: 1,
+        },
+      })
+        .then(function (response) {
+          // handle success
+          var index = response.data.features[0].properties.index;
+          self.countDailyObservations(feature, index).then((hits) => {
+            console.log(hits);
+            let propRecieved = hits / 24;
+            console.log(propRecieved);
+            if (propRecieved === 0) {
+              fillColor = "SlateGrey";
+              color = "DimGrey";
+            } else if (propRecieved <= 0.3) {
+              fillColor = "Salmon";
+              color = "FireBrick";
+            } else if (propRecieved <= 0.6) {
+              fillColor = "OrangeRed";
+              color = "DarkOrange";
+            } else if (propRecieved <= 0.8) {
+              fillColor = "Tan";
+              color = "Sienna";
+            } else if (propRecieved <= 1) {
+              fillColor = "SpringGreen";
+              color = "SeaGreen";
+            }
+            layer.remove();
+            layer.options.fillColor = fillColor;
+            layer.options.color = color;
+            layer.addTo(self.map);
+          });
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .then(function () {
+          self.loading = false;
+          setTimeout(self.getStationStyle, 15000, feature, layer);
+        });
+    },
+    async countDailyObservations(station, index) {
+      this.loading = true;
+      let hits;
+      const startTime = new Date();
+      startTime.setDate(startTime.getDate() - 1);
+      await this.$http({
+        method: "get",
+        url: station.links[0].href + "/items",
+        params: {
+          f: "json",
+          datetime: `${startTime.toISOString()}/..`,
+          index: index,
+          wigos_station_identifier: station.id,
+          resulttype: "hits",
+        },
+      }).then(function (response) {
+        hits = response.data.numberMatched;
+      });
+      return hits;
     },
   },
   computed: {
