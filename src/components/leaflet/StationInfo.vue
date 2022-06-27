@@ -111,7 +111,7 @@ export default defineComponent({
   watch: {
     "features_.station": {
       async handler(station) {
-        if (station.links.length == 0) {
+        if (station.links.length === 0) {
           this.msg = `
             ${this.$root.clean(station.properties.name)} ${this.$t(
             "messages.no_linked_collections"
@@ -200,19 +200,12 @@ export default defineComponent({
         },
       }).then(function (response) {
         // handle success
-        console.log(response);
-        if (response.data.features.length === 0) {
-          plot.innerHTML =
-            station.id +
-            self.$t("messages.no_observations_in_collection") +
-            self.$t("messages.from") +
-            " " +
-            startTime.toISOString();
-        }
         var trace = {
           x: response.data.features.map((obs) => obs.properties.resultTime),
           type: "histogram",
-          nbinsx: 24,
+          xbins: {
+            size: 3600000,
+          },
         };
         var data = [trace];
 
@@ -220,9 +213,12 @@ export default defineComponent({
           height: 300,
           width: 450,
           bargap: 0.01,
-          title: self.$t("messages.no_of_observations"),
+          title:
+            self.$t("messages.no_of_observations") +
+            ": " +
+            response.data.numberMatched,
           xaxis: {
-            range: [startTime.toISOString(), new Date()],
+            range: [startTime.toISOString(), new Date().toISOString()],
             type: "date",
           },
           yaxis: {

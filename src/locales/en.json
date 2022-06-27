@@ -24,7 +24,7 @@
     "no_linked_collections": "has no linked collections",
     "how_to_link_station": "To link a collection, republish the station(s) after wis2box has published an observation from the station",
     "from": "from",
-    "no_of_observations": "Observations from the last 24 hours"
+    "no_of_observations": "Observations from the past 24 hours"
   },
   "station": {
     "map": "Station map",

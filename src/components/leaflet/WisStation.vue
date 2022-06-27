@@ -79,9 +79,7 @@ export default defineComponent({
           // handle success
           var index = response.data.features[0].properties.index;
           self.countDailyObservations(feature, index).then((hits) => {
-            console.log(hits);
             let propRecieved = hits / 24;
-            console.log(propRecieved);
             if (propRecieved === 0) {
               fillColor = "SlateGrey";
               color = "DimGrey";
@@ -136,7 +134,6 @@ export default defineComponent({
   },
   computed: {
     stations: function () {
-      console.log(this.features_.stations);
       return this.features_.stations;
     },
   },
