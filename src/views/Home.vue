@@ -27,6 +27,7 @@ export default {
   data: function () {
     return {
       features: {
+        stations: null,
         station: null,
         datastreams: [],
       },

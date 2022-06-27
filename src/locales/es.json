@@ -19,18 +19,20 @@
   },
   "messages": {
     "welcome": "¡Bienvenido al WIS 2.0 in a box!",
-    "no_observations_in_collection": " no tiene observaciones en la colección: ",
+    "no_observations_in_collection": " no tiene observaciones en la colección ",
     "not_authorized": "El conjunto de datos requiere autorización",
     "no_linked_collections": "no tiene colecciones vinculadas",
     "how_to_link_station": "Para vincular una colección, vuelva a publicar la(s) estación(es) después de que wis2box haya publicado una observación de la estación",
-    "from": "desde"
+    "from": "desde",
+    "no_of_observations": "Observaciones de las últimas 24 horas"
   },
   "station": {
     "map": "Mapa de la estación",
     "properties": "Propiedades de la estación",
     "wigos_id": "Identificador de la estación WIGOS",
     "name": "Nombre de estación",
-    "status": "Estado operativo"
+    "status": "Estado operativo",
+    "latest": "Últimas observaciones"
   },
   "chart": {
     "chart": "Gráfico",
