@@ -14,6 +14,14 @@
             @click="onClick(station)"
           >
             <v-list-item-title v-html="$root.clean(station.properties.name)" />
+            <v-spacer />
+            <a
+              :target="station.id"
+              :title="station.id"
+              :href="station.properties.url"
+            >
+              <h5 class="text-right">(OSCAR Surface)</h5>
+            </a>
           </v-list-item>
         </v-list>
       </v-menu>
