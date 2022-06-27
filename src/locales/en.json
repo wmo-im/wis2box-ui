@@ -19,18 +19,21 @@
   },
   "messages": {
     "welcome": "Welcome to WIS 2.0 in a box!",
-    "no_observations_in_collection": " has no observations in collection: ",
+    "no_observations_in_collection": " has no observations in collection ",
     "not_authorized": "Dataset requires authorization",
     "no_linked_collections": "has no linked collections",
     "how_to_link_station": "To link a collection, republish the station(s) after wis2box has published an observation from the station",
-    "from": "from"
+    "from": "from",
+    "no_of_observations": "Observations from the past 24 hours"
   },
   "station": {
     "map": "Station map",
     "properties": "Station properties",
     "wigos_id": "WIGOS station identifier",
     "name": "Station name",
-    "status": "Operating status"
+    "status": "Operating status",
+    "latest": "Latest observations",
+    "report": "Station report"
   },
   "chart": {
     "chart": "Plot",

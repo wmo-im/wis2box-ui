@@ -23,14 +23,17 @@
     "not_authorized": "",
     "no_linked_collections": "",
     "how_to_link_station": "",
-    "from": ""
+    "from": "",
+    "no_of_observations": ""
   },
   "station": {
     "map": "",
     "properties": "",
     "wigos_id": "",
     "name": "",
-    "status": ""
+    "status": "",
+    "latest": "",
+    "report": ""
   },
   "chart": {
     "chart": "",

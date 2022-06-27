@@ -1,7 +1,7 @@
 <template id="wis-station">
   <div class="wis-station">
     <l-geo-json
-      :geojson="geojson"
+      :geojson="stations"
       :options="geojsonOptions"
       @click="mapClick"
     ></l-geo-json>
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
+import { circleMarker } from "leaflet/dist/leaflet-src.esm";
 import { LGeoJson } from "@vue-leaflet/vue-leaflet";
 
 import { defineComponent } from "vue";
@@ -20,66 +20,16 @@ export default defineComponent({
   components: {
     LGeoJson,
   },
-  props: ["features", "map", "params"],
+  props: ["features", "map"],
   data: function () {
     return {
       features_: this.features,
-      bounds_: this.bounds,
       loading: true,
-      params_: {
-        f: "json",
-        limit: 10,
-      },
-      geojson: null,
       geojsonOptions: {
         onEachFeature: this.onEachFeature,
-        pointToLayer: function (feature, latLng) {
-          // style markers according to properties
-          let fillColor;
-          let lineColor;
-          switch (feature.properties.status) {
-            case "operational":
-              fillColor = "SpringGreen";
-              lineColor = "SeaGreen";
-              break;
-            case "nonReporting":
-              fillColor = "Salmon";
-              lineColor = "FireBrick";
-              break;
-            case "closed":
-              fillColor = "SlateGrey";
-              lineColor = "DimGrey";
-              break;
-            default:
-              // undefined status
-              fillColor = "Tan";
-              lineColor = "Sienna";
-          }
-          if (feature.properties.active) {
-            fillColor = "SpringGreen";
-            lineColor = "SeaGreen";
-          }
-          const markerStyle = {
-            radius: 10,
-            fillColor: fillColor,
-            color: lineColor,
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.8,
-          };
-          return circleMarker(latLng, markerStyle);
-        },
+        pointToLayer: this.pointToLayer,
       },
     };
-  },
-  watch: {
-    map: {
-      handler(m) {
-        if (m !== undefined) {
-          this.loadStations();
-        }
-      },
-    },
   },
   methods: {
     mapClick(e) {
@@ -88,137 +38,103 @@ export default defineComponent({
       this.$root.toggleDialog();
       e.originalEvent.stopPropagation();
     },
-    async loadStations() {
+    onEachFeature(feature, layer) {
       this.loading = true;
       var self = this;
-      await this.$http({
-        method: "get",
-        url: "/collections/stations/items",
-        params: Object.assign({}, self.params_, self.params),
-      })
-        .then(function (response) {
-          self.geojson = response.data;
-        })
-        .catch(function (error) {
-          console.log(error);
-        })
-        .then(function () {
-          self.loading = false;
-        });
-      var bounds_ = geoJSON(this.geojson).getBounds();
-      this.map.fitBounds(bounds_);
-    },
-    async onEachFeature(feature, layer) {
-      this.loading = true;
-      var self = this;
-      var content = "";
-      var link = "";
-      layer.on("mouseover", async function (e) {
-        if (feature.links.length > 0) {
-          link = feature.links[0].href;
-        }
-        await self
-          .$http({
-            method: "get",
-            url: link + "/items",
-            params: {
-              f: "json",
-              sortby: "-resultTime",
-              wigos_station_identifier: feature.id,
-              properties: "resultTime",
-              limit: 1,
-            },
-          })
-          .then(function (response) {
-            // handle success
-            var resultTime = response.data.features[0].properties.resultTime;
-            var limit = response.data.numberMatched;
-            var tableContent = "";
-            self
-              .loadObservations(feature, resultTime, limit)
-              .then(function (response) {
-                for (const item of response) {
-                  var props = item.properties;
-                  tableContent += `
-                    <tr>
-                      <th> ${self.$root.parseForNameAndTime(props)} </th>
-                      <td> ${props.value} ${props.units} </td>
-                    </tr>
-                  `;
-                }
-                content = `
-                  <div>
-                    <h2> ${feature.properties.name} </h2>
-                    <h5>
-                      ${self.$t("messages.from")}
-                      ${new Date(resultTime).toLocaleString(self.$t("code"), {
-                        timeZone: "UTC",
-                        hour12: false,
-                      })}
-                    </h5>
-                    <table>
-                      ${tableContent}
-                    </table>
-                  </div>
-                `;
-                layer
-                  .bindPopup(content, { maxWidth: "400", maxHeight: "400" })
-                  .openPopup(e.latLng);
-              });
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-            let msg;
-            if (error.response.status === 401) {
-              msg = self.$t("messages.not_authorized");
-            } else {
-              msg = `
-                <h5> ${self.$t("messages.no_linked_collections")} </h5>
-                ${self.$t("messages.how_to_link_station")}
-                `;
-            }
-            content = `
-              <div>
-                <h2> ${feature.properties.name} </h2>
-                ${msg}
-              </div>
-            `;
-            layer
-              .bindPopup(content, { maxWidth: "400", maxHeight: "400" })
-              .openPopup(e.latLng);
-          })
-          .then(function () {
-            self.loading = false;
-            console.log("done");
-          });
+      layer.on("mouseover", function (e) {
+        self.features_.station = feature;
+        layer.bindPopup(feature.properties.name).openPopup(e.latLng);
       });
+      this.getStationStyle(feature, layer);
     },
-    async loadObservations(feature, resultTime, count) {
-      this.loading = true;
-      var ret = [];
+    pointToLayer(feature, latLng) {
+      const markerStyle = {
+        radius: 10,
+        fillColor: "SlateGrey",
+        color: "DimGrey",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8,
+      };
+      return circleMarker(latLng, markerStyle);
+    },
+    async getStationStyle(feature, layer) {
+      var self = this;
+      let fillColor;
+      let color;
+      if (feature.links.length === 0) {
+        return;
+      }
       await this.$http({
         method: "get",
         url: feature.links[0].href + "/items",
         params: {
           f: "json",
-          datetime: `${resultTime}/..`,
+          sortby: "-resultTime",
           wigos_station_identifier: feature.id,
-          limit: count,
+          limit: 1,
         },
       })
         .then(function (response) {
           // handle success
-          ret = response.data.features;
+          var index = response.data.features[0].properties.index;
+          self.countDailyObservations(feature, index).then((hits) => {
+            let propRecieved = hits / 24;
+            if (propRecieved === 0) {
+              fillColor = "SlateGrey";
+              color = "DimGrey";
+            } else if (propRecieved <= 0.3) {
+              fillColor = "Salmon";
+              color = "FireBrick";
+            } else if (propRecieved <= 0.6) {
+              fillColor = "OrangeRed";
+              color = "DarkOrange";
+            } else if (propRecieved <= 0.8) {
+              fillColor = "Tan";
+              color = "Sienna";
+            } else if (propRecieved <= 1) {
+              fillColor = "SpringGreen";
+              color = "SeaGreen";
+            }
+            layer.remove();
+            layer.options.fillColor = fillColor;
+            layer.options.color = color;
+            layer.addTo(self.map);
+          });
         })
         .catch(function (error) {
           // handle error
           console.log(error);
         })
         .then(function () {
-          console.log("done");
+          self.loading = false;
+          setTimeout(self.getStationStyle, 15000, feature, layer);
         });
-      return ret;
+    },
+    async countDailyObservations(station, index) {
+      this.loading = true;
+      let hits;
+      const startTime = new Date();
+      startTime.setDate(startTime.getDate() - 1);
+      await this.$http({
+        method: "get",
+        url: station.links[0].href + "/items",
+        params: {
+          f: "json",
+          datetime: `${startTime.toISOString()}/..`,
+          index: index,
+          wigos_station_identifier: station.id,
+          resulttype: "hits",
+        },
+      }).then(function (response) {
+        hits = response.data.numberMatched;
+      });
+      return hits;
+    },
+  },
+  computed: {
+    stations: function () {
+      return this.features_.stations;
     },
   },
 });
