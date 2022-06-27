@@ -20,7 +20,7 @@
               :title="station.id"
               :href="station.properties.url"
             >
-              <h5 class="text-right">(OSCAR Surface)</h5>
+              <h5 class="text-right">({{$t("station.report")}})</h5>
             </a>
           </v-list-item>
         </v-list>

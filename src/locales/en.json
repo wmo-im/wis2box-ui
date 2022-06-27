@@ -32,7 +32,8 @@
     "wigos_id": "WIGOS station identifier",
     "name": "Station name",
     "status": "Operating status",
-    "latest": "Latest observations"
+    "latest": "Latest observations",
+    "report": "Station report"
   },
   "chart": {
     "chart": "Plot",

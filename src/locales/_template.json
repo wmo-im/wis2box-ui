@@ -32,7 +32,8 @@
     "wigos_id": "",
     "name": "",
     "status": "",
-    "latest": ""
+    "latest": "",
+    "report": ""
   },
   "chart": {
     "chart": "",
