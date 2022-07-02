@@ -48,3 +48,30 @@ Then to edit the german locale:
 ```
 vi de.json
 ```
+
+
+## Releasing
+
+```bash
+# create release (x.y.z is the release version)
+vi package.json  # update "version"
+vi package-lock.json  # update 'packages."".version
+git commit -am 'update release version x.y.z'
+git push origin main
+git tag -a x.y.z -m 'tagging release version x.y.z'
+git push --tags
+
+# publish release on GitHub (https://github.com/wmo-im/wis2box-ui/releases/new)
+```
+
+### Code Conventions
+
+* [@vue/cli-plugin/eslint](https://cli.vuejs.org/core-plugins/eslint.html)
+
+### Bugs and Issues
+
+All bugs, enhancements and issues are managed on [GitHub](https://github.com/wmo-im/wis2box-ui/issues).
+
+## Contact
+
+* [Tom Kralidis](https://github.com/tomkralidis)
