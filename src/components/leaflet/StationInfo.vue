@@ -1,6 +1,6 @@
 <template id="station-info">
   <div class="station-info">
-    <v-navigation-drawer permanent width="450">
+    <v-navigation-drawer permanent :width="station === null ? 255 : 510">
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-list-item class="pa-2 text-h6 text-center" v-bind="props">
@@ -28,26 +28,26 @@
 
       <v-divider />
 
-      <v-card width="450" class="text-center" v-show="station">
-        <v-tabs v-model="tab" color="#014e9e" optional>
+      <v-card width="95%" flat class="text-center" v-show="station !== null">
+        <v-tabs v-model="tab" color="#014e9e">
           <v-tab v-for="(item, i) in tabs" :value="i" :key="i">
             {{ $t(item) }}
           </v-tab>
-          <v-tab @click="$root.toggleDialog" :value="tabs.length">
+          <v-tab @click="$root.toggleDialog">
             {{ $t("navigation.data") }}
           </v-tab>
         </v-tabs>
         <v-divider />
         <v-window v-model="tab">
-          <v-window-item :value="0" v-show="!snackbar">
+          <v-window-item :value="0" eager>
             <h5 class="text-left">
               {{ $t("messages.from") + " " + latestResultTime }}
             </h5>
             <v-table>
               <table>
-                <tr v-for="(item, i) in recentObservations" :value="i" :key="i">
-                  <th>{{ $root.parseForNameAndTime(item) }}</th>
-                  <td>{{ item.value + " " + item.units }}</td>
+                <tr v-for="(item, i) in recentObservations" :key="i">
+                  <th width="50%">{{ $root.parseForNameAndTime(item) }}</th>
+                  <td width="50%">{{ item.value + " " + item.units }}</td>
                 </tr>
               </table>
             </v-table>
@@ -92,7 +92,7 @@ export default defineComponent({
       recentObservations: [],
       dailyObservations: [],
       latestResultTime: null,
-      tab: -1,
+      tab: null,
       tabs: ["station.latest", "station.status"],
     };
   },
@@ -118,6 +118,7 @@ export default defineComponent({
           )}. ${this.$t("messages.how_to_link_station")}`;
           this.snackbar = true;
           this.loading = false;
+          this.tab = null;
         } else {
           this.loadObservations(station);
         }
@@ -155,6 +156,7 @@ export default defineComponent({
           }
         })
         .then(function () {
+          self.tab = 0;
           self.loading = false;
           console.log("done");
         });
