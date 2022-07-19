@@ -99,7 +99,13 @@ export default {
           c._mqp_url = link.href;
         }
       }
-      let [x1, y1, x2, y2] = c.properties.extent.spatial.bbox[0];
+      let [x1, y1, x2, y2] = [
+        c.geometry.coordinates[0][0][0],
+        c.geometry.coordinates[0][0][1],
+        c.geometry.coordinates[0][2][0],
+        c.geometry.coordinates[0][2][1]
+      ];
+
       c._center = [(y2 + y1) / 2, (x2 + x1) / 2];
       c._zoom = 4;
       this.datasets.push(c);
