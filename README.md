@@ -55,7 +55,7 @@ vi de.json
 ```bash
 # create release (x.y.z is the release version)
 vi package.json  # update "version"
-vi package-lock.json  # update 'packages."".version
+vi package-lock.json  # update 'version' and 'packages."".version
 git commit -am 'update release version x.y.z'
 git push origin main
 git tag -a x.y.z -m 'tagging release version x.y.z'
