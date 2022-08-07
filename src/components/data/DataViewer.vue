@@ -87,7 +87,7 @@ export default defineComponent({
           oapi + "/collections/discovery-metadata/items?f=json"
         );
         this.choices.discovery_metadata = await response.json();
-      } else {
+      } else if (c.id !== "messages"){
         this.choices.collections.push(c);
       }
     }
