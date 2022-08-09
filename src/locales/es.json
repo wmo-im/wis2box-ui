@@ -3,6 +3,7 @@
   "code": "es",
   "navigation": {
     "home": "Página Principal",
+    "map": "Mapa",
     "datasets": "Conjunto de datos",
     "services": "Servicios de datos",
     "monitoring": "Vigilancia",

@@ -3,6 +3,7 @@
   "code": "fr",
   "navigation": {
     "home": "Page d'accueil",
+    "map": "Carte",
     "datasets": "Ensemble de données ",
     "services": "Services de données",
     "monitoring": "Surveillance",
