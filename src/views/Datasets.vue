@@ -1,48 +1,53 @@
 <template id="datasets">
   <div class="datasets">
     <v-responsive justify-center>
-      <v-table>
-        <tbody>
-          <tr class="pa-2 my-4" v-for="(item, i) in datasets" :key="i">
-            <th>
-              <v-btn
-                variant="text"
-                class="font-weight-bold"
-                block
-                title="OARec"
-                :href="item._oarec_url"
-                target="_window_OARec"
-              >
-                {{ item.properties.title }}
-              </v-btn>
-              <v-container>
-                <v-row justify="center" fill-height>
-                  <dataset-map :dataset="item" />
-                </v-row>
-              </v-container>
-            </th>
-            <td>
-              <v-col cols="12" class="text-left">
-                <p class="font-weight-bold">
-                  {{ $t("datasets.topic") + " : " }}
-                </p>
-                <code>{{ item.id }}</code>
-              </v-col>
-              <v-btn-group variant="outlined" divided class="my-2">
-                <template v-for="(item, i) in item.links" :key="i">
+      <v-alert border="start" variant="contained-text" color="#014e9e">
+        <h2>{{ $t("messages.welcome") }}</h2>
+      </v-alert>
+      <v-card class="pa-2">
+        <v-table>
+          <tbody>
+            <tr class="pa-2 my-4" v-for="(item, i) in datasets" :key="i">
+              <th>
+                <v-btn
+                  variant="text"
+                  class="font-weight-bold"
+                  block
+                  title="OARec"
+                  :href="item._oarec_url"
+                  target="_window_OARec"
+                >
+                  {{ item.properties.title }}
+                </v-btn>
+                <v-container>
+                  <v-row justify="center" fill-height>
+                    <dataset-map :dataset="item" />
+                  </v-row>
+                </v-container>
+              </th>
+              <td>
+                <v-col cols="12" class="text-left">
+                  <p class="font-weight-bold">
+                    {{ $t("datasets.topic") + " : " }}
+                  </p>
+                  <code>{{ item.id }}</code>
+                </v-col>
+                <v-btn-group variant="outlined" divided>
                   <v-btn
+                    v-for="(item, i) in item.links"
+                    :key="i"
                     :title="item.type"
                     :href="item.href"
                     :target="`_window_${item.type}`"
                   >
                     {{ $t(`datasets.${item.msg}`) }}
                   </v-btn>
-                </template>
-              </v-btn-group>
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
+                </v-btn-group>
+              </td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-card>
     </v-responsive>
   </div>
 </template>

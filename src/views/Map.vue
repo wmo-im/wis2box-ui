@@ -3,10 +3,6 @@
     <chart-dialog :features="features" />
   </div>
   <div class="map" :style="{ opacity: $root.dialog ? '0' : '1' }">
-    <v-alert border="start" variant="contained-text" color="#014e9e">
-      <h2>{{ $t("messages.welcome") }}</h2>
-    </v-alert>
-
     <v-card flat>
       <wis-map :features="features" :params="{ limit: 25 }" />
     </v-card>

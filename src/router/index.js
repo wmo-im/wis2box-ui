@@ -5,12 +5,12 @@ import Services from "../views/Services.vue";
 
 const routes = [
   {
-    path: "/",
+    path: "/map",
     name: "Map",
     component: Map,
   },
   {
-    path: "/datasets",
+    path: "/",
     name: "Datasets",
     component: Datasets,
   },

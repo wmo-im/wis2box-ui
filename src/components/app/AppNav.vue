@@ -36,13 +36,13 @@ export default defineComponent({
     return {
       items: [
         {
-          text: "map",
+          text: "home",
           target: "/",
           href: undefined,
         },
         {
-          text: "datasets",
-          target: "/datasets",
+          text: "map",
+          target: "/map",
           href: undefined,
         },
         {
