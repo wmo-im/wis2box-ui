@@ -41,8 +41,8 @@ export default defineComponent({
           href: undefined,
         },
         {
-          text: "datasets",
-          target: "/datasets",
+          text: "map",
+          target: "/map",
           href: undefined,
         },
         {

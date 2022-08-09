@@ -3,6 +3,7 @@
   "code": "fr",
   "navigation": {
     "home": "Page d'accueil",
+    "map": "Carte",
     "datasets": "Ensemble de données ",
     "services": "Services de données",
     "monitoring": "Surveillance",
@@ -33,7 +34,8 @@
     "name": "Nom de la station",
     "status": "État de fonctionnement",
     "latest": "Dernières observations",
-    "report": "Rapport de la station"
+    "report": "Rapport de la station",
+    "limit": "Limite"
   },
   "chart": {
     "chart": "Graphique",
@@ -49,6 +51,9 @@
     "phenomenon_time": "Temps du phénomène"
   },
   "datasets": {
-    "topic": "Sujet"
+    "topic": "Sujet",
+    "messages": "Messagerie WIS 2.0",
+    "oafeat": "OGC API - Features",
+    "mqp": "PubSub"
   }
 }

@@ -3,6 +3,7 @@
   "code": "",
   "navigation": {
     "home": "",
+    "map": "",
     "datasets": "",
     "services": "",
     "monitoring": "",
@@ -33,7 +34,8 @@
     "name": "",
     "status": "",
     "latest": "",
-    "report": ""
+    "report": "",
+    "limit": ""
   },
   "chart": {
     "chart": "",
@@ -49,6 +51,9 @@
     "phenomenon_time": ""
   },
   "datasets": {
-    "topic": ""
+    "topic": "",
+    "messages": "",
+    "oafeat": "",
+    "mqp": ""
   }
 }

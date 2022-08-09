@@ -3,6 +3,7 @@
   "code": "en",
   "navigation": {
     "home": "Home",
+    "map": "Map",
     "datasets": "Datasets",
     "services": "Data services",
     "monitoring": "Monitoring",
@@ -33,7 +34,8 @@
     "name": "Station name",
     "status": "Operating status",
     "latest": "Latest observations",
-    "report": "Station report"
+    "report": "Station report",
+    "limit": "Limit"
   },
   "chart": {
     "chart": "Plot",
@@ -49,6 +51,9 @@
     "phenomenon_time": "Phenomenon time"
   },
   "datasets": {
-    "topic": "Topic"
+    "topic": "Topic",
+    "messages": "WIS 2.0 messages",
+    "oafeat": "OGC API - Features",
+    "mqp": "PubSub"
   }
 }

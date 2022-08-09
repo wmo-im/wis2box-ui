@@ -18,12 +18,23 @@
                   :zoom="zoom"
                   :center="center"
                   maxZoom="16"
-                  minZoom="3"
+                  minZoom="2"
                   style="height: 60vh"
                   @ready="onReady()"
                 >
                   <wis-station :features="features" :map="map" />
                   <l-tile-layer :url="url" :attribution="attribution" />
+                  <l-control position="bottomleft">
+                    <v-card width="95px" max-height="40px">
+                      <v-select
+                        v-model="limit_"
+                        :items="[10, 25, 50, numberMatched]"
+                        :label="$t('station.limit')"
+                        hide-details
+                        density="compact"
+                      />
+                    </v-card>
+                  </l-control>
                 </l-map>
               </p>
             </v-card>
@@ -34,12 +45,10 @@
   </div>
 </template>
 
-
-
 <script>
 import "leaflet/dist/leaflet.css";
 import { geoJSON } from "leaflet/dist/leaflet-src.esm";
-import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
+import { LControl, LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
 
 import WisStation from "./WisStation.vue";
 import StationInfo from "./StationInfo.vue";
@@ -50,6 +59,7 @@ export default defineComponent({
   name: "WisMap",
   template: "#wis-map",
   components: {
+    LControl,
     LMap,
     LTileLayer,
     WisStation,
@@ -58,10 +68,8 @@ export default defineComponent({
   props: ["params", "features"],
   data: function () {
     return {
-      params_: {
-        f: "json",
-        limit: 10,
-      },
+      numberMatched: 0,
+      limit_: 10,
       loading: true,
       map: undefined,
       features_: this.features,
@@ -71,6 +79,21 @@ export default defineComponent({
         '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     };
+  },
+  computed: {
+    params_: function () {
+      return {
+        f: "json",
+        limit: this.limit_,
+      };
+    },
+  },
+  watch: {
+    limit_: {
+      handler() {
+        this.loadStations();
+      },
+    },
   },
   methods: {
     onReady() {
@@ -86,10 +109,11 @@ export default defineComponent({
       await this.$http({
         method: "get",
         url: "/collections/stations/items",
-        params: Object.assign({}, self.params_, self.params),
+        params: Object.assign({}, self.params, self.params_),
       })
         .then(function (response) {
           self.features_.stations = response.data;
+          self.numberMatched = response.data.numberMatched;
         })
         .catch(function (error) {
           console.log(error);
