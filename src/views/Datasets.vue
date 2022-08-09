@@ -28,20 +28,17 @@
                 </p>
                 <code>{{ item.id }}</code>
               </v-col>
-              <v-col cols="12" class="text-left">
-                <v-btn
-                  title="OAFeat"
-                  :href="item._oafeat_url"
-                  target="_window_OAFeat"
-                >
-                  OGC API
-                </v-btn>
-              </v-col>
-              <v-col cols="12" class="text-left">
-                <v-btn title="MQP" :href="item._mqp_url" target="_window_MQP">
-                  PubSub
-                </v-btn>
-              </v-col>
+              <v-btn-group variant="outlined" divided class="my-2">
+                <template v-for="(item, i) in item.links" :key="i">
+                  <v-btn
+                    :title="item.type"
+                    :href="item.href"
+                    :target="`_window_${item.type}`"
+                  >
+                    {{ $t(`datasets.${item.msg}`) }}
+                  </v-btn>
+                </template>
+              </v-btn-group>
             </td>
           </tr>
         </tbody>
@@ -72,15 +69,36 @@ export default {
     );
     const data = await response.json();
     for (var c of data.features) {
+      const links = [];
       for (var link of c.links) {
         if (link.type === "OARec") {
           c._oarec_url = link.href;
         } else if (link.type === "OAFeat") {
-          c._oafeat_url = link.href;
+          links.push({
+            href: link.href,
+            type: "OAFeat",
+            msg: "oafeat",
+          });
         } else if (link.type === "MQTT") {
-          c._mqp_url = link.href;
+          links.push({
+            href: link.href,
+            type: "MQP",
+            msg: "mqp",
+          });
         }
       }
+      c.bbox = [
+        c.geometry.coordinates[0][0][0],
+        c.geometry.coordinates[0][0][1],
+        c.geometry.coordinates[0][2][0],
+        c.geometry.coordinates[0][2][1],
+      ];
+      links.push({
+        href: oapi + "/collections/messages/items?bbox=" + `${c.bbox}`,
+        type: "Messages",
+        msg: "messages",
+      });
+      c.links = links;
       this.datasets.push(c);
     }
   },

@@ -55,12 +55,7 @@ export default {
     },
     async loadDataset() {
       this.loading = true;
-      let [x1, y1, x2, y2] = [
-        this.dataset.geometry.coordinates[0][0][0],
-        this.dataset.geometry.coordinates[0][0][1],
-        this.dataset.geometry.coordinates[0][2][0],
-        this.dataset.geometry.coordinates[0][2][1],
-      ];
+      let [x1, y1, x2, y2] = this.dataset.bbox;
 
       this.center = [(y2 + y1) / 2, (x2 + x1) / 2];
       var bounds = latLngBounds([

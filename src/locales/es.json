@@ -51,6 +51,9 @@
     "phenomenon_time": "Tiempo de fenómeno"
   },
   "datasets": {
-    "topic": "Tema"
+    "topic": "Tema",
+    "messages": "Mensajes del WIS 2.0",
+    "oafeat": "OGC API - Features",
+    "mqp": "PubSub"
   }
 }
