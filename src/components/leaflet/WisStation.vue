@@ -49,7 +49,7 @@ export default defineComponent({
     },
     pointToLayer(feature, latLng) {
       const markerStyle = {
-        radius: 10,
+        radius: 7,
         fillColor: "SlateGrey",
         color: "DimGrey",
         weight: 1,
@@ -108,7 +108,7 @@ export default defineComponent({
         })
         .then(function () {
           self.loading = false;
-          setTimeout(self.getStationStyle, 15000, feature, layer);
+          setTimeout(self.getStationStyle, 60000, feature, layer);
         });
     },
     async countDailyObservations(station, index) {

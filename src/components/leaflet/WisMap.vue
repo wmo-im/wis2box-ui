@@ -18,7 +18,7 @@
                   :zoom="zoom"
                   :center="center"
                   maxZoom="16"
-                  minZoom="3"
+                  minZoom="2"
                   style="height: 60vh"
                   @ready="onReady()"
                 >
