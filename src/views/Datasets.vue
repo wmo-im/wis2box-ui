@@ -17,18 +17,7 @@
               </v-btn>
               <v-container>
                 <v-row justify="center" fill-height>
-                  <v-card width="240px" flat>
-                    <l-map
-                      :ref="item.id"
-                      :zoom="item._zoom"
-                      :center="item._center"
-                      :options="{ zoomControl: false }"
-                      style="height: 160px"
-                    >
-                      <l-geo-json :geojson="item" />
-                      <l-tile-layer :url="url" :attribution="attribution" />
-                    </l-map>
-                  </v-card>
+                  <dataset-map :dataset="item" />
                 </v-row>
               </v-container>
             </th>
@@ -62,8 +51,7 @@
 </template>
 
 <script>
-import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
+import DatasetMap from "../components/leaflet/DatasetMap.vue";
 
 let oapi = window.VUE_APP_OAPI;
 
@@ -71,20 +59,14 @@ export default {
   name: "datasets",
   template: "#datasets",
   components: {
-    LMap,
-    LTileLayer,
-    LGeoJson,
+    DatasetMap,
   },
   data: function () {
     return {
       datasets: [],
-      attribution:
-        '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
-      url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     };
   },
   async created() {
-    this.loading = true;
     const response = await fetch(
       oapi + "/collections/discovery-metadata/items?f=json"
     );
@@ -99,18 +81,8 @@ export default {
           c._mqp_url = link.href;
         }
       }
-      let [x1, y1, x2, y2] = [
-        c.geometry.coordinates[0][0][0],
-        c.geometry.coordinates[0][0][1],
-        c.geometry.coordinates[0][2][0],
-        c.geometry.coordinates[0][2][1]
-      ];
-
-      c._center = [(y2 + y1) / 2, (x2 + x1) / 2];
-      c._zoom = 4;
       this.datasets.push(c);
     }
-    this.loading = false;
   },
 };
 </script>
