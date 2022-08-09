@@ -33,7 +33,8 @@
     "name": "Station name",
     "status": "Operating status",
     "latest": "Latest observations",
-    "report": "Station report"
+    "report": "Station report",
+    "limit": "Limit"
   },
   "chart": {
     "chart": "Plot",
