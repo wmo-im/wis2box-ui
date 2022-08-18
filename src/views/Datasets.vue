@@ -84,25 +84,8 @@ export default {
             type: "OAFeat",
             msg: "oafeat",
           });
-        } else if (link.type === "MQTT") {
-          links.push({
-            href: link.href,
-            type: "MQP",
-            msg: "mqp",
-          });
         }
       }
-      c.bbox = [
-        c.geometry.coordinates[0][0][0],
-        c.geometry.coordinates[0][0][1],
-        c.geometry.coordinates[0][2][0],
-        c.geometry.coordinates[0][2][1],
-      ];
-      links.push({
-        href: oapi + "/collections/messages/items?bbox=" + `${c.bbox}`,
-        type: "Messages",
-        msg: "messages",
-      });
       c.links = links;
       this.datasets.push(c);
     }

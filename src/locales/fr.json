@@ -53,7 +53,7 @@
   "datasets": {
     "topic": "Sujet",
     "messages": "Messagerie WIS 2.0",
-    "oafeat": "OGC API - Features",
+    "oafeat": "OGC API",
     "mqp": "PubSub"
   }
 }
