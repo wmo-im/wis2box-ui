@@ -69,7 +69,7 @@ export default defineComponent({
   data: function () {
     return {
       numberMatched: 0,
-      limit_: 10,
+      limit_: 500,
       loading: true,
       map: undefined,
       features_: this.features,
