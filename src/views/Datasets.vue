@@ -86,6 +86,12 @@ export default {
           });
         }
       }
+      c.bbox = [
+        c.geometry.coordinates[0][0][0],
+        c.geometry.coordinates[0][0][1],
+        c.geometry.coordinates[0][2][0],
+        c.geometry.coordinates[0][2][1],
+      ];
       c.links = links;
       this.datasets.push(c);
     }
