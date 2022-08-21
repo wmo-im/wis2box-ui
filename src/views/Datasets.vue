@@ -9,6 +9,32 @@
           <tbody>
             <tr class="pa-2 my-4" v-for="(item, i) in datasets" :key="i">
               <th>
+                <v-hover v-slot="{ isHovering, props }">
+                  <v-container>
+                    <v-row justify="center" fill-height>
+                      <v-card
+                        class="pa-2 ma-0"
+                        :elevation="isHovering ? 12 : 0"
+                        v-bind="props"
+                        @click="loadMap(item.id)"
+                      >
+                        <v-overlay
+                          open-on-hover
+                          contained
+                          activator="parent"
+                          class="align-center justify-center"
+                        >
+                          <v-btn flat>
+                            {{ $t("navigation.map") }}
+                          </v-btn>
+                        </v-overlay>
+                        <dataset-map :dataset="item" />
+                      </v-card>
+                    </v-row>
+                  </v-container>
+                </v-hover>
+              </th>
+              <td>
                 <v-btn
                   variant="text"
                   class="font-weight-bold"
@@ -19,30 +45,25 @@
                 >
                   {{ item.properties.title }}
                 </v-btn>
-                <v-container>
-                  <v-row justify="center" fill-height>
-                    <dataset-map :dataset="item" />
-                  </v-row>
-                </v-container>
-              </th>
-              <td>
-                <v-col cols="12" class="text-left">
-                  <p class="font-weight-bold">
-                    {{ $t("datasets.topic") + " : " }}
-                  </p>
-                  <code>{{ item.id }}</code>
+                <v-col cols="12" class="text-center">
+                  <span>
+                    <strong>{{ $t("datasets.topic") + " : " }}</strong>
+                    <code>{{ item.id }}</code>
+                  </span>
                 </v-col>
-                <v-btn-group variant="outlined" divided>
-                  <v-btn
-                    v-for="(item, i) in item.links"
-                    :key="i"
-                    :title="item.type"
-                    :href="item.href"
-                    :target="`_window_${item.type}`"
-                  >
-                    {{ $t(`datasets.${item.msg}`) }}
-                  </v-btn>
-                </v-btn-group>
+                <v-col cols="12" class="text-center">
+                  <v-btn-group variant="outlined" divided>
+                    <v-btn
+                      v-for="(item, i) in item.links"
+                      :key="i"
+                      :title="item.type"
+                      :href="item.href"
+                      :target="`_window_${item.type}`"
+                    >
+                      {{ $t(`datasets.${item.msg}`) }}
+                    </v-btn>
+                  </v-btn-group>
+                </v-col>
               </td>
             </tr>
           </tbody>
@@ -95,6 +116,12 @@ export default {
       c.links = links;
       this.datasets.push(c);
     }
+  },
+  methods: {
+    loadMap(topic) {
+      console.log(topic);
+      this.$router.push(`/map/${topic}`)
+    },
   },
 };
 </script>

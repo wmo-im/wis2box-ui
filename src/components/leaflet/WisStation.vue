@@ -142,7 +142,7 @@ export default defineComponent({
 
 <style>
 tr:nth-child(even) {
-  background-color: #eeeeee;
+  background-color: #d5e3f0;
 }
 th,
 td {
