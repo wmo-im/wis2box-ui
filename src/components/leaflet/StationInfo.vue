@@ -1,35 +1,43 @@
 <template id="station-info">
   <div class="station-info">
-    <v-navigation-drawer permanent :width="station === null ? 255 : 510">
-      <v-menu>
-        <template v-slot:activator="{ props }">
-          <v-list-item class="pa-2 text-h6 text-center" v-bind="props">
-            {{ station_name || $t("chart.station") }}
-          </v-list-item>
-        </template>
+    <v-navigation-drawer permanent :width="station === null ? 300 : 600">
+      <v-toolbar>
+        <v-toolbar-title>
+          {{ station_name || $t("chart.station") }}
+        </v-toolbar-title>
+        <v-spacer />
+        <v-btn
+          color="pink"
+          icon
+          v-show="station !== null"
+          @click="features_.station = null"
+        >
+          X
+        </v-btn>
+      </v-toolbar>
+      <v-divider />
+      <v-card flat class="text-center" v-show="station === null">
         <v-list>
-          <v-list-item
-            v-for="(station, i) in features_.stations.features"
-            :key="i"
-            @click="onClick(station)"
-          >
-            <v-list-item-title v-html="$root.clean(station.properties.name)" />
-            <v-spacer />
-            <a
-              :target="station.id"
-              :title="station.id"
-              :href="station.properties.url"
-            >
-              <h5 class="text-right">({{$t("station.report")}})</h5>
-            </a>
+          <v-list-item v-for="(s, i) in stations" :key="i" @click="onClick(s)">
+            <v-list-item-title v-html="$root.clean(s.properties.name)" />
+            <template v-slot:append>
+              <v-btn
+                variant="outlined"
+                size="small"
+                color="#014e9e"
+                :target="s.id"
+                :title="s.id"
+                :href="s.properties.url"
+              >
+                {{ $t("station.report") }}
+              </v-btn>
+            </template>
           </v-list-item>
         </v-list>
-      </v-menu>
+      </v-card>
 
-      <v-divider />
-
-      <v-card width="95%" flat class="text-center" v-show="station !== null">
-        <v-tabs v-model="tab" color="#014e9e">
+      <v-card flat v-show="station !== null">
+        <v-tabs density="compact" v-model="tab" color="#014e9e">
           <v-tab v-for="(item, i) in tabs" :value="i" :key="i">
             {{ $t(item) }}
           </v-tab>
@@ -53,9 +61,9 @@
             </v-table>
           </v-window-item>
           <v-window-item :value="1" eager>
-            <v-card class="text-center">
+            <v-row justify="center">
               <div id="stationStatus" />
-            </v-card>
+            </v-row>
           </v-window-item>
         </v-window>
       </v-card>
@@ -106,6 +114,11 @@ export default defineComponent({
       } else {
         return this.station;
       }
+    },
+    stations: function () {
+      var s = this.features.stations === null ? [] : this.features.stations.features;
+      console.log(s);
+      return s;
     },
   },
   watch: {
