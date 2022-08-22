@@ -35,6 +35,17 @@
                       />
                     </v-card>
                   </l-control>
+                  <l-control position="bottomright">
+                    <v-card width="125px" class="legend pa-2" >
+                      <strong>
+                      {{ $t("messages.no_of_observations") }}
+                      </strong><br />
+                      <template v-for="(item, i) in legend" :key="i">
+                        <i :style="`background: ${item.color}`" />
+                        {{ item.range }} <br />
+                      </template>
+                    </v-card>
+                  </l-control>
                 </l-map>
               </p>
             </v-card>
@@ -78,6 +89,28 @@ export default defineComponent({
       attribution:
         '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      legend: [
+        {
+          color: "SlateGrey",
+          range: "None",
+        },
+        {
+          color: "Salmon",
+          range: "0 - 7",
+        },
+        {
+          color: "Orange",
+          range: "7 - 14",
+        },
+        {
+          color: "Tan",
+          range: "14 - 19",
+        },
+        {
+          color: "SpringGreen",
+          range: "19 - 24",
+        },
+      ],
     };
   },
   computed: {
@@ -139,3 +172,13 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.8;
+}
+</style>

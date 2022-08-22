@@ -87,7 +87,7 @@ export default defineComponent({
               fillColor = "Salmon";
               color = "FireBrick";
             } else if (propRecieved <= 0.6) {
-              fillColor = "OrangeRed";
+              fillColor = "Orange";
               color = "DarkOrange";
             } else if (propRecieved <= 0.8) {
               fillColor = "Tan";
