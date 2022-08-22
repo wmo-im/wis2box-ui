@@ -5,7 +5,8 @@ import Services from "../views/Services.vue";
 
 const routes = [
   {
-    path: "/map",
+    path: "/map/:topic",
+    props: true,
     name: "Map",
     component: Map,
   },

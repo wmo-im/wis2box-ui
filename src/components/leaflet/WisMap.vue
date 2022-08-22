@@ -28,7 +28,7 @@
                     <v-card width="95px" max-height="40px">
                       <v-select
                         v-model="limit_"
-                        :items="[10, 25, 50, numberMatched]"
+                        :items="items"
                         :label="$t('station.limit')"
                         hide-details
                         density="compact"
@@ -69,7 +69,7 @@ export default defineComponent({
   data: function () {
     return {
       numberMatched: 0,
-      limit_: 500,
+      limit_: null,
       loading: true,
       map: undefined,
       features_: this.features,
@@ -86,6 +86,18 @@ export default defineComponent({
         f: "json",
         limit: this.limit_,
       };
+    },
+    items: function () {
+      const opts = [10, 25, 50, 100];
+      const items = new Set();
+
+      for (const item of opts) {
+        if (item < this.numberMatched) {
+          items.add(item);
+        }
+      }
+      items.add(this.numberMatched);
+      return items;
     },
   },
   watch: {

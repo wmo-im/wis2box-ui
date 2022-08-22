@@ -41,11 +41,6 @@ export default defineComponent({
           href: undefined,
         },
         {
-          text: "map",
-          target: "/map",
-          href: undefined,
-        },
-        {
           text: "services",
           target: "/data-services",
           href: undefined,
