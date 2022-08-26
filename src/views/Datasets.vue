@@ -25,7 +25,7 @@
                           class="align-center justify-center"
                         >
                           <v-btn flat>
-                            {{ $t("navigation.map") }}
+                            {{ $t("datasets.map") }}
                           </v-btn>
                         </v-overlay>
                         <dataset-map :dataset="item" />
@@ -35,17 +35,10 @@
                 </v-hover>
               </th>
               <td>
-                <v-btn
-                  variant="text"
-                  class="font-weight-bold"
-                  block
-                  title="OARec"
-                  :href="item._oarec_url"
-                  target="_window_OARec"
-                >
-                  {{ item.properties.title }}
-                </v-btn>
                 <v-col cols="12" class="text-center">
+                  <h2>
+                    {{ item.properties.title }}
+                  </h2>
                   <span>
                     <strong>{{ $t("datasets.topic") + " : " }}</strong>
                     <code>{{ item.id }}</code>
@@ -58,9 +51,15 @@
                       :key="i"
                       :title="item.type"
                       :href="item.href"
+                      :to="item.target"
                       :target="`_window_${item.type}`"
                     >
                       {{ $t(`datasets.${item.msg}`) }}
+                      <v-icon
+                        v-if="item.href !== undefined"
+                        end
+                        icon="mdi-open-in-new"
+                      />
                     </v-btn>
                   </v-btn-group>
                 </v-col>
@@ -98,15 +97,27 @@ export default {
       const links = [];
       for (var link of c.links) {
         if (link.type === "OARec") {
-          c._oarec_url = link.href;
+          links.push({
+            href: link.href,
+            target: undefined,
+            type: "OARec",
+            msg: "oarec",
+          });
         } else if (link.type === "OAFeat") {
           links.push({
             href: link.href,
+            target: undefined,
             type: "OAFeat",
             msg: "oafeat",
           });
         }
       }
+      links.push({
+        href: undefined,
+        target: `/map/${c.id}`,
+        type: "Map",
+        msg: "map",
+      });
       c.bbox = [
         c.geometry.coordinates[0][0][0],
         c.geometry.coordinates[0][0][1],
@@ -119,8 +130,7 @@ export default {
   },
   methods: {
     loadMap(topic) {
-      console.log(topic);
-      this.$router.push(`/map/${topic}`)
+      this.$router.push(`/map/${topic}`);
     },
   },
 };

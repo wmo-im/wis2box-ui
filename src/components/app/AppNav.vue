@@ -15,6 +15,11 @@
                 v-bind="props"
               >
                 {{ $t(`navigation.${item.text}`) }}
+                <v-icon
+                  v-if="item.href !== undefined"
+                  end
+                  icon="mdi-open-in-new"
+                />
               </v-btn>
             </v-hover>
           </template>

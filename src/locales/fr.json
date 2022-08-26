@@ -3,7 +3,6 @@
   "code": "fr",
   "navigation": {
     "home": "Page d'accueil",
-    "map": "Carte",
     "datasets": "Ensemble de données ",
     "services": "Services de données",
     "data": "Données",
@@ -52,7 +51,9 @@
   "datasets": {
     "topic": "Sujet",
     "messages": "Messagerie WIS 2.0",
-    "oafeat": "OGC API",
+    "oafeat": "OGC API - Features",
+    "oarec": "OGC API - Record",
+    "map": "Carte",
     "mqp": "PubSub"
   }
 }
