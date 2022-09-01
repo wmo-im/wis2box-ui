@@ -49,7 +49,7 @@ export default defineComponent({
     },
     pointToLayer(feature, latLng) {
       const markerStyle = {
-        radius: 7,
+        radius: 4,
         fillColor: "SlateGrey",
         color: "DimGrey",
         weight: 1,
@@ -79,21 +79,17 @@ export default defineComponent({
           // handle success
           var index = response.data.features[0].properties.index;
           self.countDailyObservations(feature, index).then((hits) => {
-            let propRecieved = hits / 24;
-            if (propRecieved === 0) {
-              fillColor = "SlateGrey";
+            if (hits === 0) {
+              fillColor = "#000000";
               color = "DimGrey";
-            } else if (propRecieved <= 0.3) {
-              fillColor = "Salmon";
+            } else if (hits <= 7) {
+              fillColor = "#FF3300";
               color = "FireBrick";
-            } else if (propRecieved <= 0.6) {
-              fillColor = "Orange";
+            } else if (hits <= 19) {
+              fillColor = "#FF9900";
               color = "DarkOrange";
-            } else if (propRecieved <= 0.8) {
-              fillColor = "Tan";
-              color = "Sienna";
-            } else if (propRecieved <= 1) {
-              fillColor = "SpringGreen";
+            } else if (hits <= 24) {
+              fillColor = "#009900";
               color = "SeaGreen";
             }
             layer.remove();
@@ -139,13 +135,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-tr:nth-child(even) {
-  background-color: #d5e3f0;
-}
-th,
-td {
-  padding: 10px;
-}
-</style>
