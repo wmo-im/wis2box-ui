@@ -1,19 +1,17 @@
 <template id="data-table">
   <div class="data-table">
-    <v-card min-height="600px" class="ma-4">
+    <v-card min-height="500px" class="ma-4">
       <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
 
-      <v-table v-show="title !== ''" fixed-header height="600px">
+      <v-table v-show="title !== ''" fixed-header height="500px">
         <thead>
           <tr>
-            <th class="text-center" v-html="$t('table.result_time')" />
             <th class="text-center" v-html="$t('table.phenomenon_time')" />
             <th class="text-center" v-html="title" />
           </tr>
         </thead>
         <tbody>
           <tr v-for="(date, i) in data.time" :key="i">
-            <td v-html="date" />
             <td v-html="data.phenomenonTime[i]" />
             <td v-html="data.value[i]" />
           </tr>
@@ -175,3 +173,14 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+tr:nth-child(odd) {
+  background-color: #eeeeee;
+}
+th,
+td {
+  padding: 8px;
+  text-align: center;
+}
+</style>
