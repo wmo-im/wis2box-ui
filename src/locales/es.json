@@ -30,8 +30,8 @@
     "properties": "Propiedades de la estación",
     "wigos_id": "Identificador de la estación WIGOS",
     "name": "Nombre de estación",
-    "status": "Estado operativo",
-    "latest": "Últimas observaciones",
+    "status": "Registro",
+    "latest": "Últimas",
     "report": "Informe de la estación",
     "limit": "Límite"
   },
