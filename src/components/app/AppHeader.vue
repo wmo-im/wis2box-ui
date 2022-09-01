@@ -27,17 +27,11 @@
         </v-row>
       </template>
     </v-app-bar>
-    <v-row justify="center">
-      <v-responsive width="90%" max-width="1130">
-        <app-nav />
-      </v-responsive>
-    </v-row>
   </div>
 </template>
 
 <script>
 import SelectLocale from "./SelectLocale.vue";
-import AppNav from "./AppNav.vue";
 import TokenAuth from "./TokenAuth.vue";
 import logo from "@/assets/img/logo.png";
 import banner from "@/assets/img/wmo-banner.png";
@@ -49,7 +43,6 @@ export default defineComponent({
   name: "AppHeader",
   template: "#app-header",
   components: {
-    AppNav,
     SelectLocale,
     TokenAuth,
   },

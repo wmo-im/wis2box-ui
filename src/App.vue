@@ -6,6 +6,7 @@
       <v-card flat class="py-3">
         <v-row justify="center">
           <v-responsive width="90%" max-width="1130">
+            <app-nav />
             <router-view />
           </v-responsive>
         </v-row>
@@ -19,6 +20,7 @@
 <script>
 import AppFooter from "@/components/app/AppFooter.vue";
 import AppHeader from "@/components/app/AppHeader.vue";
+import AppNav from "@/components/app/AppNav.vue";
 
 import { useI18n } from "vue-i18n";
 
@@ -26,6 +28,7 @@ export default {
   components: {
     AppFooter,
     AppHeader,
+    AppNav,
   },
   data() {
     return {
