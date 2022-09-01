@@ -1,6 +1,6 @@
 <template id="data-plotter">
   <div class="data-plotter">
-    <v-card min-height="600px" class="ma-4">
+    <v-card min-height="500px" class="ma-4">
       <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
 
       <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
@@ -45,9 +45,24 @@ export default defineComponent({
     return {
       trace: {
         type: "scatter",
-        mode: "lines+markers",
+        mode: "lines",
         x: [],
         y: [],
+        line: {
+          color: "#014e9e",
+        },
+        name: "",
+      },
+      scatter: {
+        type: "scatter",
+        mode: "markers",
+        x: [],
+        y: [],
+        marker: {
+          size: 5,
+          color: "#014e9e",
+        },
+        name: "",
       },
       choices_: this.choices,
       data: [],
@@ -109,12 +124,16 @@ export default defineComponent({
         });
       }
     },
-    newTrace(features, x, y, station_id) {
+    newTrace(features, x, y) {
       const Trace = JSON.parse(JSON.stringify(this.trace));
       Trace.x = this.getCol(features, x);
       Trace.y = this.getCol(features, y);
-      Trace.name = station_id;
       this.data.push(Trace);
+
+      const Scatter = JSON.parse(JSON.stringify(this.scatter));
+      Scatter.x = this.getCol(features, x);
+      Scatter.y = this.getCol(features, y);
+      this.data.push(Scatter);
       this.setDateLayout(features[features.length - 1]);
     },
     async loadCollection(collection, station_id) {
@@ -200,8 +219,7 @@ export default defineComponent({
             self.newTrace(
               response.data.features,
               "resultTime",
-              "value",
-              station_id
+              "value"
             );
             self.layout.yaxis.title = datastream.units;
             self.layout.title = datastream.name;
