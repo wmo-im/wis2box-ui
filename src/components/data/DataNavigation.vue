@@ -1,31 +1,11 @@
 <template id="data-navigation">
   <div class="data-navigation">
-    <v-navigation-drawer permanent absolute color="#d5e3f0" class="text-center">
-      <v-menu>
-        <template v-slot:activator="{ props }">
-          <v-list-item class="pa-2 text-h6" v-bind="props">
-            {{ choices.collection.description || $t("chart.collection") }}
-          </v-list-item>
-        </template>
-        <v-list>
-          <v-list-item
-            v-for="(item, i) in choices.collections"
-            :key="i"
-            :value="item.title"
-            @click="updateCollection(item)"
-          >
-            <v-list-item-title v-html="$root.clean(item.title)" />
-          </v-list-item>
-        </v-list>
-      </v-menu>
-
-      <v-divider />
-
+    <v-navigation-drawer floating permanent absolute class="text-center">
       <v-list-item-subtitle
         class="mt-2"
         v-html="$t('chart.observed_property')"
       />
-      <v-list nav max-height="480px" bg-color="#d5e3f0">
+      <v-list nav>
         <template
           v-for="(item, i) in choices.datastreams"
           :key="i"

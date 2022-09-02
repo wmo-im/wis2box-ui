@@ -36,14 +36,22 @@
                     </v-card>
                   </l-control>
                   <l-control position="bottomright">
-                    <v-card width="125px" class="legend pa-2" >
-                      <strong>
-                      {{ $t("messages.no_of_observations") }}
-                      </strong><br />
-                      <template v-for="(item, i) in legend" :key="i">
-                        <i :style="`background: ${item.color}`" />
-                        {{ item.range }} <br />
-                      </template>
+                    <v-card width="125px" class="legend pa-2">
+                      <strong> {{ $t("messages.no_of_observations") }} </strong>
+                      <v-divider class="my-2" />
+                      <v-row
+                        no-gutters
+                        justify="center"
+                        v-for="(item, i) in legend"
+                        :key="i"
+                      >
+                        <v-col>
+                          <i class="dot" :style="`background: ${item.color}`" />
+                        </v-col>
+                        <v-col>
+                          {{ item.range }}
+                        </v-col>
+                      </v-row>
                     </v-card>
                   </l-control>
                 </l-map>
@@ -91,24 +99,20 @@ export default defineComponent({
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       legend: [
         {
-          color: "SlateGrey",
+          color: "#009900",
+          range: "20 - 24",
+        },
+        {
+          color: "#FF9900",
+          range: "8 - 19",
+        },
+        {
+          color: "#FF3300",
+          range: "1 - 7",
+        },
+        {
+          color: "#000000",
           range: "None",
-        },
-        {
-          color: "Salmon",
-          range: "0 - 7",
-        },
-        {
-          color: "Orange",
-          range: "7 - 14",
-        },
-        {
-          color: "Tan",
-          range: "14 - 19",
-        },
-        {
-          color: "SpringGreen",
-          range: "19 - 24",
         },
       ],
     };
@@ -121,7 +125,7 @@ export default defineComponent({
       };
     },
     items: function () {
-      const opts = [10, 25, 50, 100];
+      const opts = [10, 25, 50, 100, 150, 200];
       const items = new Set();
 
       for (const item of opts) {
@@ -174,11 +178,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.legend i {
-  width: 18px;
-  height: 18px;
-  float: left;
-  margin-right: 8px;
+.legend .dot {
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+  border-radius: 50%;
   opacity: 0.8;
 }
 </style>

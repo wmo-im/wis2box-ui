@@ -3,7 +3,6 @@
   "code": "",
   "navigation": {
     "home": "",
-    "map": "",
     "datasets": "",
     "services": "",
     "data": "",
@@ -53,6 +52,8 @@
     "topic": "",
     "messages": "",
     "oafeat": "",
+    "oarec": "",
+    "map": "",
     "mqp": ""
   }
 }

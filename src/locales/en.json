@@ -3,7 +3,6 @@
   "code": "en",
   "navigation": {
     "home": "Home",
-    "map": "Map",
     "datasets": "Datasets",
     "services": "Data services",
     "data": "Data",
@@ -31,8 +30,8 @@
     "properties": "Station properties",
     "wigos_id": "WIGOS station identifier",
     "name": "Station name",
-    "status": "Operating status",
-    "latest": "Latest observations",
+    "status": "History",
+    "latest": "Latest values",
     "report": "Station report",
     "limit": "Limit"
   },
@@ -52,7 +51,9 @@
   "datasets": {
     "topic": "Topic",
     "messages": "WIS 2.0 messages",
-    "oafeat": "OGC API",
+    "oafeat": "OGC API - Features",
+    "oarec": "OGC API - Record",
+    "map": "Map",
     "mqp": "PubSub"
   }
 }

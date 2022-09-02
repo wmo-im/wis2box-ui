@@ -3,6 +3,8 @@
     <v-overlay v-model="$root.dialog" class="align-center justify-center">
       <div>
         <v-card min-width="1100" class="pa-4">
+          <v-card-title class="text-h4" v-html="station.properties.name" />
+          <v-card-subtitle v-html="station.id" />
           <v-responsive height="590">
             <data-viewer :station="station" />
           </v-responsive>

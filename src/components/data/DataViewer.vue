@@ -1,32 +1,32 @@
 <template id="data-viewer">
   <div class="data-viewer">
     <v-layout>
+      <v-app-bar color="#EEEEEE" flat>
+        <v-toolbar-title class="pa-2 text-h6">
+          {{ choices.collection.description || $t("chart.collection") }}
+        </v-toolbar-title>
+        <v-tabs v-model="tab" end color="#014e9e">
+          <v-tab
+            v-for="(item, i) in tabs"
+            class="text-center pa-2"
+            :value="i"
+            :key="i"
+          >
+            {{ $t(item) }}
+          </v-tab>
+        </v-tabs>
+      </v-app-bar>
       <data-navigation :choices="choices" :station="station" :alert="alert" />
-      <v-row justify="center" fill-height>
-        <v-main>
-          <v-toolbar color="#d5e3f0">
-            <v-spacer />
-            <v-tabs v-model="tab" end>
-              <v-tab
-                v-for="(item, i) in tabs"
-                class="text-center pa-2"
-                :value="i"
-                :key="i"
-              >
-                {{ $t(item) }}
-              </v-tab>
-            </v-tabs>
-          </v-toolbar>
-          <v-window v-model="tab">
-            <v-window-item :value="0">
-              <data-plotter :choices="choices" :alert="alert" />
-            </v-window-item>
-            <v-window-item :value="1">
-              <data-table :choices="choices" :alert="alert" />
-            </v-window-item>
-          </v-window>
-        </v-main>
-      </v-row>
+      <v-main>
+        <v-window v-model="tab">
+          <v-window-item :value="0">
+            <data-plotter :choices="choices" :alert="alert" />
+          </v-window-item>
+          <v-window-item :value="1">
+            <data-table :choices="choices" :alert="alert" />
+          </v-window-item>
+        </v-window>
+      </v-main>
     </v-layout>
   </div>
 </template>
@@ -87,7 +87,7 @@ export default defineComponent({
           oapi + "/collections/discovery-metadata/items?f=json"
         );
         this.choices.discovery_metadata = await response.json();
-      } else if (c.id !== "messages"){
+      } else if (c.id !== "messages") {
         this.choices.collections.push(c);
       }
     }
