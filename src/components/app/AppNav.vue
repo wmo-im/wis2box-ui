@@ -1,7 +1,7 @@
 <template id="app-nav">
   <div class="app-nav">
     <v-app-bar flat>
-      <template v-slot:prepend>
+      <v-responsive class="mx-auto" width="90%" max-width="1130">
         <v-btn-toggle divided>
           <template v-for="(item, i) in items" :key="i">
             <v-hover v-slot="{ isHovering, props }">
@@ -24,7 +24,7 @@
             </v-hover>
           </template>
         </v-btn-toggle>
-      </template>
+      </v-responsive>
     </v-app-bar>
   </div>
 </template>
