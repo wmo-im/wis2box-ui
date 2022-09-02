@@ -3,7 +3,7 @@
     <v-footer flat height="110">
       <v-row justify="center">
         <v-col cols="12">
-          <v-img :src="foot" cover />
+          <v-img cover eager :src="foot" :lazy-src="foot" />
         </v-col>
         <v-col class="primary text-center" cols="12">
           <p>
