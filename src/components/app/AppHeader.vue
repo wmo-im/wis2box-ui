@@ -3,8 +3,8 @@
     <v-app-bar flat height="124">
       <template v-slot:image>
         <v-container fluid class="pt-0">
-          <v-img height="110" cover :src="banner" />
-          <v-img cover :src="foot" />
+          <v-img height="110" cover eager :src="banner" :lazy-src="banner" />
+          <v-img cover eager :src="foot" :lazy-src="foot" />
         </v-container>
       </template>
 

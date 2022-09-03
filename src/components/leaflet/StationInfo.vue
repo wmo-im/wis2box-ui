@@ -2,9 +2,9 @@
   <div class="station-info">
     <v-navigation-drawer permanent :width="400">
       <v-toolbar>
-        <h4 class="text-no-wrap">
+        <h3 class="text-no-wrap mx-4">
           {{ station_name || $t("chart.station") }}
-        </h4>
+        </h3>
         <v-spacer />
         <v-btn
           color="pink"
