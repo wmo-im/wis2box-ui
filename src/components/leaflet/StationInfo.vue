@@ -133,8 +133,22 @@ export default defineComponent({
       }
     },
     stations: function () {
-      var stns = this.features.stations;
-      return stns === null ? [] : stns.features;
+      if (this.features.stations === null) {
+        return [];
+      } else {
+        const stns = [...this.features.stations.features].sort((a, b) => {
+          const nameA = a.properties.name.toUpperCase(); // ignore upper and lowercase
+          const nameB = b.properties.name.toUpperCase(); // ignore upper and lowercase
+          if (nameA < nameB) {
+            return -1;
+          } else if (nameA > nameB) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        return stns;
+      }
     },
   },
   watch: {
