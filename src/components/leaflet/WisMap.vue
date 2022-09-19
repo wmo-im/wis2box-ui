@@ -69,8 +69,8 @@ import "leaflet/dist/leaflet.css";
 import { geoJSON } from "leaflet/dist/leaflet-src.esm";
 import { LControl, LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
 
-import WisStation from "./WisStation.vue";
-import StationInfo from "./StationInfo.vue";
+import WisStation from "../station/WisStation.vue";
+import StationInfo from "../station/StationInfo.vue";
 
 import { defineComponent } from "vue";
 
@@ -148,6 +148,7 @@ export default defineComponent({
     onReady() {
       this.$nextTick(() => {
         this.map = this.$refs.wisMap.leafletObject;
+        this.map.attributionControl.setPrefix("");
         this.map.zoomControl.setPosition("topright");
         this.loadStations();
       });
