@@ -148,6 +148,7 @@ export default defineComponent({
     onReady() {
       this.$nextTick(() => {
         this.map = this.$refs.wisMap.leafletObject;
+        this.map.attributionControl.setPrefix("");
         this.map.zoomControl.setPosition("topright");
         this.loadStations();
       });

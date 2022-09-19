@@ -15,7 +15,7 @@
         @ready="onReady()"
       >
         <l-geo-json :geojson="dataset" />
-        <l-tile-layer :url="url" :attribution="attribution" />
+        <l-tile-layer :url="url" />
       </l-map>
     </div>
   </div>
@@ -45,8 +45,6 @@ export default {
         dragging: false,
         zoomSnap: 0.25,
       },
-      attribution:
-        '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     };
   },
@@ -59,6 +57,7 @@ export default {
         this.map.zoomOut(0.25);
         this.map.setMinZoom(this.map.getZoom());
         this.map.setMaxZoom(this.map.getZoom());
+        this.map.attributionControl.setPrefix("");
         this.loading = false;
       });
     },
