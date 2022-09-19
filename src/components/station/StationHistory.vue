@@ -1,62 +1,23 @@
-<template id="station-status">
-  <div class="station-status">
-    <v-tabs grow v-model="tab" color="#014e9e">
-      <v-tab v-for="(item, i) in tabs" :value="i" :key="i">
-        {{ $t(item) }}
-      </v-tab>
-    </v-tabs>
-    <v-divider />
-    <v-window v-model="tab">
-      <v-window-item :value="0" eager>
-        <station-latest :features="features" :map="map" />
-      </v-window-item>
-      <v-window-item :value="1" eager>
-<<<<<<< Updated upstream
-        <v-row justify="center">
-          <div id="stationHistory" />
-        </v-row>
-=======
-        <station-history :features="features" :map="map" />
->>>>>>> Stashed changes
-      </v-window-item>
-    </v-window>
-    <div class="text-center ma-2">
-      <v-snackbar v-model="snackbar">
-        {{ msg }}
-        <template v-slot:actions>
-          <v-btn color="pink" variant="text" @click="snackbar = false">
-            X
-          </v-btn>
-        </template>
-      </v-snackbar>
-    </div>
+<template id="station-history">
+  <div class="station-history">
+    <v-row justify="center">
+      <div id="stationHistory" />
+    </v-row>
   </div>
 </template>
 
 <script>
+import Plotly from "plotly.js-dist-min";
 
 import { defineComponent } from "vue";
-<<<<<<< Updated upstream
-import StationLatest from "./StationLatest.vue";
 
 export default defineComponent({
-  components: { StationLatest },
-=======
-import StationHistory from "./StationHistory.vue";
-import StationLatest from "./StationLatest.vue";
-
-export default defineComponent({
-  components: { StationLatest, StationHistory },
->>>>>>> Stashed changes
-  name: "StationStatus",
-  template: "#station-status",
+  name: "StationHistory",
+  template: "#station-history",
   props: ["features", "map"],
   data() {
     return {
       features_: this.features,
-      snackbar: false,
-      msg: "",
-      tab: null,
       data: [],
       layout: {
         height: 300,
@@ -73,22 +34,8 @@ export default defineComponent({
         displayModeBar: false,
         responsive: true,
       },
-      tabs: ["station.latest", "station.status"],
     };
   },
-  computed: {
-    station: function () {
-      return this.features_.station;
-    },
-    station_name: function () {
-      if (this.station) {
-        return this.station.properties.name;
-      } else {
-        return this.station;
-      }
-    },
-  },
-<<<<<<< Updated upstream
   watch: {
     "features_.station": {
       async handler(station) {
@@ -159,7 +106,6 @@ export default defineComponent({
         d.setDate(d.getDate() + 1)
       ) {
         var date_ = d.toISOString().split("T")[0];
-        console.log(date_);
         await this.$http({
           method: "get",
           url: station.links[0].href + "/items",
@@ -182,7 +128,6 @@ export default defineComponent({
           } else if (hits <= 24) {
             fillColor = "#009900";
           }
-          console.log(fillColor);
           var trace = {
             x: response.data.features.map((obs) => obs.properties.resultTime),
             type: "histogram",
@@ -200,7 +145,5 @@ export default defineComponent({
       }
     },
   },
-=======
->>>>>>> Stashed changes
 });
 </script>
