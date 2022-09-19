@@ -18,8 +18,8 @@
       <v-snackbar v-model="snackbar">
         {{ msg }}
         <template v-slot:actions>
-          <v-btn color="pink" variant="text" @click="snackbar = false">
-            X
+          <v-btn color="pink" @click="snackbar = false">
+            <v-icon icon="mdi-close"></v-icon>
           </v-btn>
         </template>
       </v-snackbar>
@@ -28,7 +28,6 @@
 </template>
 
 <script>
-
 import { defineComponent } from "vue";
 import StationHistory from "./StationHistory.vue";
 import StationLatest from "./StationLatest.vue";
