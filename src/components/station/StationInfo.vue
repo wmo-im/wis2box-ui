@@ -176,17 +176,18 @@ export default defineComponent({
         url: station.links[0].href + "/items",
         params: {
           f: "json",
-          sortby: "-resultTime",
+          sortby: "+resultTime",
           wigos_station_identifier: station.id,
           limit: 1,
         },
       })
         .then(function (response) {
           // handle success
-          self.latestResultTime =
-            response.data.features[0].properties.resultTime;
-          var limit = response.data.numberMatched;
-          self.loadRecentObservations(station, limit);
+          self.loadRecentObservations(
+            station,
+            response.data.features[0].properties.resultTime,
+            response.data.numberMatched
+          );
           var index = response.data.features[0].properties.index;
           self.loadDailyObservations(station, index);
         })
