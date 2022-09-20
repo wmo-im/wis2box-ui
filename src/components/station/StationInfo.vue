@@ -12,7 +12,7 @@
           v-show="station !== null"
           @click="features_.station = null"
         >
-          X
+          <v-icon icon="mdi-close"></v-icon>
         </v-btn>
       </v-toolbar>
       <v-divider />
