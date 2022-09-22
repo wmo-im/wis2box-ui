@@ -51,8 +51,8 @@
   "datasets": {
     "topic": "Sujet",
     "messages": "Messagerie WIS 2.0",
-    "oafeat": "OGC API - Features",
-    "oarec": "OGC API - Record",
+    "oafeat": "Observations",
+    "oarec": "Métadonnées de découverte",
     "map": "Carte",
     "mqp": "PubSub"
   }

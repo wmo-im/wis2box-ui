@@ -45,11 +45,11 @@ export default defineComponent({
           target: "/",
           href: undefined,
         },
-        {
-          text: "services",
-          target: "/data-services",
-          href: undefined,
-        },
+        // {
+        //   text: "services",
+        //   target: "/services",
+        //   href: undefined,
+        // },
         {
           text: "documentation",
           target: undefined,
