@@ -5,7 +5,7 @@ import Services from "../views/Services.vue";
 
 const routes = [
   {
-    path: "/map/:topic",
+    path: "/:topic/map",
     props: true,
     name: "Map",
     component: Map,
@@ -16,7 +16,7 @@ const routes = [
     component: Datasets,
   },
   {
-    path: "/data-services",
+    path: "/services",
     name: "Services",
     component: Services,
   },

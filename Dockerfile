@@ -19,9 +19,11 @@ RUN npm run build && \
     rm -fr /usr/src/app
 
 FROM nginx
-COPY ./entrypoint.sh /docker-entrypoint.d/entrypoint.sh
+
+COPY ./docker/entrypoint.sh /docker-entrypoint.d/entrypoint.sh
 RUN chmod +x /docker-entrypoint.d/entrypoint.sh
 
+COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 COPY  --from=ui-builder /tmp/app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
