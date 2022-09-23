@@ -11,6 +11,7 @@
         :ref="dataset.id"
         :center="center"
         :options="options"
+        maxZoom="16"
         style="height: 160px; width: 256px"
         @ready="onReady()"
       >
@@ -45,7 +46,7 @@ export default {
         dragging: false,
         zoomSnap: 0.25,
       },
-      url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      url: window.VUE_APP_BASEMAP_URL,
     };
   },
   methods: {

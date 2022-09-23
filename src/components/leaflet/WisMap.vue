@@ -94,9 +94,8 @@ export default defineComponent({
       features_: this.features,
       center: [0, 0],
       zoom: 1,
-      attribution:
-        '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
-      url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      attribution: window.VUE_APP_BASEMAP_ATTRIBUTION,
+      url: window.VUE_APP_BASEMAP_URL,
       legend: [
         {
           color: "#009900",
