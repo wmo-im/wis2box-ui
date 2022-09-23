@@ -45,7 +45,8 @@ export default {
         dragging: false,
         zoomSnap: 0.25,
       },
-      url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      attribution: window.VUE_APP_BASEMAP_ATTRIBUTION,
+      url: window.VUE_APP_BASEMAP_URL
     };
   },
   methods: {
