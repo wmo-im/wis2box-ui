@@ -11,6 +11,7 @@
         :ref="dataset.id"
         :center="center"
         :options="options"
+        maxZoom="16"
         style="height: 160px; width: 256px"
         @ready="onReady()"
       >
@@ -45,8 +46,7 @@ export default {
         dragging: false,
         zoomSnap: 0.25,
       },
-      attribution: window.VUE_APP_BASEMAP_ATTRIBUTION,
-      url: window.VUE_APP_BASEMAP_URL
+      url: window.VUE_APP_BASEMAP_URL,
     };
   },
   methods: {
