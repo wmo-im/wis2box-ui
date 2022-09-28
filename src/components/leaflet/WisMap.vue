@@ -1,6 +1,6 @@
 <template id="wis-map">
   <div class="wis-map">
-    <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
+    <div v-if="loading || vals.loading">
       <v-progress-linear striped indeterminate color="primary" />
     </div>
     <div
@@ -22,19 +22,8 @@
                   style="height: 60vh"
                   @ready="onReady()"
                 >
-                  <wis-station :features="features" :map="map" />
+                  <wis-station :vals="vals" :features="features" :map="map" />
                   <l-tile-layer :url="url" :attribution="attribution" />
-                  <l-control position="bottomleft">
-                    <v-card width="95px" max-height="40px">
-                      <v-select
-                        v-model="limit_"
-                        :items="items"
-                        :label="$t('station.limit')"
-                        hide-details
-                        density="compact"
-                      />
-                    </v-card>
-                  </l-control>
                   <l-control position="bottomright">
                     <v-card width="125px" class="legend pa-2">
                       <strong> {{ $t("messages.no_of_observations") }} </strong>
@@ -89,6 +78,9 @@ export default defineComponent({
     return {
       numberMatched: 0,
       limit_: null,
+      vals: {
+        loading: true,
+      },
       loading: true,
       map: undefined,
       features_: this.features,
@@ -134,13 +126,6 @@ export default defineComponent({
       }
       items.add(this.numberMatched);
       return items;
-    },
-  },
-  watch: {
-    limit_: {
-      handler() {
-        this.loadStations();
-      },
     },
   },
   methods: {

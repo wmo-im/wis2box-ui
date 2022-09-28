@@ -20,15 +20,15 @@ export default defineComponent({
   components: {
     LGeoJson,
   },
-  props: ["features", "map"],
+  props: ["vals", "features", "map"],
   data: function () {
     return {
       features_: this.features,
-      loading: true,
       geojsonOptions: {
         onEachFeature: this.onEachFeature,
         pointToLayer: this.pointToLayer,
       },
+      status: {},
     };
   },
   methods: {
@@ -39,7 +39,6 @@ export default defineComponent({
       e.originalEvent.stopPropagation();
     },
     onEachFeature(feature, layer) {
-      this.loading = true;
       var self = this;
       layer.on("mouseover", function (e) {
         self.features_.station = feature;
@@ -65,6 +64,7 @@ export default defineComponent({
       if (feature.links.length === 0) {
         return;
       }
+      this.station_loading(feature, true);
       await this.$http({
         method: "get",
         url: feature.links[0].href + "/items",
@@ -96,6 +96,7 @@ export default defineComponent({
             layer.options.fillColor = fillColor;
             layer.options.color = color;
             layer.addTo(self.map);
+            self.station_loading(feature, false);
           });
         })
         .catch(function (error) {
@@ -103,12 +104,10 @@ export default defineComponent({
           console.log(error);
         })
         .then(function () {
-          self.loading = false;
           setTimeout(self.getStationStyle, 60000, feature, layer);
         });
     },
     async countDailyObservations(station, index) {
-      this.loading = true;
       let hits;
       const startTime = new Date();
       startTime.setDate(startTime.getDate() - 1);
@@ -126,6 +125,11 @@ export default defineComponent({
         hits = response.data.numberMatched;
       });
       return hits;
+    },
+    station_loading(feature, loading) {
+      this.status[feature.id] = loading;
+      var self = this;
+      self.vals["loading"] = Object.values(this.status).includes(true);
     },
   },
   computed: {
