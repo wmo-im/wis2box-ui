@@ -1,7 +1,13 @@
 <template id="station-history">
   <div class="station-history">
+    <div
+      class="pt-0 mb-2"
+      :style="{ visibility: loading ? 'visible' : 'hidden' }"
+    >
+      <v-progress-linear height="6" indeterminate color="primary" />
+    </div>
     <v-row justify="center">
-      <div id="stationHistory" />
+      <div id="station-history-plot" />
     </v-row>
   </div>
 </template>
@@ -17,6 +23,7 @@ export default defineComponent({
   props: ["features", "map"],
   data() {
     return {
+      loading: true,
       features_: this.features,
       data: [],
       layout: {
@@ -25,7 +32,7 @@ export default defineComponent({
         showlegend: false,
         xaxis: {
           type: "date",
-          dtick: 86400000.0,
+          // dtick: 86400000.0,
           showgrid: true,
           gridcolor: "#d5e3f0",
           gridwidth: 2,
@@ -65,12 +72,12 @@ export default defineComponent({
   },
   methods: {
     plot() {
-      var plot = document.getElementById("stationHistory");
+      var plot = document.getElementById("station-history-plot");
       Plotly.purge(plot);
       Plotly.newPlot(plot, this.data, this.layout, this.config);
-      this.loading = false;
     },
     async loadObservations(station) {
+      this.loading = true;
       var self = this;
       this.data = [];
       await this.$http({
@@ -97,11 +104,6 @@ export default defineComponent({
             self.msg = self.$t("messages.not_authorized");
             self.snackbar = true;
           }
-        })
-        .then(function () {
-          self.tab = 0;
-          self.loading = false;
-          console.log("done");
         });
     },
     async loadDailyObservations(station, index) {
@@ -113,7 +115,7 @@ export default defineComponent({
       for (
         var d = new Date(this.oldestResultTime);
         d <= now;
-        d.setDate(d.getDate() + 1)
+        this.iterDate(d)
       ) {
         var date_ = d.toISOString().split("T")[0];
         await this.$http({
@@ -130,7 +132,7 @@ export default defineComponent({
           let fillColor;
           let hits = response.data.numberMatched;
           if (hits === 0) {
-            fillColor = "#000000";
+            self.getNextDate(station, index, d);
           } else if (hits <= 7) {
             fillColor = "#FF3300";
           } else if (hits <= 19) {
@@ -153,6 +155,52 @@ export default defineComponent({
           self.plot();
         });
       }
+      this.loading = false;
+    },
+    iterDate(d) {
+      var nextDate = new Date(d.toISOString());
+      nextDate.setDate(d.getDate() + 1);
+      if (nextDate < d) {
+        nextDate.setDate(d.getDate());
+        nextDate.setMonth(d.getMonth() + 1);
+        if (nextDate < d) {
+          nextDate.setMonth(d.getMonth());
+          nextDate.setFullYear(d.getFullYear() + 1);
+        }
+      }
+      d.setFullYear(nextDate.getFullYear());
+      d.setMonth(nextDate.getMonth());
+      d.setDate(nextDate.getDate());
+    },
+    getNextDate(station, index, d) {
+      var nextDate = new Date(d.toISOString());
+      this.iterDate(nextDate);
+      this.$http({
+        method: "get",
+        url: station.links[0].href + "/items",
+        params: {
+          f: "json",
+          datetime: `${nextDate.toISOString()}/..`,
+          sortby: "+resultTime",
+          index: index,
+          limit: 1,
+          wigos_station_identifier: station.id,
+        },
+      })
+        .then(function (response) {
+          var next;
+          if (response.data.numberMatched > 0) {
+            next = new Date(response.data.features[0].properties.resultTime);
+          } else {
+            next = new Date();
+          }
+          d.setFullYear(next.getFullYear());
+          d.setMonth(next.getMonth());
+          d.setDate(next.getDate());
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   },
 });

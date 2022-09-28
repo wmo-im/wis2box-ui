@@ -1,12 +1,9 @@
 <template id="dataset-map">
   <div class="dataset-map">
-    <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
+    <div v-if="loading">
       <v-progress-linear striped indeterminate color="primary" />
     </div>
-    <div
-      :style="{ visibility: !loading ? 'visible' : 'hidden' }"
-      class="text-center"
-    >
+    <div v-show="!loading">
       <l-map
         :ref="dataset.id"
         :center="center"

@@ -13,8 +13,8 @@
                   <v-container>
                     <v-row justify="center" fill-height>
                       <v-card
-                        class="pa-2 ma-0"
-                        :elevation="isHovering ? 12 : 0"
+                        class="pa-0 ma-0"
+                        :elevation="isHovering ? 24 : 0"
                         v-bind="props"
                         @click="loadMap(item.id)"
                       >
