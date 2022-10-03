@@ -96,7 +96,6 @@ export default defineComponent({
             layer.options.fillColor = fillColor;
             layer.options.color = color;
             layer.addTo(self.map);
-            self.station_loading(feature, false);
           });
         })
         .catch(function (error) {
@@ -104,7 +103,8 @@ export default defineComponent({
           console.log(error);
         })
         .then(function () {
-          setTimeout(self.getStationStyle, 60000, feature, layer);
+          // setTimeout(self.getStationStyle, 60000, feature, layer);
+          self.station_loading(feature, false);
         });
     },
     async countDailyObservations(station, index) {
