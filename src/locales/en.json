@@ -41,7 +41,7 @@
     "collection": "Collection",
     "observed_property": "Observed Property",
     "station": "Stations",
-    "data_source": "Data source"
+    "download": "Download"
   },
   "table": {
     "table": "Table",

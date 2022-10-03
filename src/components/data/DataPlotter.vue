@@ -198,10 +198,11 @@ export default defineComponent({
             limit: limit,
           },
         })
-          .then(function (response) {
+          .then(function (resp) {
             // handle success
+            var dataURL = resp.request.responseURL.replace("f=json", "f=csv");
             self.config.modeBarButtonsToAdd.push({
-              name: self.$t("chart.data_source") + " " + station_id,
+              name: self.$t("chart.download") + " " + station_id,
               icon: {
                 width: 24,
                 height: 24,
@@ -212,15 +213,10 @@ export default defineComponent({
                 var timeExtent = `${new Date(
                   start + "Z"
                 ).toISOString()}/${new Date(end + "Z").toISOString()}`;
-                window.location.href =
-                  response.request.responseURL + `&datetime=${timeExtent}`;
+                window.location.href = `${dataURL}&datetime=${timeExtent}`;
               },
             });
-            self.newTrace(
-              response.data.features,
-              "resultTime",
-              "value"
-            );
+            self.newTrace(resp.data.features, "resultTime", "value");
             self.layout.yaxis.title = datastream.units;
             self.layout.title = datastream.name;
             self.plot();
