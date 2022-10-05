@@ -20,7 +20,7 @@
 <script>
 import Plotly from "plotly.js-dist-min";
 import { defineComponent } from "vue";
-import { mdiDownload } from "@mdi/js";
+import { mdiOpenInNew } from "@mdi/js";
 
 export default defineComponent({
   name: "DataPlotter",
@@ -82,6 +82,7 @@ export default defineComponent({
         },
       },
       config: {
+        displayModeBar: true,
         modeBarButtonsToAdd: [],
         modeBarButtonsToRemove: [
           "zoom2d",
@@ -198,29 +199,25 @@ export default defineComponent({
             limit: limit,
           },
         })
-          .then(function (response) {
+          .then(function (resp) {
             // handle success
+            var dataURL = resp.request.responseURL;
             self.config.modeBarButtonsToAdd.push({
-              name: self.$t("chart.data_source") + " " + station_id,
+              name: self.$t("chart.data_source"),
               icon: {
                 width: 24,
                 height: 24,
-                path: mdiDownload,
+                path: mdiOpenInNew,
               },
               click: function () {
                 const [start, end] = self.layout.xaxis.range;
                 var timeExtent = `${new Date(
                   start + "Z"
                 ).toISOString()}/${new Date(end + "Z").toISOString()}`;
-                window.location.href =
-                  response.request.responseURL + `&datetime=${timeExtent}`;
+                window.location.href = `${dataURL}&datetime=${timeExtent}`;
               },
             });
-            self.newTrace(
-              response.data.features,
-              "resultTime",
-              "value"
-            );
+            self.newTrace(resp.data.features, "resultTime", "value");
             self.layout.yaxis.title = datastream.units;
             self.layout.title = datastream.name;
             self.plot();

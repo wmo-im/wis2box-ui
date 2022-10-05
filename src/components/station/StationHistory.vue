@@ -133,26 +133,28 @@ export default defineComponent({
           let hits = response.data.numberMatched;
           if (hits === 0) {
             self.getNextDate(station, index, d);
-          } else if (hits <= 7) {
-            fillColor = "#FF3300";
-          } else if (hits <= 19) {
-            fillColor = "#FF9900";
-          } else if (hits <= 24) {
-            fillColor = "#009900";
+          } else {
+            if (hits <= 7) {
+              fillColor = "#FF3300";
+            } else if (hits <= 19) {
+              fillColor = "#FF9900";
+            } else if (hits <= 24) {
+              fillColor = "#009900";
+            }
+            var trace = {
+              x: response.data.features.map((obs) => obs.properties.resultTime),
+              type: "histogram",
+              marker: {
+                color: fillColor,
+              },
+              xbins: {
+                size: 3600000,
+              },
+              name: date_,
+            };
+            self.data.push(trace);
+            self.plot();
           }
-          var trace = {
-            x: response.data.features.map((obs) => obs.properties.resultTime),
-            type: "histogram",
-            marker: {
-              color: fillColor,
-            },
-            xbins: {
-              size: 3600000,
-            },
-            name: date_,
-          };
-          self.data.push(trace);
-          self.plot();
         });
       }
       this.loading = false;
