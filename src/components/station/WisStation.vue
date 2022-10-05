@@ -103,7 +103,7 @@ export default defineComponent({
           console.log(error);
         })
         .then(function () {
-          // setTimeout(self.getStationStyle, 60000, feature, layer);
+          setTimeout(self.getStationStyle, 900000, feature, layer);
           self.station_loading(feature, false);
         });
     },
