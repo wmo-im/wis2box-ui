@@ -28,7 +28,7 @@
   "station": {
     "map": "Plan de la station",
     "properties": "Propriétés de la station",
-    "wigos_id": "Identifiant la station WIGOS",
+    "wigos_station_identifier": "Identifiant la station WIGOS",
     "name": "Nom de la station",
     "status": "l' histoire",
     "latest": "Dernières valeurs",
