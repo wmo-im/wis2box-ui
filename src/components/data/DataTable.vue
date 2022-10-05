@@ -3,26 +3,38 @@
     <v-card min-height="500px" class="ma-4">
       <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
 
-      <v-table v-show="title !== ''" fixed-header height="500px">
-        <thead>
-          <tr>
-            <th class="text-center" v-html="$t('table.phenomenon_time')" />
-            <th class="text-center" v-html="title" />
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(date, i) in data.time" :key="i">
-            <td v-html="data.phenomenonTime[i]" />
-            <td v-html="data.value[i]" />
-          </tr>
-        </tbody>
-      </v-table>
+      <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
+        <v-progress-linear striped indeterminate color="primary" />
+      </div>
+      <div :style="{ visibility: !loading ? 'visible' : 'hidden' }">
+        <v-container>
+          <v-row justify="center" align="end">
+            <div id="plotly-table" />
+          </v-row>
+        </v-container>
+        <v-table v-show="title !== ''" fixed-header height="500px">
+          <thead>
+            <tr>
+              <th class="text-center" v-html="$t('table.phenomenon_time')" />
+              <th class="text-center" v-html="title" />
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(date, i) in data.time" :key="i">
+              <td v-html="data.phenomenonTime[i]" />
+              <td v-html="data.value[i]" />
+            </tr>
+          </tbody>
+        </v-table>
+      </div>
     </v-card>
   </div>
 </template>
 
 <script>
+import Plotly from "plotly.js-dist-min";
 import { defineComponent } from "vue";
+import { mdiDownload } from "@mdi/js";
 
 export default defineComponent({
   name: "DataTable",
@@ -63,6 +75,39 @@ export default defineComponent({
       title: "",
       headerOverflow: 0,
       alert_: this.alert,
+      layout: {
+        height: 24,
+        yaxis: {
+          showgrid: false,
+          zeroline: false,
+          showline: false,
+          ticks: "",
+          showticklabels: false,
+        },
+        xaxis: {
+          showgrid: false,
+          zeroline: false,
+          showline: false,
+          ticks: "",
+          showticklabels: false,
+        },
+      },
+      config: {
+        editable: false,
+        displayModeBar: true,
+        modeBarButtonsToAdd: [],
+        modeBarButtonsToRemove: [
+          "toImage",
+          "resetScale2d",
+          "zoom2d",
+          "pan2d",
+          "select2d",
+          "lasso2d",
+          "zoomIn2d",
+          "zoomOut2d",
+          "autoScale2d",
+        ],
+      },
     };
   },
   methods: {
@@ -152,6 +197,8 @@ export default defineComponent({
         })
           .then(function (response) {
             // handle success
+            self.plot(response.request.responseURL);
+
             self.title = `${datastream.name} (${datastream.units})`;
             self.data.time = self.getCol(response.data.features, "resultTime");
             self.data.phenomenonTime = self.getCol(
@@ -169,6 +216,25 @@ export default defineComponent({
             console.log("done");
           });
       }
+    },
+    plot(url) {
+      var plot = document.getElementById("plotly-table");
+      Plotly.purge(plot);
+      this.config.modeBarButtonsToAdd = [
+        {
+          name: this.$t("chart.download"),
+          icon: {
+            width: 24,
+            height: 24,
+            path: mdiDownload,
+          },
+          click: function () {
+            console.log(url.replace("f=json", "f=csv"));
+            window.location.href = url.replace("f=json", "f=csv");
+          },
+        },
+      ];
+      Plotly.newPlot(plot, [], this.layout, this.config);
     },
   },
 });
