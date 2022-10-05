@@ -20,7 +20,7 @@
 <script>
 import Plotly from "plotly.js-dist-min";
 import { defineComponent } from "vue";
-import { mdiDownload } from "@mdi/js";
+import { mdiOpenInNew } from "@mdi/js";
 
 export default defineComponent({
   name: "DataPlotter",
@@ -82,6 +82,7 @@ export default defineComponent({
         },
       },
       config: {
+        displayModeBar: true,
         modeBarButtonsToAdd: [],
         modeBarButtonsToRemove: [
           "zoom2d",
@@ -200,13 +201,13 @@ export default defineComponent({
         })
           .then(function (resp) {
             // handle success
-            var dataURL = resp.request.responseURL.replace("f=json", "f=csv");
+            var dataURL = resp.request.responseURL;
             self.config.modeBarButtonsToAdd.push({
-              name: self.$t("chart.download") + " " + station_id,
+              name: self.$t("chart.data_source"),
               icon: {
                 width: 24,
                 height: 24,
-                path: mdiDownload,
+                path: mdiOpenInNew,
               },
               click: function () {
                 const [start, end] = self.layout.xaxis.range;
