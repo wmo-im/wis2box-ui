@@ -18,7 +18,7 @@
             class="text-left text-body-2"
             @click="updateData(item, i)"
           >
-            {{ $root.parseForNameAndTime(item) }}
+            {{ getNameTime(item) }}
           </v-list-item>
           <v-divider
             class="pb-1 mx-2"
@@ -32,6 +32,7 @@
 
 <script>
 let oapi = window.VUE_APP_OAPI;
+import { getNameTime, hasLinks } from "@/scripts/helpers.js";
 
 export default {
   name: "DataNavigation",
@@ -47,7 +48,7 @@ export default {
   watch: {
     "choices.collections": {
       handler(c) {
-        if (this.station.links.length > 0) {
+        if (hasLinks(this.station)) {
           for (const item of c) {
             if (this.station.links[0].title === item.id) {
               this.updateCollection(item);
@@ -59,6 +60,7 @@ export default {
     },
   },
   methods: {
+    getNameTime,
     async updateCollection(newC) {
       this.alert_value = false;
       this.choices_.collection = newC;
@@ -126,7 +128,7 @@ export default {
       this.choices_.datastream = {
         id: newD.name,
         index: newD.index,
-        name: this.$root.parseForNameAndTime(newD),
+        name: getNameTime(newD),
         units: newD.units,
       };
       this.model = index;

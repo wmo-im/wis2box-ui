@@ -10,7 +10,7 @@
           @click="onClick(s)"
           @mouseover="onHover(s)"
         >
-          <h4 class="text-left" v-html="$root.clean(s.properties.name)" />
+          <h4 class="text-left" v-html="clean(s.properties.name)" />
           <template v-slot:append>
             <v-btn
               variant="outlined"
@@ -43,6 +43,8 @@
 <script>
 import { defineComponent } from "vue";
 
+import { clean } from "@/scripts/helpers.js";
+
 export default defineComponent({
   name: "StationList",
   template: "#station-list",
@@ -73,6 +75,7 @@ export default defineComponent({
     },
   },
   methods: {
+    clean,
     onClick(station) {
       this.features_.station = station;
       const latlng = [

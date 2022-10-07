@@ -11,6 +11,7 @@
 <script>
 import { circleMarker } from "leaflet/dist/leaflet-src.esm";
 import { LGeoJson } from "@vue-leaflet/vue-leaflet";
+import { hasLinks } from "@/scripts/helpers.js";
 
 import { defineComponent } from "vue";
 

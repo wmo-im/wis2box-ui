@@ -6,7 +6,7 @@
     <v-table>
       <table>
         <tr v-for="(item, i) in recentObservations" :key="i">
-          <th width="50%">{{ $root.parseForNameAndTime(item) }}</th>
+          <th width="50%">{{ getNameTime(item) }}</th>
           <td v-if="item.units !== 'CODE TABLE'" width="50%">{{ item.value + " " + item.units }}</td>
           <td v-else-if="item.units === 'CODE TABLE'" width="50%">{{ item.description }}</td>
         </tr>
@@ -17,6 +17,8 @@
 
 <script>
 import { defineComponent } from "vue";
+
+import { getNameTime, clean, hasLinks } from "@/scripts/helpers.js";
 
 export default defineComponent({
   name: "StationLatest",
@@ -32,21 +34,22 @@ export default defineComponent({
   watch: {
     "features_.station": {
       async handler(station) {
-        if (station.links.length === 0) {
+        if (hasLinks(station)) {
+          this.loadObservations(station);
+        } else if (station !== null){
           this.msg = `
-            ${this.$root.clean(station.properties.name)} ${this.$t(
+            ${clean(station.properties.name)} ${this.$t(
             "messages.no_linked_collections"
           )}. ${this.$t("messages.how_to_link_station")}`;
           this.snackbar = true;
           this.loading = false;
           this.tab = null;
-        } else {
-          this.loadObservations(station);
         }
       },
     },
   },
   methods: {
+    getNameTime,
     async loadObservations(station) {
       var self = this;
       await this.$http({

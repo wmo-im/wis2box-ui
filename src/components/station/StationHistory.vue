@@ -14,6 +14,7 @@
 
 <script>
 import Plotly from "plotly.js-dist-min";
+import { clean, hasLinks } from "@/scripts/helpers.js";
 
 import { defineComponent } from "vue";
 
@@ -57,16 +58,16 @@ export default defineComponent({
   watch: {
     "features_.station": {
       async handler(station) {
-        if (station.links.length === 0) {
+        if (hasLinks(station)) {
+          this.loadObservations(station);
+        } else if (station !== null){
           this.msg = `
-            ${this.$root.clean(station.properties.name)} ${this.$t(
+            ${clean(station.properties.name)} ${this.$t(
             "messages.no_linked_collections"
           )}. ${this.$t("messages.how_to_link_station")}`;
           this.snackbar = true;
           this.loading = false;
           this.tab = null;
-        } else {
-          this.loadObservations(station);
         }
       },
     },
