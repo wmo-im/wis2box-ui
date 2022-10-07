@@ -12,15 +12,13 @@
         <v-row justify="center">
           <v-responsive width="90%" max-width="1130">
             <v-container fluid>
-              <v-row>
-                <v-spacer />
-                <token-auth class="pt-4" />
-                <select-locale class="pt-4 pr-4" />
-              </v-row>
-              <v-row>
+              <v-row align="start">
                 <a :href="wis2" title="wis2box">
-                  <img :src="logo" class="px-4 pb-6" />
+                  <img :src="logo" class="pl-8 py-auto" />
                 </a>
+                <v-spacer />
+                <token-auth class="mt-n2" />
+                <select-locale class="mt-n2 pr-8" />
               </v-row>
             </v-container>
           </v-responsive>
