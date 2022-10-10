@@ -28,7 +28,7 @@
   "station": {
     "map": "",
     "properties": "",
-    "wigos_id": "",
+    "wigos_station_identifier": "",
     "name": "",
     "status": "",
     "latest": "",
