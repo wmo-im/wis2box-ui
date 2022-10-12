@@ -22,6 +22,8 @@ import Plotly from "plotly.js-dist-min";
 import { defineComponent } from "vue";
 import { mdiOpenInNew } from "@mdi/js";
 
+let oapi = window.VUE_APP_OAPI;
+
 export default defineComponent({
   name: "DataPlotter",
   template: "#data-plotter",
@@ -148,7 +150,7 @@ export default defineComponent({
 
       await this.$http({
         method: "get",
-        url: `/collections/${collection.id}/items`,
+        url: `${oapi}/collections/${collection.id}/items`,
         params: {
           f: "json",
           name: datastream.id,
@@ -189,7 +191,7 @@ export default defineComponent({
         this.loading = true;
         await this.$http({
           method: "get",
-          url: `/collections/${collection_id}/items`,
+          url: `${oapi}/collections/${collection_id}/items`,
           params: {
             f: "json",
             name: datastream.id,
