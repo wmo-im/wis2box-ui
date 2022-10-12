@@ -31,6 +31,8 @@
 </template>
 
 <script>
+let oapi = window.VUE_APP_OAPI;
+
 export default {
   name: "DataNavigation",
   template: "#data-navigation",
@@ -63,7 +65,7 @@ export default {
       var self = this;
       await this.$http({
         method: "get",
-        url: `/collections/${newC.id}/items`,
+        url: `${oapi}/collections/${newC.id}/items`,
         params: {
           wigos_station_identifier: self.station.id,
           properties: "resultTime",
@@ -97,7 +99,7 @@ export default {
       var self = this;
       await this.$http({
         method: "get",
-        url: `/collections/${collection_id}/items`,
+        url: `${oapi}/collections/${collection_id}/items`,
         params: {
           wigos_station_identifier: self.station.id,
           datetime: `${resultTime}/..`,

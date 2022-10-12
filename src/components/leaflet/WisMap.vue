@@ -60,6 +60,7 @@ import { LControl, LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
 
 import WisStation from "../station/WisStation.vue";
 import StationInfo from "../station/StationInfo.vue";
+let oapi = window.VUE_APP_OAPI;
 
 import { defineComponent } from "vue";
 
@@ -142,7 +143,7 @@ export default defineComponent({
       var self = this;
       await this.$http({
         method: "get",
-        url: "/collections/stations/items",
+        url: `${oapi}/collections/stations/items`,
         params: Object.assign({}, self.params, self.params_),
       })
         .then(function (response) {

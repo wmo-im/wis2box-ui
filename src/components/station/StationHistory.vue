@@ -23,6 +23,7 @@ export default defineComponent({
   props: ["features", "map"],
   data() {
     return {
+      now: new Date(),
       loading: true,
       features_: this.features,
       data: [],
@@ -92,10 +93,14 @@ export default defineComponent({
       })
         .then(function (response) {
           // handle success
-          self.oldestResultTime =
-            response.data.features[0].properties.resultTime;
+          var ort = response.data.features[0].properties.resultTime;
+          self.oldestResultTime = new Date(ort);
           var index = response.data.features[0].properties.index;
-          self.loadDailyObservations(station, index);
+          if (self.inDays(self.oldestResultTime, self.now) > 30) {
+            self.loadAllObservations(station, index);
+          } else {
+            self.loadDailyObservations(station, index);
+          }
         })
         .catch(function (error) {
           // handle error
@@ -106,15 +111,45 @@ export default defineComponent({
           }
         });
     },
+    async loadAllObservations(station, index) {
+      this.loading = true;
+      this.layout.xaxis.range = [
+        this.oldestResultTime.toISOString(),
+        this.now.toISOString(),
+      ];
+      var self = this;
+      await this.$http({
+        method: "get",
+        url: station.links[0].href + "/items",
+        params: {
+          f: "json",
+          index: index,
+          wigos_station_identifier: station.id,
+        },
+      }).then(function (response) {
+        // handle success
+        var trace = {
+          x: response.data.features.map((obs) => obs.properties.resultTime),
+          type: "histogram",
+          xbins: {
+            size: 3600000,
+          },
+        };
+        self.data.push(trace);
+        self.plot();
+      });
+      this.loading = false;
+    },
     async loadDailyObservations(station, index) {
       this.loading = true;
-      var now = new Date();
-      var then = new Date(this.oldestResultTime);
-      this.layout.xaxis.range = [then.toISOString(), now.toISOString()];
+      this.layout.xaxis.range = [
+        this.oldestResultTime.toISOString(),
+        this.now.toISOString(),
+      ];
       var self = this;
       for (
-        var d = new Date(this.oldestResultTime);
-        d <= now;
+        var d = new Date(this.oldestResultTime.toISOString());
+        d <= this.now;
         this.iterDate(d)
       ) {
         var date_ = d.toISOString().split("T")[0];
@@ -158,6 +193,12 @@ export default defineComponent({
         });
       }
       this.loading = false;
+    },
+    inDays: function (d1, d2) {
+      var t2 = d2.getTime();
+      var t1 = d1.getTime();
+
+      return Math.floor((t2 - t1) / (24 * 3600 * 1000));
     },
     iterDate(d) {
       var nextDate = new Date(d.toISOString());
