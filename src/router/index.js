@@ -23,7 +23,9 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(
+    new URL(window.VUE_APP_URL).pathname
+  ),
   routes,
 });
 
