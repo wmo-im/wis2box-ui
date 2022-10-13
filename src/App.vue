@@ -65,8 +65,6 @@ export default {
     },
   },
   setup() {
-    console.log(process.env.BASE_URL);
-    console.log(window.VUE_APP_URL);
     const { t } = useI18n();
     return {
       t,
