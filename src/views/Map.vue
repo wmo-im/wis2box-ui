@@ -4,7 +4,7 @@
   </div>
   <div class="map" :style="{ opacity: $root.dialog ? '0' : '1' }">
     <v-card flat>
-      <wis-map :features="features" :params="{ topic: topic }" />
+      <wis-map :features="features" :params="{ collection: topic }" />
     </v-card>
   </div>
 </template>
