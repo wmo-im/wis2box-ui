@@ -200,14 +200,18 @@ export default defineComponent({
           .then(function (response) {
             // handle success
             self.plot(response.request.responseURL);
-
-            self.title = `${datastream.name} (${datastream.units})`;
+            if (datastream.units === "CODE TABLE") {
+              self.title = `${datastream.name}`;
+              self.data.value = self.getCol(response.data.features, "description");
+            } else {
+              self.title = `${datastream.name} (${datastream.units})`;
+              self.data.value = self.getCol(response.data.features, "value");
+            }
             self.data.time = self.getCol(response.data.features, "resultTime");
             self.data.phenomenonTime = self.getCol(
               response.data.features,
               "phenomenonTime"
             );
-            self.data.value = self.getCol(response.data.features, "value");
           })
           .catch(function (error) {
             // handle error

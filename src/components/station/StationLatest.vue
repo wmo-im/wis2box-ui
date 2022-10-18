@@ -7,7 +7,8 @@
       <table>
         <tr v-for="(item, i) in recentObservations" :key="i">
           <th width="50%">{{ $root.parseForNameAndTime(item) }}</th>
-          <td width="50%">{{ item.value + " " + item.units }}</td>
+          <td v-if="item.units !== 'CODE TABLE'" width="50%">{{ item.value + " " + item.units }}</td>
+          <td v-else-if="item.units === 'CODE TABLE'" width="50%">{{ item.description }}</td>
         </tr>
       </table>
     </v-table>
