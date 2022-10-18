@@ -88,7 +88,7 @@ export default defineComponent({
             } else if (hits <= 19) {
               fillColor = "#FF9900";
               color = "DarkOrange";
-            } else if (hits <= 24) {
+            } else {
               fillColor = "#009900";
               color = "SeaGreen";
             }

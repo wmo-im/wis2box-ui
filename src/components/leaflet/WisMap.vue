@@ -92,7 +92,7 @@ export default defineComponent({
       legend: [
         {
           color: "#009900",
-          range: "20 - 24",
+          range: "20 or more",
         },
         {
           color: "#FF9900",
