@@ -173,7 +173,7 @@ export default defineComponent({
               fillColor = "#FF3300";
             } else if (hits <= 19) {
               fillColor = "#FF9900";
-            } else if (hits <= 24) {
+            } else {
               fillColor = "#009900";
             }
             var trace = {
