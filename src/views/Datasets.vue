@@ -114,7 +114,7 @@ export default {
       }
       links.push({
         href: undefined,
-        target: `/${c.id}/map`,
+        target: `/${c.id}`,
         type: "Map",
         msg: "map",
       });
@@ -130,7 +130,7 @@ export default {
   },
   methods: {
     loadMap(topic) {
-      this.$router.push(`/${topic}/map`);
+      this.$router.push(`/${topic}`);
     },
   },
 };
