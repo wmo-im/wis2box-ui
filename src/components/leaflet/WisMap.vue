@@ -139,7 +139,6 @@ export default defineComponent({
         data: { inputs: self.params },
       })
         .then(function (response) {
-          console.log(response);
           self.features_.stations = response.data.value;
           self.numberMatched = response.data.numberMatched;
         })

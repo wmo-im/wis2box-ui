@@ -8,7 +8,7 @@ name: publish image to ghcr.io
 on:
   push:
     branches:
-      - station-status
+      - main
   release:
     types: [published]
 
@@ -51,7 +51,6 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=raw,value=test
             type=semver,pattern={{version}}
 
       - name: Build and push
