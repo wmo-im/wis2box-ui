@@ -20,7 +20,7 @@ export default defineComponent({
   components: {
     LGeoJson,
   },
-  props: ["vals", "features", "map"],
+  props: ["features", "map"],
   data: function () {
     return {
       features_: this.features,
@@ -28,7 +28,6 @@ export default defineComponent({
         onEachFeature: this.onEachFeature,
         pointToLayer: this.pointToLayer,
       },
-      status: {},
     };
   },
   methods: {
@@ -44,67 +43,33 @@ export default defineComponent({
         self.features_.station = feature;
         layer.bindPopup(feature.properties.name).openPopup(e.latLng);
       });
-      this.getStationStyle(feature, layer);
     },
     pointToLayer(feature, latLng) {
+      let fillColor;
+      let color;
+      let hits = feature.properties.num_obs;
+      if (hits === 0){
+        fillColor = "#708090";
+        color = "#2E343B";
+      } else if (hits <= 7) {
+        fillColor = "#FF3300";
+        color = "#801A00";
+      } else if (hits <= 19) {
+        fillColor = "#FF9900";
+        color = "#804D00";
+      } else {
+        fillColor = "#009900";
+        color = "#004D00";
+      }
       const markerStyle = {
         radius: 4,
-        fillColor: "SlateGrey",
-        color: "DimGrey",
+        fillColor: fillColor,
+        color: color,
         weight: 1,
         opacity: 1,
         fillOpacity: 0.8,
       };
       return circleMarker(latLng, markerStyle);
-    },
-    async getStationStyle(feature, layer) {
-      this.station_loading(feature, true);
-      let fillColor;
-      let color;
-      let hits = feature.properties.num_obs;
-      if (hits === 0) {
-        fillColor = "#000000";
-        color = "Black";
-      } else if (hits <= 7) {
-        fillColor = "#FF3300";
-        color = "Black";
-      } else if (hits <= 19) {
-        fillColor = "#FF9900";
-        color = "Black";
-      } else {
-        fillColor = "#009900";
-        color = "Black";
-      }
-      layer.remove();
-      layer.options.fillColor = fillColor;
-      layer.options.color = color;
-      layer.addTo(this.map);
-      this.station_loading(feature, false);
-      setTimeout(this.getStationStyle, 900000, feature, layer);
-    },
-    async countDailyObservations(station, index) {
-      let hits;
-      const startTime = new Date();
-      startTime.setDate(startTime.getDate() - 1);
-      await this.$http({
-        method: "get",
-        url: station.links[0].href + "/items",
-        params: {
-          f: "json",
-          datetime: `${startTime.toISOString()}/..`,
-          index: index,
-          wigos_station_identifier: station.id,
-          resulttype: "hits",
-        },
-      }).then(function (response) {
-        hits = response.data.numberMatched;
-      });
-      return hits;
-    },
-    station_loading(feature, loading) {
-      this.status[feature.id] = loading;
-      var self = this;
-      self.vals["loading"] = Object.values(this.status).includes(true);
     },
   },
   computed: {

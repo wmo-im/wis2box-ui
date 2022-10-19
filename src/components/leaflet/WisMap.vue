@@ -1,12 +1,9 @@
 <template id="wis-map">
   <div class="wis-map">
-    <div v-if="loading || vals.loading">
+    <div v-if="loading">
       <v-progress-linear striped indeterminate color="primary" />
     </div>
-    <div
-      :style="{ visibility: !loading ? 'visible' : 'hidden' }"
-      class="text-center"
-    >
+    <div class="text-center">
       <v-layout>
         <station-info :features="features" :map="map" />
         <v-row justify="center" fill-height>
@@ -22,7 +19,7 @@
                   style="height: 60vh"
                   @ready="onReady()"
                 >
-                  <wis-station :vals="vals" :features="features" :map="map" />
+                  <wis-station :features="features" :map="map" />
                   <l-tile-layer :url="url" :attribution="attribution" />
                   <l-control position="bottomright">
                     <v-card width="140px" class="legend pa-2">
@@ -103,7 +100,7 @@ export default defineComponent({
           range: "1 - 7",
         },
         {
-          color: "#000000",
+          color: "#708090",
           range: "None",
         },
       ],
@@ -138,10 +135,9 @@ export default defineComponent({
       await this.$http({
         method: "post",
         url: `${oapi}/processes/station-info/execution`,
-        data: {inputs: self.params},
+        data: { inputs: self.params },
       })
         .then(function (response) {
-          console.log(response);
           self.features_.stations = response.data.value;
           self.numberMatched = response.data.numberMatched;
         })
@@ -149,10 +145,11 @@ export default defineComponent({
           console.log(error);
         })
         .then(function () {
+          var bounds_ = geoJSON(self.features_.stations).getBounds();
+          self.map.fitBounds(bounds_);
           self.loading = false;
+          setTimeout(self.loadStations, 60000);
         });
-      var bounds_ = geoJSON(this.features_.stations).getBounds();
-      this.map.fitBounds(bounds_);
     },
   },
 });
