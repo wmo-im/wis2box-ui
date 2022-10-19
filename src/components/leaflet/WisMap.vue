@@ -127,7 +127,6 @@ export default defineComponent({
         this.map.attributionControl.setPrefix("");
         this.map.zoomControl.setPosition("topright");
         this.loadStations();
-        setTimeout(this.loadStations, 900000);
       });
     },
     async loadStations() {
@@ -146,10 +145,11 @@ export default defineComponent({
           console.log(error);
         })
         .then(function () {
+          var bounds_ = geoJSON(self.features_.stations).getBounds();
+          self.map.fitBounds(bounds_);
           self.loading = false;
+          setTimeout(self.loadStations, 60000);
         });
-      var bounds_ = geoJSON(this.features_.stations).getBounds();
-      this.map.fitBounds(bounds_);
     },
   },
 });
