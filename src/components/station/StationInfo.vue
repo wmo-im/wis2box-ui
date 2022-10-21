@@ -2,20 +2,32 @@
   <div class="station-info">
     <v-navigation-drawer permanent :width="400">
       <v-toolbar>
-        <h3 class="text-no-wrap mx-4">
-          {{ station_name || $t("chart.station") }}
-        </h3>
-        <v-spacer />
-        <v-btn
-          color="pink"
-          icon
-          v-show="station !== null"
-          @click="features_.station = null"
-        >
-          <v-icon icon="mdi-close"></v-icon>
-        </v-btn>
+        <template v-slot:prepend>
+          <v-toolbar-title class="ml-2">
+            {{ station_name || $t("chart.station") }}
+          </v-toolbar-title>
+        </template>
+
+        <template v-slot:append>
+          <v-toolbar-items v-if="station !== null">
+            <v-btn
+              variant="outlined"
+              size="small"
+              color="#014e9e"
+              :target="station.id"
+              :title="station.id"
+              :href="station.properties.url"
+            >
+              OSCAR
+              <v-icon end icon="mdi-open-in-new"></v-icon>
+            </v-btn>
+            <v-btn color="pink" icon @click="features_.station = null">
+              <v-icon icon="mdi-close"></v-icon>
+            </v-btn>
+          </v-toolbar-items>
+        </template>
       </v-toolbar>
-      <v-divider />
+
       <v-card flat class="text-center" v-show="station === null">
         <station-list :features="features" :map="map" />
       </v-card>
