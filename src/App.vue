@@ -3,14 +3,18 @@
     <app-header app />
 
     <v-main>
-      <v-card flat class="py-3">
+      <v-responsive class="pa-2">
         <v-row justify="center">
-          <v-responsive width="90%" max-width="1130">
-            <app-nav />
-            <router-view />
-          </v-responsive>
+          <v-card flat width="90%" max-width="1130">
+            <v-layout>
+              <app-nav />
+              <v-main>
+                <router-view />
+              </v-main>
+            </v-layout>
+          </v-card>
         </v-row>
-      </v-card>
+      </v-responsive>
     </v-main>
 
     <app-footer app class="pt-4" />

@@ -1,6 +1,6 @@
 <template id="datasets">
   <div class="datasets">
-    <v-responsive justify-center>
+    <v-card flat>
       <v-alert border="start" variant="contained-text" color="#014e9e">
         <h2>{{ $t("messages.welcome") }}</h2>
       </v-alert>
@@ -68,7 +68,7 @@
           </tbody>
         </v-table>
       </v-card>
-    </v-responsive>
+    </v-card>
   </div>
 </template>
 

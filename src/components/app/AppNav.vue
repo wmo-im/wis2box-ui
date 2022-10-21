@@ -1,30 +1,28 @@
 <template id="app-nav">
   <div class="app-nav">
     <v-app-bar flat>
-      <v-responsive class="mx-auto" width="90%" max-width="1130">
-        <v-btn-toggle divided>
-          <template v-for="(item, i) in items" :key="i">
-            <v-hover v-slot="{ isHovering, props }">
-              <v-btn
-                :href="item.href"
-                :to="item.target"
-                :target="`_window_${item.text}`"
-                :color="isHovering ? '#014e9e' : undefined"
-                class="font-weight-bold"
-                variant="text"
-                v-bind="props"
-              >
-                {{ $t(`navigation.${item.text}`) }}
-                <v-icon
-                  v-if="item.href !== undefined"
-                  end
-                  icon="mdi-open-in-new"
-                />
-              </v-btn>
-            </v-hover>
-          </template>
-        </v-btn-toggle>
-      </v-responsive>
+      <v-btn-toggle divided>
+        <template v-for="(item, i) in items" :key="i">
+          <v-hover v-slot="{ isHovering, props }">
+            <v-btn
+              :href="item.href"
+              :to="item.target"
+              :target="`_window_${item.text}`"
+              :color="isHovering ? '#014e9e' : undefined"
+              class="font-weight-bold"
+              variant="text"
+              v-bind="props"
+            >
+              {{ $t(`navigation.${item.text}`) }}
+              <v-icon
+                v-if="item.href !== undefined"
+                end
+                icon="mdi-open-in-new"
+              />
+            </v-btn>
+          </v-hover>
+        </template>
+      </v-btn-toggle>
     </v-app-bar>
   </div>
 </template>
