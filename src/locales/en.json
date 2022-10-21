@@ -55,6 +55,7 @@
     "oafeat": "Observations",
     "oarec": "Discovery metadata",
     "map": "Map",
+    "explore": "Explore",
     "mqp": "PubSub"
   }
 }
