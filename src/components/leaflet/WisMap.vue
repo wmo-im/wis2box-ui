@@ -22,7 +22,11 @@
                   <wis-station :features="features" :map="map" />
                   <l-tile-layer :url="url" :attribution="attribution" />
                   <l-control position="bottomright">
-                    <v-card width="140px" class="legend pa-2">
+                    <v-card
+                      width="140px"
+                      class="legend pa-2"
+                      border="1"
+                    >
                       <strong> {{ $t("messages.no_of_observations") }} </strong>
                       <v-divider class="my-2" />
                       <v-row
@@ -148,7 +152,7 @@ export default defineComponent({
           var bounds_ = geoJSON(self.features_.stations).getBounds();
           self.map.fitBounds(bounds_);
           self.loading = false;
-          setTimeout(self.loadStations, 60000);
+          setTimeout(self.loadStations, 900000);
         });
     },
   },

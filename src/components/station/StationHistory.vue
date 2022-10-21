@@ -73,6 +73,12 @@ export default defineComponent({
   watch: {
     "features_.station": {
       async handler(station) {
+        if (station !== null) {
+          this.data = [];
+          for (var plot of document.getElementsByClassName("plot-history")) {
+            this.plot(plot);
+          }
+        }
         if (hasLinks(station)) {
           this.loadObservations(station);
         } else if (station !== null) {
@@ -82,7 +88,6 @@ export default defineComponent({
           )}. ${this.$t("messages.how_to_link_station")}`;
           this.snackbar = true;
           this.loading = false;
-          this.tab = null;
         }
       },
     },
@@ -150,9 +155,7 @@ export default defineComponent({
             size: 3600000,
           },
         };
-        var plot = document.getElementById(
-          "station-history-" + station.id
-        );
+        var plot = document.getElementById("station-history-" + station.id);
         if (plot !== null) {
           self.data.push(trace);
           self.plot(plot);
@@ -207,9 +210,7 @@ export default defineComponent({
               },
               name: date_,
             };
-            var plot = document.getElementById(
-              "station-history-" + station.id
-            );
+            var plot = document.getElementById("station-history-" + station.id);
             if (plot !== null) {
               self.data.push(trace);
               self.plot(plot);

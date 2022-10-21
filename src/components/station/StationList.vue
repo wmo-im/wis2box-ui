@@ -5,15 +5,19 @@
         <template v-for="(s, i) in stations" :key="i">
           <v-list-item
             v-bind="props"
-            lines="3"
+            height="50"
             :class="{ 'on-hover': isHovering }"
             @click="onClick(s)"
             @mouseover="onHover(s)"
           >
-            <template v-slot:title class="mx-1">
-              <h4 v-html="clean(s.properties.name)" />
+            <template v-slot:prepend>
               <i class="dot" :style="`background: ${getColor(s)}`" />
             </template>
+
+            <template v-slot:title>
+              <h4 class="mx-2 text-left" v-text="clean(s.properties.name)" />
+            </template>
+
             <template v-slot:append>
               <v-btn
                 variant="outlined"
@@ -27,7 +31,7 @@
               </v-btn>
             </template>
           </v-list-item>
-          <v-divider v-if="i+1 < stations.length" />
+          <v-divider v-if="i + 1 < stations.length" />
         </template>
       </v-hover>
     </v-list>

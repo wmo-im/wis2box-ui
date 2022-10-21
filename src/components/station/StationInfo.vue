@@ -8,23 +8,22 @@
           </v-toolbar-title>
         </template>
 
-        <template v-slot:append>
-          <v-toolbar-items v-if="station !== null">
-            <v-btn
-              variant="outlined"
-              size="small"
-              color="#014e9e"
-              :target="station.id"
-              :title="station.id"
-              :href="station.properties.url"
-            >
-              OSCAR
-              <v-icon end icon="mdi-open-in-new"></v-icon>
-            </v-btn>
-            <v-btn color="pink" icon @click="features_.station = null">
-              <v-icon icon="mdi-close"></v-icon>
-            </v-btn>
-          </v-toolbar-items>
+        <template v-slot:append v-if="station !== null">
+          <v-btn
+            class="my-auto"
+            variant="outlined"
+            size="small"
+            color="#014e9e"
+            :target="station.id"
+            :title="station.id"
+            :href="station.properties.url"
+          >
+            OSCAR
+            <v-icon end icon="mdi-open-in-new"></v-icon>
+          </v-btn>
+          <v-btn color="pink" icon @click="features_.station = null">
+            <v-icon icon="mdi-close"></v-icon>
+          </v-btn>
         </template>
       </v-toolbar>
 
