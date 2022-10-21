@@ -11,7 +11,6 @@
 <script>
 import { circleMarker } from "leaflet/dist/leaflet-src.esm";
 import { LGeoJson } from "@vue-leaflet/vue-leaflet";
-import { hasLinks } from "@/scripts/helpers.js";
 
 import { defineComponent } from "vue";
 
@@ -49,7 +48,7 @@ export default defineComponent({
       let fillColor;
       let color;
       let hits = feature.properties.num_obs;
-      if (hits === 0){
+      if (hits === 0) {
         fillColor = "#708090";
         color = "#2E343B";
       } else if (hits <= 7) {
