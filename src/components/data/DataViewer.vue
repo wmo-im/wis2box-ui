@@ -2,7 +2,10 @@
   <div class="data-viewer">
     <v-layout>
       <v-app-bar color="#EEEEEE" flat>
-        <v-toolbar-title class="pa-2 text-h6">
+        <template v-slot:prepend v-if="$vuetify.display.smAndDown">
+          <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+        </template>
+        <v-toolbar-title v-show="$vuetify.display.mdAndUp" class="pa-2 text-h6">
           {{ choices.collection.description || $t("chart.collection") }}
         </v-toolbar-title>
         <v-tabs v-model="tab" end color="#014e9e">
@@ -16,7 +19,12 @@
           </v-tab>
         </v-tabs>
       </v-app-bar>
-      <data-navigation :choices="choices" :station="station" :alert="alert" />
+      <data-navigation
+        :choices="choices"
+        :station="station"
+        :alert="alert"
+        :drawer="{ model: drawer }"
+      />
       <v-main>
         <v-window v-model="tab">
           <v-window-item :value="0">
@@ -70,6 +78,15 @@ export default defineComponent({
   methods: {
     goBack() {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
+    },
+  },
+  watch: {
+    "choices.datastream": {
+      handler(datastream) {
+        if (datastream !== "" && this.$vuetify.display.smAndDown) {
+          this.drawer = false;
+        }
+      },
     },
   },
   async created() {

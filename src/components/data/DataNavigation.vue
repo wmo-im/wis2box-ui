@@ -1,6 +1,6 @@
 <template id="data-navigation">
   <div class="data-navigation">
-    <v-navigation-drawer floating permanent absolute class="text-center">
+    <v-navigation-drawer v-model="drawer_" bottom absolute class="text-center">
       <v-list-item-subtitle
         class="mt-2"
         v-html="$t('chart.observed_property')"
@@ -37,13 +37,18 @@ import { getNameTime, hasLinks } from "@/scripts/helpers.js";
 export default {
   name: "DataNavigation",
   template: "#data-navigation",
-  props: ["choices", "alert", "station"],
+  props: ["choices", "alert", "station", "drawer"],
   data() {
     return {
       choices_: this.choices,
       alert_: this.alert,
       model: -1,
     };
+  },
+  computed: {
+    drawer_: function () {
+      return this.drawer.model;
+    },
   },
   watch: {
     "choices.collections": {

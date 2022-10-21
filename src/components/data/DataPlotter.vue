@@ -7,11 +7,9 @@
         <v-progress-linear striped indeterminate color="primary" />
       </div>
       <div :style="{ visibility: !loading ? 'visible' : 'hidden' }">
-        <v-container>
-          <v-row justify="center" align="end">
-            <div :id="'plotly-chart-' + choices_.collection.id" />
-          </v-row>
-        </v-container>
+        <v-card class="mx-auto" flat>
+          <div :id="'plotly-chart-' + choices_.collection.id" />
+        </v-card>
       </div>
     </v-card>
   </div>
@@ -84,6 +82,7 @@ export default defineComponent({
         },
       },
       config: {
+        responsive: true,
         displayModeBar: true,
         modeBarButtonsToAdd: [],
         modeBarButtonsToRemove: [
