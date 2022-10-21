@@ -7,7 +7,10 @@
       <v-progress-linear height="6" indeterminate color="primary" />
     </div>
     <v-row justify="center">
-      <div id="station-history-plot" />
+      <div
+        class="plot-history"
+        :id="'station-history-' + wigos_station_identifier"
+      />
     </v-row>
   </div>
 </template>
@@ -55,12 +58,24 @@ export default defineComponent({
       },
     };
   },
+  computed: {
+    station: function () {
+      return this.features_.station;
+    },
+    wigos_station_identifier: function () {
+      if (this.station) {
+        return this.station.properties.wigos_station_identifier;
+      } else {
+        return "";
+      }
+    },
+  },
   watch: {
     "features_.station": {
       async handler(station) {
         if (hasLinks(station)) {
           this.loadObservations(station);
-        } else if (station !== null){
+        } else if (station !== null) {
           this.msg = `
             ${clean(station.properties.name)} ${this.$t(
             "messages.no_linked_collections"
@@ -73,8 +88,7 @@ export default defineComponent({
     },
   },
   methods: {
-    plot() {
-      var plot = document.getElementById("station-history-plot");
+    plot(plot) {
       Plotly.purge(plot);
       Plotly.newPlot(plot, this.data, this.layout, this.config);
     },
@@ -136,8 +150,13 @@ export default defineComponent({
             size: 3600000,
           },
         };
-        self.data.push(trace);
-        self.plot();
+        var plot = document.getElementById(
+          "station-history-" + station.id
+        );
+        if (plot !== null) {
+          self.data.push(trace);
+          self.plot(plot);
+        }
       });
       this.loading = false;
     },
@@ -188,8 +207,13 @@ export default defineComponent({
               },
               name: date_,
             };
-            self.data.push(trace);
-            self.plot();
+            var plot = document.getElementById(
+              "station-history-" + station.id
+            );
+            if (plot !== null) {
+              self.data.push(trace);
+              self.plot(plot);
+            }
           }
         });
       }
