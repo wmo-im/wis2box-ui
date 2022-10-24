@@ -1,28 +1,27 @@
 <template id="station-info">
   <div class="station-info">
-    <v-navigation-drawer permanent :width="400">
+    <v-card flat height="60vh" class="scroll">
       <v-toolbar>
-        <template v-slot:prepend>
-          <v-toolbar-title class="ml-2">
-            {{ station_name || $t("chart.station") }}
-          </v-toolbar-title>
+        <v-toolbar-title>
+          {{ station_name || $t("chart.station") }}
+        </v-toolbar-title>
+
+        <template v-slot:prepend v-if="station !== null">
+          <v-btn icon @click="features_.station = null">
+            <v-icon icon="mdi-arrow-left"></v-icon>
+          </v-btn>
         </template>
 
-        <template v-slot:append v-if="station !== null">
+        <template v-slot:append v-if="station != null">
           <v-btn
-            class="my-auto"
             variant="outlined"
             size="small"
             color="#014e9e"
-            :target="station.id"
-            :title="station.id"
-            :href="station.properties.url"
+            @click.stop="openData(station)"
+            class="my-auto"
           >
-            OSCAR
-            <v-icon end icon="mdi-open-in-new"></v-icon>
-          </v-btn>
-          <v-btn color="pink" icon @click="features_.station = null">
-            <v-icon icon="mdi-close"></v-icon>
+            {{ $t("navigation.data") }}
+            <v-icon end icon="mdi-chart-scatter-plot" />
           </v-btn>
         </template>
       </v-toolbar>
@@ -34,7 +33,7 @@
       <v-card flat class="text-center" v-show="station !== null">
         <station-status :features="features" :map="map" />
       </v-card>
-    </v-navigation-drawer>
+    </v-card>
   </div>
 </template>
 
@@ -65,5 +64,17 @@ export default defineComponent({
       }
     },
   },
+  methods: {
+    openData(station) {
+      this.features_.station = station;
+      this.$root.toggleDialog();
+    },
+  },
 });
 </script>
+
+<style scoped>
+.scroll {
+  overflow-y: scroll;
+}
+</style>

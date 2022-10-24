@@ -1,6 +1,6 @@
 <template id="station-list">
   <div class="station-list">
-    <v-list>
+    <v-list lines="3">
       <v-hover v-slot="{ isHovering, props }">
         <template v-for="(s, i) in stations" :key="i">
           <v-list-item
@@ -15,7 +15,7 @@
             </template>
 
             <template v-slot:title>
-              <h4 class="mx-2 text-left" v-text="clean(s.properties.name)" />
+              <h4 class="ml-1 text-left" v-text="clean(s.properties.name)" />
             </template>
 
             <template v-slot:append>
@@ -23,11 +23,12 @@
                 variant="outlined"
                 size="small"
                 color="#014e9e"
-                @click.stop="openData(s)"
-                class="mr-1"
+                :target="s.id"
+                :title="s.id"
+                :href="s.properties.url"
               >
-                {{ $t("navigation.data") }}
-                <v-icon end icon="mdi-chart-scatter-plot"></v-icon>
+                OSCAR
+                <v-icon end icon="mdi-open-in-new" />
               </v-btn>
             </template>
           </v-list-item>
@@ -88,10 +89,6 @@ export default defineComponent({
         station.geometry.coordinates[0],
       ];
       this.map.openPopup(station.properties.name, latlng);
-    },
-    openData(station) {
-      this.features_.station = station;
-      this.$root.toggleDialog();
     },
     getColor(station) {
       let hits = station.properties.num_obs;
