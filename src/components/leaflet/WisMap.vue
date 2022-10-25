@@ -4,48 +4,48 @@
       <v-progress-linear striped indeterminate color="primary" />
     </div>
     <div class="text-center">
-      <v-layout>
-        <station-info :features="features" :map="map" />
-        <v-row justify="center" fill-height>
-          <v-main>
-            <v-card class="ma-4">
-              <p>
-                <l-map
-                  ref="wisMap"
-                  :zoom="zoom"
-                  :center="center"
-                  maxZoom="16"
-                  minZoom="2"
-                  style="height: 60vh"
-                  @ready="onReady()"
-                >
-                  <wis-station :features="features" :map="map" />
-                  <l-tile-layer :url="url" :attribution="attribution" />
-                  <l-control position="bottomright">
-                    <v-card width="140px" class="legend pa-2">
-                      <strong> {{ $t("messages.no_of_observations") }} </strong>
-                      <v-divider class="my-2" />
-                      <v-row
-                        no-gutters
-                        justify="center"
-                        v-for="(item, i) in legend"
-                        :key="i"
-                      >
-                        <v-col>
-                          <i class="dot" :style="`background: ${item.color}`" />
-                        </v-col>
-                        <v-col>
-                          {{ item.range }}
-                        </v-col>
-                      </v-row>
-                    </v-card>
-                  </l-control>
-                </l-map>
-              </p>
-            </v-card>
-          </v-main>
-        </v-row>
-      </v-layout>
+      <v-row justify="center" fill-height no-gutters>
+        <v-col :cols="smAndDown ? 12 : 4" :order="smAndDown ? 'last' : 'start'">
+          <station-info :features="features" :map="map" class="ma-1" />
+        </v-col>
+        <v-col :cols="smAndDown ? 12 : 8">
+          <v-card class="ma-1">
+            <p>
+              <l-map
+                ref="wisMap"
+                :zoom="zoom"
+                :center="center"
+                maxZoom="16"
+                minZoom="2"
+                style="height: 60vh"
+                @ready="onReady()"
+              >
+                <wis-station :features="features" :map="map" />
+                <l-tile-layer :url="url" :attribution="attribution" />
+                <l-control position="bottomleft">
+                  <v-card width="124px" class="legend pa-2" border="1">
+                    <strong> {{ $t("messages.no_of_observations") }} </strong>
+                    <v-divider class="my-2" />
+                    <v-row
+                      no-gutters
+                      justify="center"
+                      v-for="(item, i) in legend"
+                      :key="i"
+                    >
+                      <v-col cols="3">
+                        <i class="dot" :style="`background: ${item.color}`" />
+                      </v-col>
+                      <v-col>
+                        {{ item.range }}
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </l-control>
+              </l-map>
+            </p>
+          </v-card>
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>
@@ -119,6 +119,9 @@ export default defineComponent({
       items.add(this.numberMatched);
       return items;
     },
+    smAndDown: function () {
+      return this.$vuetify.display.smAndDown;
+    },
   },
   methods: {
     onReady() {
@@ -148,7 +151,7 @@ export default defineComponent({
           var bounds_ = geoJSON(self.features_.stations).getBounds();
           self.map.fitBounds(bounds_);
           self.loading = false;
-          setTimeout(self.loadStations, 60000);
+          setTimeout(self.loadStations, 900000);
         });
     },
   },

@@ -48,7 +48,7 @@ export default defineComponent({
       let fillColor;
       let color;
       let hits = feature.properties.num_obs;
-      if (hits === 0){
+      if (hits === 0) {
         fillColor = "#708090";
         color = "#2E343B";
       } else if (hits <= 7) {

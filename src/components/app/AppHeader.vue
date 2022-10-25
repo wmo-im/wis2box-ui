@@ -9,22 +9,23 @@
       </template>
 
       <template v-slot:default>
-        <v-row justify="center">
-          <v-responsive width="90%" max-width="1130">
-            <v-container fluid>
-              <v-row>
-                <v-spacer />
-                <token-auth class="pt-4" />
-                <select-locale class="pt-4 pr-4" />
-              </v-row>
-              <v-row>
-                <a :href="wis2" title="wis2box">
-                  <img :src="logo" class="px-4 pb-6" />
-                </a>
-              </v-row>
-            </v-container>
-          </v-responsive>
-        </v-row>
+        <v-responsive
+          width="90%"
+          max-width="1130"
+          height="100%"
+          class="mx-auto"
+        >
+          <v-container fluid>
+            <v-row align="start" fill-height>
+              <a :href="wis2" title="wis2box">
+                <img :src="logo" class="pl-6 my-3" />
+              </a>
+              <v-spacer />
+              <token-auth />
+              <select-locale class="pr-6" />
+            </v-row>
+          </v-container>
+        </v-responsive>
       </template>
     </v-app-bar>
   </div>

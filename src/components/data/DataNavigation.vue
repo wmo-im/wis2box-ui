@@ -1,6 +1,6 @@
 <template id="data-navigation">
   <div class="data-navigation">
-    <v-navigation-drawer floating permanent absolute class="text-center">
+    <v-navigation-drawer v-model="drawer_" bottom absolute class="text-center">
       <v-list-item-subtitle
         class="mt-2"
         v-html="$t('chart.observed_property')"
@@ -18,7 +18,7 @@
             class="text-left text-body-2"
             @click="updateData(item, i)"
           >
-            {{ $root.parseForNameAndTime(item) }}
+            {{ getNameTime(item) }}
           </v-list-item>
           <v-divider
             class="pb-1 mx-2"
@@ -32,11 +32,12 @@
 
 <script>
 let oapi = window.VUE_APP_OAPI;
+import { getNameTime, hasLinks } from "@/scripts/helpers.js";
 
 export default {
   name: "DataNavigation",
   template: "#data-navigation",
-  props: ["choices", "alert", "station"],
+  props: ["choices", "alert", "station", "drawer"],
   data() {
     return {
       choices_: this.choices,
@@ -44,10 +45,15 @@ export default {
       model: -1,
     };
   },
+  computed: {
+    drawer_: function () {
+      return this.drawer.model;
+    },
+  },
   watch: {
     "choices.collections": {
       handler(c) {
-        if (this.station.links.length > 0) {
+        if (hasLinks(this.station)) {
           for (const item of c) {
             if (this.station.links[0].title === item.id) {
               this.updateCollection(item);
@@ -59,6 +65,7 @@ export default {
     },
   },
   methods: {
+    getNameTime,
     async updateCollection(newC) {
       this.alert_value = false;
       this.choices_.collection = newC;
@@ -126,7 +133,7 @@ export default {
       this.choices_.datastream = {
         id: newD.name,
         index: newD.index,
-        name: this.$root.parseForNameAndTime(newD),
+        name: getNameTime(newD),
         units: newD.units,
       };
       this.model = index;

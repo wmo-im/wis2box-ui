@@ -1,74 +1,85 @@
 <template id="datasets">
   <div class="datasets">
-    <v-responsive justify-center>
+    <v-card flat>
       <v-alert border="start" variant="contained-text" color="#014e9e">
         <h2>{{ $t("messages.welcome") }}</h2>
       </v-alert>
       <v-card class="pa-2">
-        <v-table>
-          <tbody>
-            <tr class="pa-2 my-4" v-for="(item, i) in datasets" :key="i">
-              <th>
-                <v-hover v-slot="{ isHovering, props }">
-                  <v-container>
-                    <v-row justify="center" fill-height>
-                      <v-card
-                        class="pa-0 ma-0"
-                        :elevation="isHovering ? 24 : 0"
-                        v-bind="props"
-                        @click="loadMap(item.id)"
-                      >
-                        <v-overlay
-                          open-on-hover
-                          contained
-                          activator="parent"
-                          class="align-center justify-center"
-                        >
-                          <v-btn flat>
-                            {{ $t("datasets.map") }}
-                          </v-btn>
-                        </v-overlay>
-                        <dataset-map :dataset="item" />
-                      </v-card>
-                    </v-row>
-                  </v-container>
-                </v-hover>
-              </th>
-              <td>
-                <v-col cols="12" class="text-center">
-                  <h2>
-                    {{ item.properties.title }}
-                  </h2>
-                  <span>
-                    <strong>{{ $t("datasets.topic") + " : " }}</strong>
-                    <code>{{ item.id }}</code>
-                  </span>
-                </v-col>
-                <v-col cols="12" class="text-center">
-                  <v-btn-group variant="outlined" divided>
-                    <v-btn
-                      v-for="(item, i) in item.links"
-                      :key="i"
-                      :title="item.type"
-                      :href="item.href"
-                      :to="item.target"
-                      :target="`_window_${item.type}`"
-                    >
-                      {{ $t(`datasets.${item.msg}`) }}
-                      <v-icon
-                        v-if="item.href !== undefined"
-                        end
-                        icon="mdi-open-in-new"
-                      />
+        <v-row v-for="(item, i) in datasets" :key="i">
+          <v-col sm="12" md="3">
+            <v-container>
+              <v-row justify="center" fill-height>
+                <v-card class="pa-0 ma-0" @click="loadMap(item.id)">
+                  <v-overlay
+                    open-on-hover
+                    contained
+                    activator="parent"
+                    class="align-center justify-center"
+                  >
+                    <v-btn flat>
+                      {{ $t("datasets.map") }}
                     </v-btn>
-                  </v-btn-group>
-                </v-col>
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
+                  </v-overlay>
+                  <dataset-map :dataset="item" />
+                </v-card>
+              </v-row>
+            </v-container>
+          </v-col>
+          <v-col sm="12" md="9" class="text-center">
+            <v-col>
+              <h2>
+                {{ item.properties.title }}
+              </h2>
+            </v-col>
+            <v-col class="flex-nowrap">
+              <span class="pt-2">
+                <strong>{{ $t("datasets.topic") + " : " }}</strong>
+                <code>{{ item.id }}</code>
+              </span>
+            </v-col>
+            <v-col>
+              <v-btn-group
+                v-show="$vuetify.display.mdAndUp"
+                variant="outlined"
+                divided
+              >
+                <v-btn
+                  v-for="(item, i) in item.links"
+                  :key="i"
+                  :title="item.type"
+                  :href="item.href"
+                  :to="item.target"
+                  :target="`_window_${item.type}`"
+                >
+                  {{ $t(`datasets.${item.msg}`) }}
+                  <v-icon end :icon="item.icon" />
+                </v-btn>
+              </v-btn-group>
+              <v-row
+                v-show="$vuetify.display.smAndDown"
+                v-for="(item, i) in item.links"
+                :key="i"
+                justify="center"
+                class="my-1"
+              >
+                <v-btn
+                  block
+                  variant="outlined"
+                  :title="item.type"
+                  :href="item.href"
+                  :to="item.target"
+                  :target="`_window_${item.type}`"
+                >
+                  {{ $t(`datasets.${item.msg}`) }}
+                  <v-icon end :icon="item.icon" />
+                </v-btn>
+              </v-row>
+            </v-col>
+          </v-col>
+          <v-divider v-if="i + 1 < datasets.length" />
+        </v-row>
       </v-card>
-    </v-responsive>
+    </v-card>
   </div>
 </template>
 
@@ -94,7 +105,15 @@ export default {
     );
     const data = await response.json();
     for (var c of data.features) {
-      const links = [];
+      const links = [
+        {
+          href: undefined,
+          target: `/${c.id}`,
+          type: "Map",
+          msg: "explore",
+          icon: "mdi-map-marker-circle",
+        },
+      ];
       for (var link of c.links) {
         if (link.type === "OARec") {
           links.push({
@@ -102,6 +121,7 @@ export default {
             target: undefined,
             type: "OARec",
             msg: "oarec",
+            icon: "mdi-open-in-new",
           });
         } else if (link.type === "OAFeat") {
           links.push({
@@ -109,15 +129,10 @@ export default {
             target: undefined,
             type: "OAFeat",
             msg: "oafeat",
+            icon: "mdi-open-in-new",
           });
         }
       }
-      links.push({
-        href: undefined,
-        target: `/${c.id}`,
-        type: "Map",
-        msg: "map",
-      });
       c.bbox = [
         c.geometry.coordinates[0][0][0],
         c.geometry.coordinates[0][0][1],

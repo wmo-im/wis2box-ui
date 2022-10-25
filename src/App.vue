@@ -3,14 +3,18 @@
     <app-header app />
 
     <v-main>
-      <v-card flat class="py-3">
+      <v-responsive class="pa-2">
         <v-row justify="center">
-          <v-responsive width="90%" max-width="1130">
-            <app-nav />
-            <router-view />
-          </v-responsive>
+          <v-card flat width="90%" max-width="1130">
+            <v-layout>
+              <app-nav />
+              <v-main>
+                <router-view />
+              </v-main>
+            </v-layout>
+          </v-card>
         </v-row>
-      </v-card>
+      </v-responsive>
     </v-main>
 
     <app-footer app class="pt-4" />
@@ -38,30 +42,6 @@ export default {
   methods: {
     toggleDialog: function () {
       this.dialog = this.dialog === true ? false : true;
-    },
-    clean(word) {
-      if (typeof word === "string") {
-        return (
-          word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-        ).replaceAll("_", " ");
-      }
-    },
-    parseForNameAndTime(datastream) {
-      var name = datastream.name;
-      if (datastream.phenomenonTime.includes("/")) {
-        const splitTime = datastream.phenomenonTime.split("/");
-        var startDate = new Date(splitTime[0]);
-        var endDate = new Date(splitTime[1]);
-        var timeDifference = endDate.getTime() - startDate.getTime();
-        var hourDifference = Math.floor(timeDifference / (1000 * 3600));
-        if (hourDifference > 0) {
-          name = `${name} (${hourDifference} hr)`;
-        } else {
-          var minuteDifference = Math.floor(timeDifference / (1000 * 60));
-          name = `${name} (${minuteDifference} min)`;
-        }
-      }
-      return this.clean(name);
     },
   },
   setup() {

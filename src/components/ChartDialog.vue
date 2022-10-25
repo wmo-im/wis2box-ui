@@ -2,8 +2,19 @@
   <div class="chart-dialog">
     <v-overlay v-model="$root.dialog" class="align-center justify-center">
       <div>
-        <v-card min-width="1100" class="pa-4">
-          <v-card-title class="text-h4" v-html="station.properties.name" />
+        <v-card
+          :width="$vuetify.display.width"
+          :max-height="$vuetify.display.height * 0.95"
+          max-width="1100"
+          class="pa-4 scroll"
+        >
+          <v-toolbar color="#FFF">
+            <v-card-title class="text-h4" v-html="station.properties.name" />
+            <v-spacer />
+            <v-btn varaint="text" color="pink" icon @click="$root.toggleDialog">
+              <v-icon icon="mdi-close"></v-icon>
+            </v-btn>
+          </v-toolbar>
           <v-card-subtitle v-html="station.id" />
           <v-responsive height="590">
             <data-viewer :station="station" />
@@ -41,3 +52,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.scroll {
+   overflow-y: scroll
+}
+</style>

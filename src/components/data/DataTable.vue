@@ -96,6 +96,7 @@ export default defineComponent({
       },
       config: {
         editable: false,
+        responsive: true,
         displayModeBar: true,
         modeBarButtonsToAdd: [],
         modeBarButtonsToRemove: [
@@ -202,7 +203,10 @@ export default defineComponent({
             self.plot(response.request.responseURL);
             if (datastream.units === "CODE TABLE") {
               self.title = `${datastream.name}`;
-              self.data.value = self.getCol(response.data.features, "description");
+              self.data.value = self.getCol(
+                response.data.features,
+                "description"
+              );
             } else {
               self.title = `${datastream.name} (${datastream.units})`;
               self.data.value = self.getCol(response.data.features, "value");
