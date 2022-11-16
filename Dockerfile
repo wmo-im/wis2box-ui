@@ -1,8 +1,11 @@
 FROM node:14.18.1 as ui-builder
 
 RUN mkdir /usr/src/app
+RUN apt-get update \
+    && apt-get install -y chromium
 
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 COPY package.json /usr/src/app/package.json
 
