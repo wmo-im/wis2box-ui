@@ -21,6 +21,7 @@
 
 <script>
 import { defineComponent } from "vue";
+let oapi = window.VUE_APP_OAPI;
 
 import { getNameTime, clean, hasLinks } from "@/scripts/helpers.js";
 
@@ -60,7 +61,7 @@ export default defineComponent({
       var self = this;
       await this.$http({
         method: "get",
-        url: station.links[0].href + "/items",
+        url: oapi + "/collections/" + station.properties.topic + "/items",
         params: {
           f: "json",
           sortby: "-resultTime",
@@ -93,7 +94,7 @@ export default defineComponent({
       var self = this;
       await this.$http({
         method: "get",
-        url: station.links[0].href + "/items",
+        url: oapi + "/collections/" + station.properties.topic + "/items",
         params: {
           f: "json",
           datetime: `${self.latestResultTime}/..`,

@@ -18,6 +18,7 @@
 <script>
 import Plotly from "plotly.js-dist-min";
 import { clean, hasLinks } from "@/scripts/helpers.js";
+let oapi = window.VUE_APP_OAPI;
 
 import { defineComponent } from "vue";
 
@@ -103,7 +104,7 @@ export default defineComponent({
       this.data = [];
       await this.$http({
         method: "get",
-        url: station.links[0].href + "/items",
+        url: oapi + "/collections/" + station.properties.topic + "/items",
         params: {
           f: "json",
           sortby: "+resultTime",
@@ -140,7 +141,7 @@ export default defineComponent({
       var self = this;
       await this.$http({
         method: "get",
-        url: station.links[0].href + "/items",
+        url: oapi + "/collections/" + station.properties.topic + "/items",
         params: {
           f: "json",
           index: index,
@@ -178,7 +179,7 @@ export default defineComponent({
         var date_ = d.toISOString().split("T")[0];
         await this.$http({
           method: "get",
-          url: station.links[0].href + "/items",
+          url: oapi + "/collections/" + station.properties.topic + "/items",
           params: {
             f: "json",
             datetime: date_,
@@ -246,7 +247,7 @@ export default defineComponent({
       this.iterDate(nextDate);
       this.$http({
         method: "get",
-        url: station.links[0].href + "/items",
+        url: oapi + "/collections/" + station.properties.topic + "/items",
         params: {
           f: "json",
           datetime: `${nextDate.toISOString()}/..`,
