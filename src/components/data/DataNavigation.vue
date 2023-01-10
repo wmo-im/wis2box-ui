@@ -55,7 +55,7 @@ export default {
       handler(c) {
         if (hasLinks(this.station)) {
           for (const item of c) {
-            if (this.station.links[0].title === item.id) {
+            if (this.station.properties.topic === item.id) {
               this.updateCollection(item);
             }
           }
