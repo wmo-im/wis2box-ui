@@ -33,8 +33,8 @@
             </v-col>
             <v-col class="flex-nowrap">
               <span class="pt-2">
-                <strong>{{ $t("datasets.topic") + " : " }}</strong>
-                <code>{{ item.id }}</code>
+                <strong>{{ $t("datasets.topic") + ": " }}</strong>
+                <code>{{ item.properties['wmo:topicHierarchy'] }}</code>
               </span>
             </v-col>
             <v-col>
