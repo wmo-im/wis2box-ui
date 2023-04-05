@@ -2,26 +2,16 @@
   <div class="token-auth">
     <v-menu v-model="menu" :close-on-content-click="false">
       <template v-slot:activator="{ props }">
-        <v-btn
-          color="#FFFFFF"
-          class="font-weight-bold"
-          v-bind="props"
-          v-html="$t('util.token')"
-        />
+        <v-btn :color="color" class="font-weight-bold" v-bind="props" v-html="$t('util.token')" />
       </template>
-      <v-card>
-        <v-card-text>
-          <v-text-field
-            v-model="token"
-            type="password"
-            single-line
-            hide-details
-          />
-        </v-card-text>
+      <v-card min-width="256">
+        <v-text-field class="mx-3" v-model="token" :label="$t('util.token')" type="password" variant="underlined"
+          single-line hide-details />
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="onClose" v-html="$t('util.cancel')" />
-          <v-btn text @click="saveToken" v-html="$t('util.save')" />
+          <v-row justify="center">
+            <v-btn color="#014e9e" class="font-weight-bold" @click="saveToken" v-html="$t('util.save')" />
+            <v-btn color="pink" class="font-weight-bold" @click="onClose" v-html="$t('util.cancel')" />
+          </v-row>
         </v-card-actions>
       </v-card>
     </v-menu>
@@ -29,42 +19,41 @@
 </template>
 
 <script>
-let oapi = window.VUE_APP_OAPI;
-
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "TokenAuth",
   template: "#token-auth",
+  props: ["header"],
   data() {
-    return { token: "", token_: "", menu: false, interceptor: null };
+    return { token: "", menu: false };
   },
   mounted() {
     this.saveToken();
   },
+  watch: {
+    "$root.token": function (token) {
+      this.token = token;
+    }
+  },
+  computed: {
+    color: function () {
+      if (this.header) {
+        return "#FFFFFF"
+      } else {
+        return "#014e9e"
+      }
+    }
+  },
   methods: {
     saveToken() {
       // Save token
-      this.token_ = this.token;
-      var self = this;
-
-      // Clear headers and apply token
-      const interceptors = this.axios.interceptors.request;
-      if (this.interceptor !== null) {
-        interceptors.eject(this.interceptor);
-      }
-      this.interceptor = interceptors.use(function (config) {
-        config.headers = { Authorization: `Bearer ${self.token_}` };
-        config.baseURL = oapi;
-        return config;
-      });
-
-      // Handle close
+      this.$root.token = this.token;
       this.onClose();
     },
     onClose() {
       // Reset token and close menu
-      this.token = this.token_;
+      this.token = this.$root.token;
       this.menu = false;
     },
   },

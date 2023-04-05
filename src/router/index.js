@@ -3,6 +3,10 @@ import Datasets from "../views/Datasets.vue";
 import Map from "../views/Map.vue";
 import Services from "../views/Services.vue";
 
+const Authorize = {
+  template: "<div>{{ $t('messages.authorize') }}</div>",
+}
+
 const routes = [
   {
     path: "/:topic",
@@ -19,6 +23,11 @@ const routes = [
     path: "/services",
     name: "Services",
     component: Services,
+  },
+  {
+    path: "/authorize",
+    name: "Authorize",
+    component: Authorize,
   },
 ];
 

@@ -89,15 +89,7 @@ export default {
             response.data.numberMatched
           );
         })
-        .catch(function (error) {
-          // handle error
-          if (error.response.status === 401) {
-            self.alert_.msg = self.$t("messages.not_authorized");
-            self.alert_.value = true;
-          }
-          console.log(error);
-          self.loading = false;
-        })
+        .catch(this.$root.catch)
         .then(function () {
           console.log("done");
         });
@@ -120,11 +112,7 @@ export default {
             self.choices_.datastreams.push(item.properties);
           }
         })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-          self.loading = false;
-        })
+        .catch(this.$root.catch)
         .then(function () {
           console.log("done");
         });

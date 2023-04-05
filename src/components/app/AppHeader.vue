@@ -21,7 +21,7 @@
                 <img :src="logo" class="pl-6 my-3" />
               </a>
               <v-spacer />
-              <token-auth />
+              <token-auth :header="true" />
               <select-locale class="pr-6" />
             </v-row>
           </v-container>

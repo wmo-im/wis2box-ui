@@ -11,7 +11,8 @@
   "util": {
     "token": "Jeton d'accès",
     "cancel": "Annuler",
-    "save": "Conserver"
+    "save": "Conserver",
+    "close": "Fermer"
   },
   "footer": {
     "powered_by": "Alimenté par"
@@ -19,11 +20,13 @@
   "messages": {
     "welcome": "Bienvenue à WIS 2.0 in a box!",
     "no_observations_in_collection": " n'a pas d'observations dans la collection ",
-    "not_authorized": "L'ensemble de données nécessite une autorisation",
+    "authorized": "Autorisée",
+    "not_authorized": "L'ensemble de données nécessite une autorisation ; Ajouter un jeton d'autorisationn",
     "no_linked_collections": "n'a pas de collections liées",
     "how_to_link_station": "Pour lier une collection, republiez la ou les stations après que wis2box a publié une observation de la station",
     "from": "depuis",
-    "no_of_observations": "Observations des dernières 24 heures"
+    "no_of_observations": "Observations des dernières 24 heures",
+    "does_not_exist": "Page non trouvée"
   },
   "station": {
     "map": "Plan de la station",
