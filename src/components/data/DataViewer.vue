@@ -9,22 +9,12 @@
           {{ choices.collection.description || $t("chart.collection") }}
         </v-toolbar-title>
         <v-tabs v-model="tab" end color="#014e9e">
-          <v-tab
-            v-for="(item, i) in tabs"
-            class="text-center pa-2"
-            :value="i"
-            :key="i"
-          >
+          <v-tab v-for="(item, i) in tabs" class="text-center pa-2" :value="i" :key="i">
             {{ $t(item) }}
           </v-tab>
         </v-tabs>
       </v-app-bar>
-      <data-navigation
-        :choices="choices"
-        :station="station"
-        :alert="alert"
-        :drawer="{ model: drawer }"
-      />
+      <data-navigation :choices="choices" :station="station" :alert="alert" :drawer="{ model: drawer }" />
       <v-main>
         <v-window v-model="tab">
           <v-window-item :value="0">
@@ -79,6 +69,47 @@ export default defineComponent({
     goBack() {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
     },
+    async loadCollections() {
+      var self = this;
+      await this.$http({
+        method: "get",
+        url: `${oapi}/collections`
+      })
+        .then(function (response) {
+          console.log(response);
+          self.parseCollections(response.data.collections);
+        })
+        .catch(this.$root.catch);
+    },
+    async parseCollections(collections) {
+      for (var c of collections) {
+        if (c.id === "stations") {
+          await this.$http({
+            method: "get",
+            url: `${oapi}/collections/stations/items`
+          })
+            .then(function (response) {
+              console.log(response);
+              self.choices.stations = response.data;
+            })
+            .catch(this.$root.catch);
+        } else if (c.id === "discovery-metadata") {
+          await this.$http({
+            method: "get",
+            url: `${oapi}/collections/discovery-metadata/items`
+          })
+            .then(function (response) {
+              console.log(response);
+              self.choices.discovery_metadata = response.data.features;
+            })
+            .catch(this.$root.catch);
+        } else if (c.id !== "messages") {
+          console.log(c)
+          this.choices.collections.push(c);
+        }
+      }
+      this.loading = false;
+    }
   },
   watch: {
     "choices.datastream": {
@@ -89,26 +120,10 @@ export default defineComponent({
       },
     },
   },
-  async created() {
+  mounted() {
     this.loading = true;
-    const response = await fetch(oapi + "/collections?f=json");
-    const data = await response.json();
-    for (var c of data.collections) {
-      if (c.id === "stations") {
-        const response = await fetch(
-          oapi + "/collections/stations/items?f=json"
-        );
-        this.choices.stations = await response.json();
-      } else if (c.id === "discovery-metadata") {
-        const response = await fetch(
-          oapi + "/collections/discovery-metadata/items?f=json"
-        );
-        this.choices.discovery_metadata = await response.json();
-      } else if (c.id !== "messages") {
-        this.choices.collections.push(c);
-      }
-    }
-    this.loading = false;
+    this.loadCollections();
+
   },
 });
 </script>

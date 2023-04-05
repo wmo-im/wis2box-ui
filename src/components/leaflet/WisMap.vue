@@ -144,9 +144,7 @@ export default defineComponent({
           self.features_.stations = response.data.value;
           self.numberMatched = response.data.numberMatched;
         })
-        .catch(function (error) {
-          console.log(error);
-        })
+        .catch(this.$root.catch)
         .then(function () {
           var bounds_ = geoJSON(self.features_.stations).getBounds();
           self.map.fitBounds(bounds_);

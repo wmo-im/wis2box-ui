@@ -83,11 +83,10 @@ export default defineComponent({
         if (hasLinks(station)) {
           this.loadObservations(station);
         } else if (station !== null) {
-          this.msg = `
+          this.$root.catch(`
             ${clean(station.properties.name)} ${this.$t(
             "messages.no_linked_collections"
-          )}. ${this.$t("messages.how_to_link_station")}`;
-          this.snackbar = true;
+          )}<br>${this.$t("messages.how_to_link_station")}`);
           this.loading = false;
         }
       },
@@ -123,14 +122,7 @@ export default defineComponent({
             self.loadDailyObservations(station, index);
           }
         })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-          if (error.response.status === 401) {
-            self.msg = self.$t("messages.not_authorized");
-            self.snackbar = true;
-          }
-        });
+        .catch(this.$root.catch);
     },
     async loadAllObservations(station, index) {
       this.loading = true;
@@ -161,7 +153,7 @@ export default defineComponent({
           self.data.push(trace);
           self.plot(plot);
         }
-      });
+      }).catch(this.$root.catch);
       this.loading = false;
     },
     async loadDailyObservations(station, index) {
@@ -217,7 +209,7 @@ export default defineComponent({
               self.plot(plot);
             }
           }
-        });
+        }).catch(this.$root.catch);
       }
       this.loading = false;
     },
@@ -268,9 +260,7 @@ export default defineComponent({
           d.setMonth(next.getMonth());
           d.setDate(next.getDate());
         })
-        .catch(function (error) {
-          console.log(error);
-        });
+        .catch(this.$root.catch);
     },
   },
 });

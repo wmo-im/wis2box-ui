@@ -44,11 +44,10 @@ export default defineComponent({
         if (hasLinks(station)) {
           this.loadObservations(station);
         } else if (station !== null) {
-          this.msg = `
+          this.$root.catch(`
             ${clean(station.properties.name)} ${this.$t(
             "messages.no_linked_collections"
-          )}. ${this.$t("messages.how_to_link_station")}`;
-          this.snackbar = true;
+            )} <br> ${this.$t("messages.how_to_link_station")}`);
           this.loading = false;
           this.tab = null;
         }
@@ -75,14 +74,7 @@ export default defineComponent({
             response.data.features[0].properties.resultTime;
           self.loadRecentObservations(station, response.data.numberMatched);
         })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-          if (error.response.status === 401) {
-            self.msg = self.$t("messages.not_authorized");
-            self.snackbar = true;
-          }
-        })
+        .catch(this.$root.catch)
         .then(function () {
           self.tab = 0;
           self.loading = false;
@@ -106,7 +98,7 @@ export default defineComponent({
         self.recentObservations = response.data.features.map(
           (obs) => obs.properties
         );
-      });
+      }).catch(this.$root.catch);
     },
   },
 });
