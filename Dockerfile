@@ -1,7 +1,8 @@
 FROM node:14.18.1 as ui-builder
 
 RUN mkdir /usr/src/app
-RUN apt-get update \
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list \
+    && apt-get update \
     && apt-get install -y chromium
 
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
