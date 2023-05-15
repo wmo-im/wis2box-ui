@@ -17,7 +17,8 @@ RUN npm install && \
 
 COPY . /usr/src/app
 
-RUN npm run build && \
+RUN npm run postinstall && \
+    npm run build && \
     mkdir /tmp/app && \
     cp -rp /usr/src/app/dist /tmp/app && \
     rm -fr /usr/src/app
