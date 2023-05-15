@@ -76,12 +76,12 @@ export default defineComponent({
         url: `${oapi}/collections`
       })
         .then(function (response) {
-          console.log(response);
           self.parseCollections(response.data.collections);
         })
         .catch(this.$root.catch);
     },
     async parseCollections(collections) {
+      var self = this;
       for (var c of collections) {
         if (c.id === "stations") {
           await this.$http({
@@ -89,7 +89,6 @@ export default defineComponent({
             url: `${oapi}/collections/stations/items`
           })
             .then(function (response) {
-              console.log(response);
               self.choices.stations = response.data;
             })
             .catch(this.$root.catch);
@@ -99,12 +98,10 @@ export default defineComponent({
             url: `${oapi}/collections/discovery-metadata/items`
           })
             .then(function (response) {
-              console.log(response);
               self.choices.discovery_metadata = response.data.features;
             })
             .catch(this.$root.catch);
         } else if (c.id !== "messages") {
-          console.log(c)
           this.choices.collections.push(c);
         }
       }
