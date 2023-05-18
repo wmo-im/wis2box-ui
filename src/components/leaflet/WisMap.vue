@@ -20,7 +20,9 @@
                 style="height: 60vh"
                 @ready="onReady()"
               >
-                <wis-station :features="features" :map="map" />
+                <template v-if="!loading">
+                  <wis-station :features="features" :map="map" />
+                </template>
                 <l-tile-layer :url="url" :attribution="attribution" />
                 <l-control position="bottomleft">
                   <v-card width="124px" class="legend pa-2" border="1">

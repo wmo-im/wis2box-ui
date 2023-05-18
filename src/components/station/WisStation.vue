@@ -1,25 +1,19 @@
 <template id="wis-station">
-  <div class="wis-station">
-    <l-geo-json
-      :geojson="stations"
-      :options="geojsonOptions"
-      @click="mapClick"
-    ></l-geo-json>
-  </div>
+  <div class="wis-station" style="display: none"></div>
 </template>
 
 <script>
-import { circleMarker } from "leaflet/dist/leaflet-src.esm";
-import { LGeoJson } from "@vue-leaflet/vue-leaflet";
+import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
+import { MarkerClusterGroup } from "leaflet.markercluster/dist/leaflet.markercluster-src.js";
+
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "WisStation",
   template: "#wis-station",
-  components: {
-    LGeoJson,
-  },
   props: ["features", "map"],
   data: function () {
     return {
@@ -30,9 +24,23 @@ export default defineComponent({
       },
     };
   },
+  mounted: function () {
+    this.$nextTick(() => {
+      this.onReady()
+    })
+  },
   methods: {
+    onReady() {
+      var markerCluster = new MarkerClusterGroup({
+        disableClusteringAtZoom: 9,
+        chunkedLoading: true,
+        chunkInterval: 500,
+      });
+      markerCluster.addLayer(new geoJSON(this.stations, this.geojsonOptions));
+      this.map.addLayer(markerCluster);
+    },
     mapClick(e) {
-      this.features_.station = e.layer.feature;
+      this.features_.station = e.target.feature;
       this.features_.datastreams.length = 0;
       this.$root.toggleDialog();
       e.originalEvent.stopPropagation();
@@ -42,6 +50,9 @@ export default defineComponent({
       layer.on("mouseover", function (e) {
         self.features_.station = feature;
         layer.bindPopup(feature.properties.name).openPopup(e.latLng);
+      });
+      layer.on({
+        click: this.mapClick
       });
     },
     pointToLayer(feature, latLng) {
