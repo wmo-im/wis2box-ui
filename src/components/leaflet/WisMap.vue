@@ -150,6 +150,13 @@ export default defineComponent({
         .then(function () {
           var bounds_ = geoJSON(self.features_.stations).getBounds();
           self.map.fitBounds(bounds_);
+        })
+        .catch(function () {
+          self.$root.catch(`
+            <p>${self.$t("messages.does_not_exist")}</p>
+            <p>${self.$t("messages.how_to_link_station")}</p>`);
+        })
+        .then(function () {
           self.loading = false;
           setTimeout(self.loadStations, 900000);
         });
