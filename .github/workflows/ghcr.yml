@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - main
+      - test
   release:
     types: [published]
 
@@ -50,7 +51,7 @@ jobs:
           images: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=test
             type=semver,pattern={{version}}
 
       - name: Build and push
