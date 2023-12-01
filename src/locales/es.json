@@ -13,7 +13,8 @@
     "cancel": "Anular",
     "save": "Guardar",
     "close": "Cerrar",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "cluster": "Trozo"
   },
   "footer": {
     "powered_by": "Desarrollada por"

@@ -13,7 +13,8 @@
     "cancel": "Cancel",
     "save": "Save",
     "close": "Close",
-    "settings": "Settings"
+    "settings": "Settings",
+    "cluster": "Cluster"
   },
   "footer": {
     "powered_by": "Powered by"

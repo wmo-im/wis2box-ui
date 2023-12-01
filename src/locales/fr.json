@@ -13,7 +13,8 @@
     "cancel": "Annuler",
     "save": "Conserver",
     "close": "Fermer",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "cluster": "Grappe"
   },
   "footer": {
     "powered_by": "Alimenté par"

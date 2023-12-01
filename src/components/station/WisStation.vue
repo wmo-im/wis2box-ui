@@ -22,6 +22,8 @@ export default defineComponent({
         onEachFeature: this.onEachFeature,
         pointToLayer: this.pointToLayer,
       },
+      layer: null,
+      clusterLayer: null,
     };
   },
   mounted: function () {
@@ -29,15 +31,30 @@ export default defineComponent({
       this.onReady()
     })
   },
+  watch: {
+    "$root.cluster": function () {
+      this.renderLayer();
+    }
+  },
   methods: {
     onReady() {
-      var markerCluster = new MarkerClusterGroup({
-        disableClusteringAtZoom: 9,
-        chunkedLoading: true,
-        chunkInterval: 500,
-      });
-      markerCluster.addLayer(new geoJSON(this.stations, this.geojsonOptions));
-      this.map.addLayer(markerCluster);
+      this.layer = new geoJSON(this.stations, this.geojsonOptions);
+      this.clusterLayer = new MarkerClusterGroup({
+          disableClusteringAtZoom: 9,
+          chunkedLoading: true,
+          chunkInterval: 500,
+        });
+      this.clusterLayer.addLayer(this.layer);
+      this.renderLayer();
+    },
+    renderLayer() {
+      if (this.$root.cluster){
+        this.layer.removeFrom(this.map);
+        this.map.addLayer(this.clusterLayer);
+      } else {
+        this.clusterLayer.removeFrom(this.map)
+        this.map.addLayer(this.layer);
+      }
     },
     mapClick(e) {
       this.features_.station = e.target.feature;
