@@ -9,10 +9,11 @@
     "documentation": "Documentation"
   },
   "util": {
-    "token": "Jeton d'accès",
+    "token": "Jeton",
     "cancel": "Annuler",
     "save": "Conserver",
-    "close": "Fermer"
+    "close": "Fermer",
+    "settings": "Paramètres"
   },
   "footer": {
     "powered_by": "Alimenté par"

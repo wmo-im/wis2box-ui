@@ -9,10 +9,11 @@
     "documentation": "Documentación"
   },
   "util": {
-    "token": "Autentificador",
+    "token": "Llave",
     "cancel": "Anular",
     "save": "Guardar",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "settings": "Ajustes"
   },
   "footer": {
     "powered_by": "Desarrollada por"

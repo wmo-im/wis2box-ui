@@ -12,7 +12,8 @@
     "token": "Token",
     "cancel": "Cancel",
     "save": "Save",
-    "close": "Close"
+    "close": "Close",
+    "settings": "Settings"
   },
   "footer": {
     "powered_by": "Powered by"
