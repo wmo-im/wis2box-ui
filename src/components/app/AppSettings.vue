@@ -18,7 +18,7 @@
         </v-list-item>
         <v-list-item class="px-0">
           <v-btn block :ripple="false" variant="text" color="#014e9e" class="font-weight-bold">
-            <v-icon icon="mdi-group" />&nbsp;{{ $t('util.cluster') }}
+            <v-icon icon="mdi-map-marker-multiple" />&nbsp;{{ $t('util.cluster') }}
             <template v-slot:append>
               <v-switch hide-details color="#014e9e" v-model="$root.cluster" />
             </template>
