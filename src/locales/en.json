@@ -12,7 +12,9 @@
     "token": "Token",
     "cancel": "Cancel",
     "save": "Save",
-    "close": "Close"
+    "close": "Close",
+    "settings": "Settings",
+    "cluster": "Cluster"
   },
   "footer": {
     "powered_by": "Powered by"

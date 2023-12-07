@@ -1,8 +1,10 @@
 <template id="token-auth">
   <div class="token-auth">
-    <v-menu v-model="menu" :close-on-content-click="false">
+    <v-menu location="start" v-model="menu" :close-on-content-click="false">
       <template v-slot:activator="{ props }">
-        <v-btn :color="color" class="font-weight-bold" v-bind="props" v-html="$t('util.token')" />
+        <v-btn block variant="text" :color="color" class="font-weight-bold" v-bind="props">
+          <v-icon icon="mdi-key-variant" />&nbsp;{{ $t('util.token') }}
+        </v-btn>
       </template>
       <v-card min-width="256">
         <v-text-field class="mx-3" v-model="token" :label="$t('util.token')" type="password" variant="underlined"

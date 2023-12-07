@@ -9,10 +9,12 @@
     "documentation": "Documentación"
   },
   "util": {
-    "token": "Autentificador",
+    "token": "Llave",
     "cancel": "Anular",
     "save": "Guardar",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "settings": "Ajustes",
+    "cluster": "Trozo"
   },
   "footer": {
     "powered_by": "Desarrollada por"
