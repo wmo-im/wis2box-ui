@@ -107,15 +107,16 @@ export default {
         .then(function (response) {
           // handle success
           for (var c of response.data.features) {
-            const links = [
-              {
+            const links = [];
+            if (c.properties["wmo:topicHierarchy"].includes("surface-weather-observation/synop")) {
+              links.push({
                 href: undefined,
                 target: `/${c.id}`,
                 type: "Map",
                 msg: "explore",
                 icon: "mdi-map-marker-circle",
-              },
-            ];
+              })
+            }
             for (var link of c.links) {
               if (link.type === "OARec") {
                 links.push({
