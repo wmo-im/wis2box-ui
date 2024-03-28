@@ -9,14 +9,21 @@
           <v-col sm="12" md="3">
             <v-container>
               <v-row justify="center" fill-height>
-                <v-card class="pa-0 ma-0" @click="loadMap(item.id)">
-                  <v-overlay open-on-hover contained activator="parent" class="align-center justify-center">
-                    <v-btn flat>
-                      {{ $t("datasets.map") }}
-                    </v-btn>
-                  </v-overlay>
-                  <dataset-map :dataset="item" />
-                </v-card>
+                <template v-if="item.hasObs">
+                  <v-card class="pa-0 ma-0" @click="loadMap(item.id)">
+                    <v-overlay open-on-hover contained activator="parent" class="align-center justify-center">
+                      <v-btn flat>
+                        {{ $t("datasets.map") }}
+                      </v-btn>
+                    </v-overlay>
+                    <dataset-map :dataset="item" />
+                  </v-card>
+                </template>
+                <template v-else>
+                  <v-card class="pa-0 ma-0">
+                    <dataset-map :dataset="item" />
+                  </v-card>
+                </template>
               </v-row>
             </v-container>
           </v-col>
@@ -107,17 +114,19 @@ export default {
         .then(function (response) {
           // handle success
           for (var c of response.data.features) {
-            const links = [
-              {
+            const links = [];
+            c.hasObs = c.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
+            if (c.hasObs) {
+              links.push({
                 href: undefined,
                 target: `/${c.id}`,
                 type: "Map",
                 msg: "explore",
                 icon: "mdi-map-marker-circle",
-              },
-            ];
+              })
+            }
             for (var link of c.links) {
-              if (link.type === "OARec") {
+              if (link.rel === "canonical") {
                 links.push({
                   href: link.href,
                   target: undefined,
@@ -125,7 +134,7 @@ export default {
                   msg: "oarec",
                   icon: "mdi-open-in-new",
                 });
-              } else if (link.type === "OAFeat") {
+              } else if (link.rel === "collection" && c.hasObs) {
                 links.push({
                   href: link.href,
                   target: undefined,
