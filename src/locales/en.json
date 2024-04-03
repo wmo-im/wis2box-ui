@@ -25,7 +25,7 @@
     "authorized": "Authorized",
     "not_authorized": "Data requires authorization; Please add an authorization token",
     "no_linked_collections": "has no linked collections",
-    "how_to_link_station": "To link a collection, republish the station(s) after wis2box has published an observation from the station",
+    "how_to_link_station": "Please associate stations with this dataset/topic to see their data displayed on the map",
     "from": "from",
     "no_of_observations": "Observations from the past 24 hours",
     "does_not_exist": "Page not found"

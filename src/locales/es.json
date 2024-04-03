@@ -25,7 +25,7 @@
     "authorized": "Autorizada",
     "not_authorized": "El conjunto de datos requiere autorización; Agregar un token de autorización",
     "no_linked_collections": "no tiene colecciones vinculadas",
-    "how_to_link_station": "Para vincular una colección, vuelva a publicar la(s) estación(es) después de que wis2box haya publicado una observación de la estación",
+    "how_to_link_station": "Asocie las estaciones con este conjunto de datos/tema para ver sus datos mostrados en el mapa.",
     "from": "desde",
     "no_of_observations": "Observaciones de las últimas 24 horas",
     "does_not_exist": "Página no encontrada"
