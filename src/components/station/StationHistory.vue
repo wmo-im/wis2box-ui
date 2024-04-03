@@ -113,13 +113,17 @@ export default defineComponent({
       })
         .then(function (response) {
           // handle success
-          var ort = response.data.features[0].properties.resultTime;
-          self.oldestResultTime = new Date(ort);
-          var index = response.data.features[0].properties.index;
-          if (self.inDays(self.oldestResultTime, self.now) > 30) {
-            self.loadAllObservations(station, index);
+          var feature = response.data.features[0];
+          if (feature && feature.properties){
+            self.oldestResultTime = new Date(feature.propeties.resultTime);
+            var index = response.data.features[0].properties.index;
+            if (self.inDays(self.oldestResultTime, self.now) > 30) {
+              self.loadAllObservations(station, index);
+            } else {
+              self.loadDailyObservations(station, index);
+            }
           } else {
-            self.loadDailyObservations(station, index);
+            this.$root.catch(this.$t("chart.station") + this.$t("messages.no_linked_collections"));
           }
         })
         .catch(this.$root.catch);

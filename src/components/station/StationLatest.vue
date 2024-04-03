@@ -70,9 +70,13 @@ export default defineComponent({
       })
         .then(function (response) {
           // handle success
-          self.latestResultTime =
-            response.data.features[0].properties.resultTime;
-          self.loadRecentObservations(station, response.data.numberMatched);
+          var feature = response.data.features[0];
+          if (feature && feature.properties){
+            self.latestResultTime = feature.properties.resultTime;
+            self.loadRecentObservations(station, response.data.numberMatched);
+          } else {
+            this.$root.catch(this.$t("chart.station") + this.$t("messages.no_linked_collections"));
+          }
         })
         .catch(this.$root.catch)
         .then(function () {
