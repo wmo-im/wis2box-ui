@@ -71,7 +71,7 @@ export default defineComponent({
         .then(function (response) {
           // handle success
           var feature = response.data.features[0];
-          if (feature && feature.properties){
+          if (feature && feature.properties && feature.properties.resultTime){
             self.latestResultTime = feature.properties.resultTime;
             self.loadRecentObservations(station, response.data.numberMatched);
           } else {

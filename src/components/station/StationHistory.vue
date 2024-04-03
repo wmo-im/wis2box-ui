@@ -114,8 +114,8 @@ export default defineComponent({
         .then(function (response) {
           // handle success
           var feature = response.data.features[0];
-          if (feature && feature.properties){
-            self.oldestResultTime = new Date(feature.propeties.resultTime);
+          if (feature && feature.properties && feature.properties.resultTime){
+            self.oldestResultTime = new Date(feature.properties.resultTime);
             var index = response.data.features[0].properties.index;
             if (self.inDays(self.oldestResultTime, self.now) > 30) {
               self.loadAllObservations(station, index);
