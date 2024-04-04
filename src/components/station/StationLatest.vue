@@ -75,7 +75,7 @@ export default defineComponent({
             self.latestResultTime = feature.properties.resultTime;
             self.loadRecentObservations(station, response.data.numberMatched);
           } else {
-            self.$root.catch(self.$t("chart.station") + self.$t("messages.no_linked_collections"));
+            self.$root.catch(self.$t("chart.station") + self.$t("messages.no_observations_in_collection"));
           }
         })
         .catch(this.$root.catch)
