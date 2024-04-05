@@ -83,11 +83,16 @@ export default {
       })
         .then(function (response) {
           // handle success
-          self.fetchCollectionItems(
-            `${newC.id}`,
-            response.data.features[0].properties.resultTime,
-            response.data.numberMatched
-          );
+          var feature = response.data.features[0];
+          if (feature && feature.properties && feature.properties.resultTime){
+            self.fetchCollectionItems(
+              `${newC.id}`,
+              feature.properties.resultTime,
+              response.data.numberMatched
+            );
+          } else {
+            self.$root.catch(self.$t("chart.station") + self.$t("messages.no_observations_in_collection"));
+          }
         })
         .catch(this.$root.catch)
         .then(function () {
