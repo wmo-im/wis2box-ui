@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import Plotly from "plotly.js-dist-min";
+import Plotly from "plotly.js-basic-dist-min";
 import { defineComponent } from "vue";
 import { mdiDownload } from "@mdi/js";
 

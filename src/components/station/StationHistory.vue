@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Plotly from "plotly.js-dist-min";
+import Plotly from "plotly.js-basic-dist-min";
 import { clean, hasLinks } from "@/scripts/helpers.js";
 let oapi = window.VUE_APP_OAPI;
 
