@@ -158,7 +158,7 @@ export default defineComponent({
         })
         .then(function () {
           self.loading = false;
-          setTimeout(self.loadStations, 900000);
+          // setTimeout(self.loadStations, 900000);
         });
     },
   },

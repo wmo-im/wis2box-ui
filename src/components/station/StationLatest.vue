@@ -70,9 +70,13 @@ export default defineComponent({
       })
         .then(function (response) {
           // handle success
-          self.latestResultTime =
-            response.data.features[0].properties.resultTime;
-          self.loadRecentObservations(station, response.data.numberMatched);
+          var feature = response.data.features[0];
+          if (feature && feature.properties && feature.properties.resultTime){
+            self.latestResultTime = feature.properties.resultTime;
+            self.loadRecentObservations(station, response.data.numberMatched);
+          } else {
+            self.$root.catch(self.$t("chart.station") + self.$t("messages.no_observations_in_collection"));
+          }
         })
         .catch(this.$root.catch)
         .then(function () {
