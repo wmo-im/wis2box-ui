@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Plotly from "plotly.js-basic-dist-min";
+import Plotly from "plotly.js-cartesian-dist-min";
 import { defineComponent } from "vue";
 import { mdiOpenInNew } from "@mdi/js";
 
