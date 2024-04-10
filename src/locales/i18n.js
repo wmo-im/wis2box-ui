@@ -18,7 +18,7 @@ export { loadLocale };
 
 export default createI18n({
   legacy: false, // Vuetify does not support the legacy mode of vue-i18n
-  locale: "en",
+  locale: loadLocale()[window.VUE_APP_LANG] !== undefined ? window.VUE_APP_LANG : "en",
   fallbackLocale: "fr",
   globalInjection: true,
   messages: loadLocale(),
