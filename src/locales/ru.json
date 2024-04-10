@@ -1,0 +1,67 @@
+{
+    "language": "Русский",
+    "code": "ru",
+    "navigation": {
+      "home": "Главная",
+      "datasets": "Наборы данных",
+      "services": "Сервисы",
+      "data": "Данные",
+      "documentation": "Документация"
+    },
+    "util": {
+      "token": "Токен",
+      "cancel": "Отмена",
+      "save": "Сохранить",
+      "close": "Закрыть",
+      "settings": "Настройки",
+      "cluster": "Кластер"
+    },
+    "footer": {
+      "powered_by": "Работает на"
+    },
+    "messages": {
+      "welcome": "Добро пожаловать в WIS 2.0 in a box!",
+      "no_observations_in_collection": " нет наблюдений в коллекции ",
+      "authorized": "Авторизован",
+      "not_authorized": "Для доступа к данным требуется авторизация; Пожалуйста, добавьте токен авторизации",
+      "no_linked_collections": "не имеет связанных коллекций",
+      "how_to_link_station": "Пожалуйста, свяжите станции с этим набором данных/темой, чтобы увидеть их данные на карте",
+      "from": "от",
+      "no_of_observations": "Наблюдения за последние 24 часа",
+      "does_not_exist": "Страница не найдена"
+    },
+    "station": {
+      "map": "Карта станции",
+      "properties": "Свойства станции",
+      "wigos_station_identifier": "Идентификатор станции WIGOS",
+      "name": "Название станции",
+      "status": "История",
+      "latest": "Последние значения",
+      "report": "Отчет о станции",
+      "limit": "Лимит"
+    },
+    "chart": {
+      "chart": "График",
+      "options": "Опции",
+      "collection": "Коллекция",
+      "observed_property": "Наблюдаемое свойство",
+      "station": "Станция",
+      "data_source": "Источник данных",
+      "download": "Скачать"
+    },
+    "table": {
+      "table": "Таблица",
+      "result_time": "Время результата",
+      "phenomenon_time": "Время явления"
+    },
+    "datasets": {
+      "topic": "Тема",
+      "messages": "Сообщения WIS 2.0",
+      "oafeat": "Наблюдения",
+      "oarec": "Метаданные обнаружения",
+      "map": "Карта",
+      "explore": "Исследовать",
+      "mqp": "PubSub"
+    }
+  }
+  
