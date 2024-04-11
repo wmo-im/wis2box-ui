@@ -8,5 +8,6 @@ window.VUE_APP_WAF='${WIS2BOX_URL}/data/'\n
 window.VUE_APP_BASEMAP_URL='${WIS2BOX_BASEMAP_URL:-https://\{s\}.tile.openstreetmap.org/\{z\}/\{x\}/\{y\}.png}'\n
 window.VUE_APP_BASEMAP_ATTRIBUTION='${WIS2BOX_BASEMAP_ATTRIBUTION:-&copy; <a href=\"https://osm.org/copyright\">OpenStreetMap</a> contributors}'\n
 window.VUE_APP_CLUSTER='${WIS2BOX_UI_CLUSTER}'\n
+window.VUE_APP_LANG='${WIS2BOX_UI_LANG}'
 "
 echo $env >> /usr/share/nginx/html/env.js
