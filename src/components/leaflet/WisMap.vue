@@ -153,8 +153,7 @@ export default defineComponent({
         })
         .catch(function () {
           self.$root.catch(`
-            <p>${self.$t("messages.does_not_exist")}</p>
-            <p>${self.$t("messages.how_to_link_station")}</p>`);
+            <p>${self.$t("messages.does_not_exist")}</p>`);
         })
         .then(function () {
           self.loading = false;
