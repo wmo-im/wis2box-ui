@@ -9,7 +9,7 @@ const Authorize = {
 
 const routes = [
   {
-    path: "/:topic",
+    path: "/fixed-land-station-map/:topic",
     props: true,
     name: "Topic Map",
     component: Map,
