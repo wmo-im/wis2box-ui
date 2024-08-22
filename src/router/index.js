@@ -29,6 +29,11 @@ const routes = [
     name: "Authorize",
     component: Authorize,
   },
+  {
+    path: "/:path",
+    name: "Not Found",
+    redirect: "/"
+  },
 ];
 
 const router = createRouter({
