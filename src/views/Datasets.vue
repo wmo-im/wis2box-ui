@@ -13,7 +13,8 @@
                   <v-card class="pa-0 ma-0" @click="loadMap(item.id)">
                     <v-overlay open-on-hover contained activator="parent" class="align-center justify-center">
                       <v-btn flat>
-                        {{ $t("datasets.map") }}
+                        {{ $t("datasets.oafeat") }}
+                        <v-icon end icon="mdi-open-in-new" />
                       </v-btn>
                     </v-overlay>
                     <dataset-map :dataset="item" />
@@ -116,15 +117,6 @@ export default {
           for (var c of response.data.features) {
             const links = [];
             c.hasObs = c.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
-            if (c.hasObs) {
-              links.push({
-                href: undefined,
-                target: `/${c.id}`,
-                type: "Map",
-                msg: "explore",
-                icon: "mdi-map-marker-circle",
-              })
-            }
             for (var link of c.links) {
               if (link.rel === "canonical") {
                 links.push({
@@ -157,7 +149,7 @@ export default {
         .catch(this.$root.catch)
     },
     loadMap(topic) {
-      this.$router.push(`/${topic}`);
+      window.open(`${oapi}/collections/${topic}`);
     },
   },
 };
