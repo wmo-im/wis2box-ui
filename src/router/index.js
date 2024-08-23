@@ -9,7 +9,7 @@ const Authorize = {
 
 const routes = [
   {
-    path: "/:topic",
+    path: "/fixed-land-station-map/:topic",
     props: true,
     name: "Topic Map",
     component: Map,
@@ -28,6 +28,11 @@ const routes = [
     path: "/authorize",
     name: "Authorize",
     component: Authorize,
+  },
+  {
+    path: "/:path",
+    name: "Not Found",
+    redirect: "/"
   },
 ];
 
