@@ -119,7 +119,7 @@ export default {
             if (c.hasObs) {
               links.push({
                 href: undefined,
-                target: `/${c.id}`,
+                target: `/fixed-land-station-map/${c.id}`,
                 type: "Map",
                 msg: "explore",
                 icon: "mdi-map-marker-circle",
@@ -157,7 +157,7 @@ export default {
         .catch(this.$root.catch)
     },
     loadMap(topic) {
-      this.$router.push(`/${topic}`);
+      this.$router.push(`/fixed-land-station-map/${topic}`);
     },
   },
 };
