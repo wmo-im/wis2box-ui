@@ -15,12 +15,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Plotly from "plotly.js-cartesian-dist-min";
 import { defineComponent } from "vue";
 import { mdiOpenInNew } from "@mdi/js";
 
-let oapi = window.VUE_APP_OAPI;
+const oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
   name: "DataPlotter",
@@ -32,7 +32,7 @@ export default defineComponent({
         if (newValue.collection !== "" && newValue.datastream !== "") {
           this.data = [];
           this.config.modeBarButtonsToAdd = [];
-          for (var station of this.choices_.station) {
+          for (const station of this.choices_.station) {
             this.loadCollection(newValue.collection, station);
           }
         }
@@ -101,7 +101,7 @@ export default defineComponent({
   },
   methods: {
     plot() {
-      var plot = document.getElementById(
+      const plot = document.getElementById(
         "plotly-chart-" + this.choices.collection.id
       );
       Plotly.purge(plot);
@@ -140,7 +140,7 @@ export default defineComponent({
     },
     async loadCollection(collection, station_id) {
       this.loading = true;
-      var self = this;
+      const self = this;
       const title = collection.description;
       const datastream = this.choices_.datastream;
 
@@ -178,7 +178,7 @@ export default defineComponent({
         this.loading = false;
         return;
       } else {
-        var self = this;
+        const self = this;
         this.loading = true;
         await this.$http({
           method: "get",
@@ -194,7 +194,7 @@ export default defineComponent({
         })
           .then(function (resp) {
             // handle success
-            var dataURL = resp.request.responseURL;
+            const dataURL = resp.request.responseURL;
             self.config.modeBarButtonsToAdd.push({
               name: self.$t("chart.data_source"),
               icon: {
@@ -204,7 +204,7 @@ export default defineComponent({
               },
               click: function () {
                 const [start, end] = self.layout.xaxis.range;
-                var timeExtent = `${new Date(
+                const timeExtent = `${new Date(
                   start + "Z"
                 ).toISOString()}/${new Date(end + "Z").toISOString()}`;
                 window.location.href = `${dataURL}&datetime=${timeExtent}`;
@@ -222,10 +222,10 @@ export default defineComponent({
       }
     },
     setDateLayout(f) {
-      var startTime = new Date(
+      const startTime = new Date(
         new Date(f.properties.resultTime).setUTCHours(0, 0, 0, 0)
       ).toISOString();
-      var endTime = new Date(
+      const endTime = new Date(
         new Date().setUTCHours(23, 59, 59, 999)
       ).toISOString();
       this.layout.xaxis.range = [startTime, endTime];

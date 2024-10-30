@@ -19,9 +19,9 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
-let oapi = window.VUE_APP_OAPI;
+const oapi = window.VUE_APP_OAPI;
 
 import { getNameTime, clean, hasLinks } from "@/scripts/helpers.js";
 
@@ -34,6 +34,7 @@ export default defineComponent({
       features_: this.features,
       recentObservations: [],
       latestResultTime: null,
+      loading: false,
     };
   },
   watch: {
@@ -47,7 +48,7 @@ export default defineComponent({
           this.$root.catch(`
             ${clean(station.properties.name)} ${this.$t(
             "messages.no_linked_collections"
-            )} <br> ${this.$t("messages.how_to_link_station")}`);
+          )} <br> ${this.$t("messages.how_to_link_station")}`);
           this.loading = false;
           this.tab = null;
         }
@@ -57,7 +58,7 @@ export default defineComponent({
   methods: {
     getNameTime,
     async loadObservations(station) {
-      var self = this;
+      const self = this;
       await this.$http({
         method: "get",
         url: oapi + "/collections/" + station.properties.topic + "/items",
@@ -70,8 +71,8 @@ export default defineComponent({
       })
         .then(function (response) {
           // handle success
-          var feature = response.data.features[0];
-          if (feature && feature.properties && feature.properties.resultTime){
+          const feature = response.data.features[0];
+          if (feature && feature.properties && feature.properties.resultTime) {
             self.latestResultTime = feature.properties.resultTime;
             self.loadRecentObservations(station, response.data.numberMatched);
           } else {
@@ -85,9 +86,9 @@ export default defineComponent({
           console.log("done");
         });
     },
-    async loadRecentObservations(station, limit) {
+    async loadRecentObservations(station, limit: number) {
       this.loading = true;
-      var self = this;
+      const self = this;
       await this.$http({
         method: "get",
         url: oapi + "/collections/" + station.properties.topic + "/items",
@@ -112,6 +113,7 @@ export default defineComponent({
 tr:nth-child(odd) {
   background-color: #eeeeee;
 }
+
 th,
 td {
   padding: 8px;

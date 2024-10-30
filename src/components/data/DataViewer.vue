@@ -29,11 +29,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import DataPlotter from "./DataPlotter.vue";
 import DataNavigation from "./DataNavigation.vue";
 import DataTable from "./DataTable.vue";
-let oapi = window.VUE_APP_OAPI;
+const oapi = window.VUE_APP_OAPI;
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -70,7 +70,7 @@ export default defineComponent({
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
     },
     async loadCollections() {
-      var self = this;
+      const self = this;
       await this.$http({
         method: "get",
         url: `${oapi}/collections`
@@ -81,8 +81,8 @@ export default defineComponent({
         .catch(this.$root.catch);
     },
     async parseCollections(collections) {
-      var self = this;
-      for (var c of collections) {
+      const self = this;
+      for (const c of collections) {
         if (c.id === "stations") {
           await this.$http({
             method: "get",

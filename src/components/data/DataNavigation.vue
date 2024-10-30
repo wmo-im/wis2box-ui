@@ -1,38 +1,23 @@
 <template id="data-navigation">
   <div class="data-navigation">
     <v-navigation-drawer v-model="drawer_" bottom absolute class="text-center">
-      <v-list-item-subtitle
-        class="mt-2"
-        v-html="$t('chart.observed_property')"
-      />
+      <v-list-item-subtitle class="mt-2" v-html="$t('chart.observed_property')" />
       <v-list nav>
-        <template
-          v-for="(item, i) in choices.datastreams"
-          :key="i"
-          class="mr-3"
-        >
-          <v-list-item
-            :value="i"
-            active-color="#014e9e"
-            :active="model === i"
-            class="text-left text-body-2"
-            @click="updateData(item, i)"
-          >
+        <template v-for="(item, i) in choices.datastreams" :key="i">
+          <v-list-item :value="i" active-color="#014e9e" :active="model === i" class="text-left text-body-2"
+            @click="updateData(item, i)">
             {{ getNameTime(item) }}
           </v-list-item>
-          <v-divider
-            class="pb-1 mx-2"
-            v-if="i < choices.datastreams.length - 1"
-          />
+          <v-divider class="pb-1 mx-2" v-if="i < choices.datastreams.length - 1" />
         </template>
       </v-list>
     </v-navigation-drawer>
   </div>
 </template>
 
-<script>
-let oapi = window.VUE_APP_OAPI;
-import { getNameTime, hasLinks } from "@/scripts/helpers.js";
+<script lang="ts">
+const oapi = window.VUE_APP_OAPI;
+import { getNameTime, hasLinks } from "@/scripts/helpers";
 
 export default {
   name: "DataNavigation",
@@ -69,7 +54,7 @@ export default {
     async updateCollection(newC) {
       this.alert_value = false;
       this.choices_.collection = newC;
-      var self = this;
+      const self = this;
       await this.$http({
         method: "get",
         url: `${oapi}/collections/${newC.id}/items`,
@@ -83,8 +68,8 @@ export default {
       })
         .then(function (response) {
           // handle success
-          var feature = response.data.features[0];
-          if (feature && feature.properties && feature.properties.resultTime){
+          const feature = response.data.features[0];
+          if (feature && feature.properties && feature.properties.resultTime) {
             self.fetchCollectionItems(
               `${newC.id}`,
               feature.properties.resultTime,
@@ -100,7 +85,7 @@ export default {
         });
     },
     async fetchCollectionItems(collection_id, resultTime, limit) {
-      var self = this;
+      const self = this;
       await this.$http({
         method: "get",
         url: `${oapi}/collections/${collection_id}/items`,

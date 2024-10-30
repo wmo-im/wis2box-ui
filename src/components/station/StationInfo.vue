@@ -13,13 +13,7 @@
         </template>
 
         <template v-slot:append v-if="station != null">
-          <v-btn
-            variant="outlined"
-            size="small"
-            color="#014e9e"
-            @click.stop="openData(station)"
-            class="my-auto"
-          >
+          <v-btn variant="outlined" size="small" color="#014e9e" @click.stop="openData(station)" class="my-auto">
             {{ $t("navigation.data") }}
             <v-icon end icon="mdi-chart-scatter-plot" />
           </v-btn>
@@ -37,7 +31,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import StationList from "./StationList.vue";
 import StationStatus from "./StationStatus.vue";

@@ -4,14 +4,8 @@
       <v-progress-linear striped indeterminate color="primary" />
     </div>
     <div v-show="!loading">
-      <l-map
-        :ref="dataset.id"
-        :center="center"
-        :options="options"
-        maxZoom="16"
-        style="height: 160px; width: 256px"
-        @ready="onReady()"
-      >
+      <l-map :ref="dataset.id" :center="center" :options="options" maxZoom=16 style="height: 160px; width: 256px"
+        @ready="onReady()">
         <l-geo-json :geojson="dataset" />
         <l-tile-layer :url="url" />
       </l-map>
@@ -19,13 +13,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import "leaflet/dist/leaflet.css";
-import { geoJSON } from "leaflet/dist/leaflet-src.esm";
+import { geoJSON } from "leaflet";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
+import { defineComponent } from "vue";
 
-export default {
-  name: "datasets",
+export default defineComponent({
+  name: "DatasetMap",
   template: "#datasets",
   components: {
     LMap,
@@ -60,5 +55,5 @@ export default {
       });
     },
   },
-};
+});
 </script>

@@ -40,38 +40,17 @@
               </span>
             </v-col>
             <v-col>
-              <v-btn-group
-                v-show="$vuetify.display.mdAndUp"
-                variant="outlined"
-                divided
-              >
-                <v-btn
-                  v-for="(item, i) in item.links"
-                  :key="i"
-                  :title="item.type"
-                  :href="item.href"
-                  :to="item.target"
-                  :target="`_window_${item.type}`"
-                >
+              <v-btn-group v-show="$vuetify.display.mdAndUp" variant="outlined" divided>
+                <v-btn v-for="(item, i) in item.links" :key="i" :title="item.type" :href="item.href" :to="item.target"
+                  :target="`_window_${item.type}`">
                   {{ $t(`datasets.${item.msg}`) }}
                   <v-icon end :icon="item.icon" />
                 </v-btn>
               </v-btn-group>
-              <v-row
-                v-show="$vuetify.display.smAndDown"
-                v-for="(item, i) in item.links"
-                :key="i"
-                justify="center"
-                class="my-1"
-              >
-                <v-btn
-                  block
-                  variant="outlined"
-                  :title="item.type"
-                  :href="item.href"
-                  :to="item.target"
-                  :target="`_window_${item.type}`"
-                >
+              <v-row v-show="$vuetify.display.smAndDown" v-for="(item, i) in item.links" :key="i" justify="center"
+                class="my-1">
+                <v-btn block variant="outlined" :title="item.type" :href="item.href" :to="item.target"
+                  :target="`_window_${item.type}`">
                   {{ $t(`datasets.${item.msg}`) }}
                   <v-icon end :icon="item.icon" />
                 </v-btn>
@@ -85,13 +64,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import DatasetMap from "../components/leaflet/DatasetMap.vue";
 
-let oapi = window.VUE_APP_OAPI;
+const oapi = window.VUE_APP_OAPI;
 
 export default {
-  name: "datasets",
+  name: "DatasetView",
   template: "#datasets",
   components: {
     DatasetMap,
@@ -106,14 +85,13 @@ export default {
   },
   methods: {
     async loadDatasets() {
-      var self = this;
       await this.$http({
         method: "get",
         url: oapi + "/collections/discovery-metadata/items"
       })
         .then(function (response) {
           // handle success
-          for (var c of response.data.features) {
+          for (const c of response.data.features) {
             const links = [];
             c.hasObs = c.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
             if (c.hasObs) {
@@ -125,7 +103,7 @@ export default {
                 icon: "mdi-map-marker-circle",
               })
             }
-            for (var link of c.links) {
+            for (const link of c.links) {
               if (link.rel === "canonical") {
                 links.push({
                   href: link.href,
@@ -151,12 +129,12 @@ export default {
               c.geometry.coordinates[0][2][1],
             ];
             c.links = links;
-            self.datasets.push(c);
+            this.datasets.push(c);
           }
         })
         .catch(this.$root.catch)
     },
-    loadMap(topic) {
+    loadMap(topic: string) {
       this.$router.push(`/fixed-land-station-map/${topic}`);
     },
   },

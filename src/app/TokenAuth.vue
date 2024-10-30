@@ -26,9 +26,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useCounterStore } from '@/stores/global_state'
-
-const store = useCounterStore();
 
 export default defineComponent({
   name: "TokenAuth",
@@ -57,12 +54,12 @@ export default defineComponent({
   methods: {
     saveToken() {
       // Save token
-      store.setToken(this.token);
+      this.$root.token = this.token;
       this.onClose();
     },
     onClose() {
       // Reset token and close menu
-      store.clearToken();
+      this.token = this.$root.token;
       this.menu = false;
     },
   },

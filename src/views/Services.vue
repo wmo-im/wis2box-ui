@@ -12,9 +12,9 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
-  name: "Services",
+  name: "ServicesView",
   template: "#services",
   data: function () {
     return {

@@ -31,12 +31,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Plotly from "plotly.js-cartesian-dist-min";
 import { defineComponent } from "vue";
 import { mdiDownload } from "@mdi/js";
 
-let oapi = window.VUE_APP_OAPI;
+const oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
   name: "DataTable",
@@ -45,7 +45,7 @@ export default defineComponent({
   mounted: function () {
     this.$nextTick(() => {
       if (this.choices_.collection !== "" && this.choices_.datastream !== "") {
-        for (var station of this.choices_.station) {
+        for (const station of this.choices_.station) {
           this.loadCollection(this.choices_.collection, station);
         }
       }
@@ -60,7 +60,7 @@ export default defineComponent({
         this.loading = true;
         if (newValue.collection !== "" && newValue.datastream !== "") {
           this.data = {};
-          for (var station of this.choices_.station) {
+          for (const station of this.choices_.station) {
             this.loadCollection(newValue.collection, station);
           }
         }
@@ -143,7 +143,7 @@ export default defineComponent({
         station_id + this.$t("messages.no_observations_in_collection") + title;
 
       this.loading = true;
-      var self = this;
+      const self = this;
 
       await this.$http({
         method: "get",
@@ -176,7 +176,7 @@ export default defineComponent({
         this.loading = false;
         return;
       } else {
-        var self = this;
+        const self = this;
         this.loading = true;
         await this.$http({
           method: "get",
@@ -217,7 +217,7 @@ export default defineComponent({
       }
     },
     plot(url) {
-      var plot = document.getElementById("plotly-table");
+      const plot = document.getElementById("plotly-table");
       Plotly.purge(plot);
       this.config.modeBarButtonsToAdd = [
         {
@@ -243,6 +243,7 @@ export default defineComponent({
 tr:nth-child(odd) {
   background-color: #eeeeee;
 }
+
 th,
 td {
   padding: 8px;

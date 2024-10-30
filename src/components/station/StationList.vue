@@ -3,13 +3,8 @@
     <v-list lines="3">
       <v-hover v-slot="{ isHovering, props }">
         <template v-for="(s, i) in stations" :key="i">
-          <v-list-item
-            v-bind="props"
-            height="50"
-            :class="{ 'on-hover': isHovering }"
-            @click="onClick(s)"
-            @mouseover="onHover(s)"
-          >
+          <v-list-item v-bind="props" height="50" :class="{ 'on-hover': isHovering }" @click="onClick(s)"
+            @mouseover="onHover(s)">
             <template v-slot:prepend>
               <i class="dot" :style="`background: ${getColor(s)}`" />
             </template>
@@ -19,14 +14,8 @@
             </template>
 
             <template v-slot:append>
-              <v-btn
-                variant="outlined"
-                size="small"
-                color="#014e9e"
-                :target="s.id"
-                :title="s.id"
-                :href="s.properties.url"
-              >
+              <v-btn variant="outlined" size="small" color="#014e9e" :target="s.id" :title="s.id"
+                :href="s.properties.url">
                 OSCAR
                 <v-icon end icon="mdi-open-in-new" />
               </v-btn>
@@ -39,7 +28,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 
 import { clean } from "@/scripts/helpers.js";
@@ -91,7 +80,7 @@ export default defineComponent({
       this.map.openPopup(station.properties.name, latlng);
     },
     getColor(station) {
-      let hits = station.properties.num_obs;
+      const hits = station.properties.num_obs;
       if (hits === 0) {
         return "#708090";
       } else if (hits <= 7) {

@@ -2,8 +2,8 @@
   <div class="wis-station" style="display: none"></div>
 </template>
 
-<script>
-import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
+<script lang="ts">
+import { circleMarker, geoJSON } from "leaflet";
 import { MarkerClusterGroup } from "leaflet.markercluster/dist/leaflet.markercluster-src.js";
 
 import "leaflet.markercluster/dist/MarkerCluster.css";
@@ -40,15 +40,15 @@ export default defineComponent({
     onReady() {
       this.layer = new geoJSON(this.stations, this.geojsonOptions);
       this.clusterLayer = new MarkerClusterGroup({
-          disableClusteringAtZoom: 9,
-          chunkedLoading: true,
-          chunkInterval: 500,
-        });
+        disableClusteringAtZoom: 9,
+        chunkedLoading: true,
+        chunkInterval: 500,
+      });
       this.clusterLayer.addLayer(this.layer);
       this.renderLayer();
     },
     renderLayer() {
-      if (this.$root.cluster){
+      if (this.$root.cluster) {
         this.layer.removeFrom(this.map);
         this.map.addLayer(this.clusterLayer);
       } else {
@@ -63,7 +63,7 @@ export default defineComponent({
       e.originalEvent.stopPropagation();
     },
     onEachFeature(feature, layer) {
-      var self = this;
+      const self = this;
       layer.on("mouseover", function (e) {
         self.features_.station = feature;
         layer.bindPopup(feature.properties.name).openPopup(e.latLng);
@@ -75,7 +75,7 @@ export default defineComponent({
     pointToLayer(feature, latLng) {
       let fillColor;
       let color;
-      let hits = feature.properties.num_obs;
+      const hits = feature.properties.num_obs;
       if (hits === 0) {
         fillColor = "#708090";
         color = "#2E343B";

@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import foot from "@/assets/img/wmo-foot.png";
-import { name, version, homepage } from "../../../package.json";
+import { name, version, homepage } from "../../package.json";
 
 import { defineComponent } from "vue";
 

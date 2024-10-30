@@ -10,41 +10,27 @@
         </v-col>
         <v-col :cols="smAndDown ? 12 : 8">
           <v-card class="ma-1">
-            <p>
-              <l-map
-                ref="wisMap"
-                :zoom="zoom"
-                :center="center"
-                maxZoom="16"
-                minZoom="2"
-                style="height: 60vh"
-                @ready="onReady()"
-              >
-                <template v-if="!loading">
-                  <wis-station :features="features" :map="map" />
-                </template>
-                <l-tile-layer :url="url" :attribution="attribution" />
-                <l-control position="bottomleft">
-                  <v-card width="124px" class="legend pa-2" border="1">
-                    <strong> {{ $t("messages.no_of_observations") }} </strong>
-                    <v-divider class="my-2" />
-                    <v-row
-                      no-gutters
-                      justify="center"
-                      v-for="(item, i) in legend"
-                      :key="i"
-                    >
-                      <v-col cols="3">
-                        <i class="dot" :style="`background: ${item.color}`" />
-                      </v-col>
-                      <v-col>
-                        {{ item.range }}
-                      </v-col>
-                    </v-row>
-                  </v-card>
-                </l-control>
-              </l-map>
-            </p>
+            <l-map ref="wisMap" :zoom="zoom" :center="center" maxZoom=16 minZoom=2 style="height: 60vh"
+              @ready="onReady()">
+              <template v-if="!loading">
+                <wis-station :features="features" :map="map" />
+              </template>
+              <l-tile-layer :url="url" :attribution="attribution" />
+              <l-control position="bottomleft">
+                <v-card width="124px" class="legend pa-2" border="1">
+                  <strong> {{ $t("messages.no_of_observations") }} </strong>
+                  <v-divider class="my-2" />
+                  <v-row no-gutters justify="center" v-for="(item, i) in legend" :key="i">
+                    <v-col cols="3">
+                      <i class="dot" :style="`background: ${item.color}`" />
+                    </v-col>
+                    <v-col>
+                      {{ item.range }}
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </l-control>
+            </l-map>
           </v-card>
         </v-col>
       </v-row>
@@ -52,14 +38,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import "leaflet/dist/leaflet.css";
-import { geoJSON } from "leaflet/dist/leaflet-src.esm";
+import { geoJSON } from "leaflet";
 import { LControl, LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
 
 import WisStation from "../station/WisStation.vue";
 import StationInfo from "../station/StationInfo.vue";
-let oapi = window.VUE_APP_OAPI;
+const oapi = window.VUE_APP_OAPI;
 
 import { defineComponent } from "vue";
 
@@ -136,7 +122,6 @@ export default defineComponent({
     },
     async loadStations() {
       this.loading = true;
-      var self = this;
       await this.$http({
         method: "post",
         url: `${oapi}/processes/station-info/execution`,
@@ -148,7 +133,7 @@ export default defineComponent({
         })
         .catch(this.$root.catch)
         .then(function () {
-          var bounds_ = geoJSON(self.features_.stations).getBounds();
+          const bounds_ = geoJSON(self.features_.stations).getBounds();
           self.map.fitBounds(bounds_);
         })
         .catch(function () {

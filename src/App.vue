@@ -22,13 +22,13 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 import AppFooter from "@/components/app/AppFooter.vue";
 import AppHeader from "@/components/app/AppHeader.vue";
 import AppMsg from "@/components/app/AppMsg.vue";
 import AppNav from "@/components/app/AppNav.vue";
 
-let oapi = window.VUE_APP_OAPI;
+const oapi = window.VUE_APP_OAPI;
 
 import { useI18n } from "vue-i18n";
 
@@ -47,7 +47,7 @@ export default {
       dialog: false,
       token: '',
       interceptor: null,
-      cluster: window.VUE_APP_CLUSTER === true || window.VUE_APP_CLUSTER === 'true'
+      cluster: window.VUE_APP_CLUSTER == true // don't use strict equals in case env var is 'true'
     };
   },
   computed: {
@@ -69,7 +69,7 @@ export default {
       if (this.interceptor !== null) {
         interceptors.eject(this.interceptor);
       }
-      this.interceptor = interceptors.use(function (config) {
+      this.interceptor = interceptors.use(function (config: { headers: { Authorization: string; }; baseURL: string; }) {
         config.headers = { Authorization: `Bearer ${t}` };
         config.baseURL = oapi;
         return config;

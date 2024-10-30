@@ -9,12 +9,13 @@
   </div>
 </template>
 
-<script>
-import ChartDialog from "../components/ChartDialog.vue";
-import WisMap from "../components/leaflet/WisMap.vue";
+<script lang="ts">
+import { defineComponent } from "vue";
+import ChartDialog from "@/components/ChartDialog.vue";
+import WisMap from "@/components/leaflet/WisMap.vue";
 
-export default {
-  name: "Map",
+export default defineComponent({
+  name: "MapView",
   template: "#map",
   components: {
     ChartDialog,
@@ -32,8 +33,12 @@ export default {
   },
   methods: {
     goBack() {
-      window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
+      if (window.history.length > 1) {
+        this.$router.go(-1);
+      } else {
+        this.$router.push("/");
+      }
     },
   },
-};
+});
 </script>

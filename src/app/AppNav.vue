@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { documentation } from "../../../package.json";
+import { documentation } from "../../package.json";
 
 import { defineComponent } from "vue";
 

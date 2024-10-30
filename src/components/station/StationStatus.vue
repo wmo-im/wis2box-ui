@@ -27,7 +27,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import StationHistory from "./StationHistory.vue";
 import StationLatest from "./StationLatest.vue";
