@@ -1,6 +1,6 @@
 <template id="station-list">
   <div class="station-list">
-    <v-list lines="3">
+    <v-list lines="three">
       <v-hover v-slot="{ isHovering, props }">
         <template v-for="(s, i) in stations" :key="i">
           <v-list-item v-bind="props" height="50" :class="{ 'on-hover': isHovering }" @click="onClick(s)"
@@ -33,6 +33,12 @@ import { defineComponent } from "vue";
 
 import { clean } from "@/scripts/helpers.js";
 
+type stationSchema = {
+  properties: { num_obs: number; name: string; url: string; };
+  geometry: { coordinates: number[]; };
+};
+
+
 export default defineComponent({
   name: "StationList",
   template: "#station-list",
@@ -64,7 +70,7 @@ export default defineComponent({
   },
   methods: {
     clean,
-    onClick(station) {
+    onClick(station: stationSchema) {
       this.features_.station = station;
       const latlng = [
         station.geometry.coordinates[1],
@@ -72,14 +78,14 @@ export default defineComponent({
       ];
       this.map.flyTo(latlng);
     },
-    onHover(station) {
+    onHover(station: stationSchema) {
       const latlng = [
         station.geometry.coordinates[1],
         station.geometry.coordinates[0],
       ];
       this.map.openPopup(station.properties.name, latlng);
     },
-    getColor(station) {
+    getColor(station: stationSchema) {
       const hits = station.properties.num_obs;
       if (hits === 0) {
         return "#708090";

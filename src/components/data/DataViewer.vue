@@ -67,21 +67,23 @@ export default defineComponent({
   },
   methods: {
     goBack() {
-      window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
+      if (window.history.length > 1) {
+        this.$router.go(-1);
+      } else {
+        this.$router.push("/");
+      }
     },
     async loadCollections() {
-      const self = this;
       await this.$http({
         method: "get",
         url: `${oapi}/collections`
       })
-        .then(function (response) {
-          self.parseCollections(response.data.collections);
+        .then((response) => {
+          this.parseCollections(response.data.collections);
         })
         .catch(this.$root.catch);
     },
     async parseCollections(collections) {
-      const self = this;
       for (const c of collections) {
         if (c.id === "stations") {
           await this.$http({

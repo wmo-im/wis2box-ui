@@ -1,8 +1,13 @@
+<script setup lang="ts">
+import { useGlobalStateStore } from "@/stores/global";
+const store = useGlobalStateStore();
+</script>
+
 <template id="map">
-  <div class="dialog" :style="{ opacity: $root.dialog ? '1' : '0' }">
+  <div class="dialog" :style="{ opacity: store.dialog ? '1' : '0' }">
     <chart-dialog :features="features" />
   </div>
-  <div class="map" :style="{ opacity: $root.dialog ? '0' : '1' }">
+  <div class="map" :style="{ opacity: store.dialog ? '0' : '1' }">
     <v-card flat>
       <wis-map :features="features" :params="{ collection: topic }" />
     </v-card>

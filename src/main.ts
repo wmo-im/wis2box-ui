@@ -9,7 +9,7 @@ import { createVuetify, type ThemeDefinition } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
-
+import { createPinia } from 'pinia'
 import i18n from '@/locales/i18n'
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n'
 import { useI18n } from 'vue-i18n'
@@ -53,6 +53,7 @@ const vuetify = createVuetify({
       wis2boxLightTheme,
       wis2boxDarkTheme,
     },
+    defaultTheme: 'wis2boxLightTheme',
   },
   locale: {
     adapter: createVueI18nAdapter({
@@ -62,6 +63,7 @@ const vuetify = createVuetify({
   },
 })
 
-app.use(router).use(vuetify).use(i18n)
+const pinia = createPinia()
+app.use(pinia).use(i18n).use(vuetify).use(router)
 
 app.mount('#app')

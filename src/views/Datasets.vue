@@ -1,7 +1,7 @@
 <template id="datasets">
   <div class="datasets">
     <v-card flat>
-      <v-alert border="start" variant="contained-text" color="#014e9e">
+      <v-alert border="start" variant="outlined" color="#014e9e">
         <h2>{{ $t("messages.welcome") }}</h2>
       </v-alert>
       <v-card class="pa-2">
@@ -41,18 +41,18 @@
             </v-col>
             <v-col>
               <v-btn-group v-show="$vuetify.display.mdAndUp" variant="outlined" divided>
-                <v-btn v-for="(item, i) in item.links" :key="i" :title="item.type" :href="item.href" :to="item.target"
-                  :target="`_window_${item.type}`">
-                  {{ $t(`datasets.${item.msg}`) }}
-                  <v-icon end :icon="item.icon" />
+                <v-btn v-for="(link, i) in item.links" :key="i" :title="link.type" :href="link.href" :to="link.target"
+                  :target="`_window_${link.type}`">
+                  {{ $t(`datasets.${link.msg}`) }}
+                  <v-icon end :icon="link.icon" />
                 </v-btn>
               </v-btn-group>
-              <v-row v-show="$vuetify.display.smAndDown" v-for="(item, i) in item.links" :key="i" justify="center"
+              <v-row v-show="$vuetify.display.smAndDown" v-for="(link, i) in item.links" :key="i" justify="center"
                 class="my-1">
-                <v-btn block variant="outlined" :title="item.type" :href="item.href" :to="item.target"
-                  :target="`_window_${item.type}`">
-                  {{ $t(`datasets.${item.msg}`) }}
-                  <v-icon end :icon="item.icon" />
+                <v-btn block variant="outlined" :title="link.type" :href="link.href" :to="link.target"
+                  :target="`_window_${link.type}`">
+                  {{ $t(`datasets.${link.msg}`) }}
+                  <v-icon end :icon="link.icon" />
                 </v-btn>
               </v-row>
             </v-col>
@@ -66,8 +66,6 @@
 
 <script lang="ts">
 import DatasetMap from "../components/leaflet/DatasetMap.vue";
-
-const oapi = window.VUE_APP_OAPI;
 
 export default {
   name: "DatasetView",
@@ -85,54 +83,56 @@ export default {
   },
   methods: {
     async loadDatasets() {
-      await this.$http({
-        method: "get",
-        url: oapi + "/collections/discovery-metadata/items"
-      })
-        .then(function (response) {
-          // handle success
-          for (const c of response.data.features) {
-            const links = [];
-            c.hasObs = c.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
-            if (c.hasObs) {
-              links.push({
-                href: undefined,
-                target: `/fixed-land-station-map/${c.id}`,
-                type: "Map",
-                msg: "explore",
-                icon: "mdi-map-marker-circle",
-              })
-            }
-            for (const link of c.links) {
-              if (link.rel === "canonical") {
-                links.push({
-                  href: link.href,
-                  target: undefined,
-                  type: "OARec",
-                  msg: "oarec",
-                  icon: "mdi-open-in-new",
-                });
-              } else if (link.rel === "collection" && c.hasObs) {
-                links.push({
-                  href: link.href,
-                  target: undefined,
-                  type: "OAFeat",
-                  msg: "oafeat",
-                  icon: "mdi-open-in-new",
-                });
-              }
-            }
-            c.bbox = [
-              c.geometry.coordinates[0][0][0],
-              c.geometry.coordinates[0][0][1],
-              c.geometry.coordinates[0][2][0],
-              c.geometry.coordinates[0][2][1],
-            ];
-            c.links = links;
-            this.datasets.push(c);
+      try {
+        const response = await fetch(`${window.VUE_APP_OAPI}/collections/discovery-metadata/items`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        for (const c of data.features) {
+          const links = [];
+          c.hasObs = c.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
+          if (c.hasObs) {
+            links.push({
+              href: undefined,
+              target: `/fixed-land-station-map/${c.id}`,
+              type: "Map",
+              msg: "explore",
+              icon: "mdi-map-marker-circle",
+            });
           }
-        })
-        .catch(this.$root.catch)
+          for (const link of c.links) {
+            if (link.rel === "canonical") {
+              links.push({
+                href: link.href,
+                target: undefined,
+                type: "OARec",
+                msg: "oarec",
+                icon: "mdi-open-in-new",
+              });
+            } else if (link.rel === "collection" && c.hasObs) {
+              links.push({
+                href: link.href,
+                target: undefined,
+                type: "OAFeat",
+                msg: "oafeat",
+                icon: "mdi-open-in-new",
+              });
+            }
+          }
+          c.bbox = [
+            c.geometry.coordinates[0][0][0],
+            c.geometry.coordinates[0][0][1],
+            c.geometry.coordinates[0][2][0],
+            c.geometry.coordinates[0][2][1],
+          ];
+          c.links = links;
+          this.datasets.push(c);
+        }
+      } catch (error) {
+        console.error('Error loading datasets:', error);
+      }
     },
     loadMap(topic: string) {
       this.$router.push(`/fixed-land-station-map/${topic}`);

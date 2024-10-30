@@ -1,6 +1,6 @@
 <template id="chart-dialog">
   <div class="chart-dialog">
-    <v-overlay v-model="$root.dialog" class="align-center justify-center">
+    <v-overlay class="align-center justify-center">
       <div>
         <v-card :width="$vuetify.display.width" :max-height="$vuetify.display.height * 0.95" max-width="1100"
           class="pa-4 scroll">
@@ -9,7 +9,7 @@
               {{ station.properties.name }}
             </v-card-title>
             <v-spacer />
-            <v-btn varaint="text" color="pink" icon @click="$root.toggleDialog">
+            <v-btn varaint="text" color="pink" icon>
               <v-icon icon="mdi-close"></v-icon>
             </v-btn>
           </v-toolbar>
@@ -29,6 +29,7 @@
 import DataViewer from "./data/DataViewer.vue";
 
 import { defineComponent } from "vue";
+import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
   name: "ChartDialog",
@@ -40,6 +41,7 @@ export default defineComponent({
   data: function () {
     return {
       features_: this.features,
+      store: useGlobalStateStore()
     };
   },
   computed: {

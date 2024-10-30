@@ -5,7 +5,7 @@
     </h5>
     <v-table>
       <table>
-        <tr v-for="(item, i) in recentObservations" :key="i">
+        <tr v-for="item in recentObservations" :key="i">
           <th width="50%">{{ getNameTime(item) }}</th>
           <td v-if="item.units !== 'CODE TABLE'" width="50%">
             {{ item.value + " " + item.units }}
@@ -21,9 +21,15 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { getNameTime, clean, hasLinks } from "@/scripts/helpers.js";
+
 const oapi = window.VUE_APP_OAPI;
 
-import { getNameTime, clean, hasLinks } from "@/scripts/helpers.js";
+export interface Observation {
+  units: string;
+  value: string;
+  description: string;
+}
 
 export default defineComponent({
   name: "StationLatest",
@@ -32,7 +38,7 @@ export default defineComponent({
   data() {
     return {
       features_: this.features,
-      recentObservations: [],
+      recentObservations: [] as Observation[],
       latestResultTime: null,
       loading: false,
     };
@@ -58,52 +64,36 @@ export default defineComponent({
   methods: {
     getNameTime,
     async loadObservations(station) {
-      const self = this;
-      await this.$http({
-        method: "get",
-        url: oapi + "/collections/" + station.properties.topic + "/items",
-        params: {
-          f: "json",
-          sortby: "-resultTime",
-          wigos_station_identifier: station.id,
-          limit: 1,
-        },
-      })
-        .then(function (response) {
-          // handle success
-          const feature = response.data.features[0];
-          if (feature && feature.properties && feature.properties.resultTime) {
-            self.latestResultTime = feature.properties.resultTime;
-            self.loadRecentObservations(station, response.data.numberMatched);
-          } else {
-            self.$root.catch(self.$t("chart.station") + self.$t("messages.no_observations_in_collection"));
-          }
-        })
-        .catch(this.$root.catch)
-        .then(function () {
-          self.tab = 0;
-          self.loading = false;
-          console.log("done");
-        });
+      try {
+        const response = await fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station.id}&limit=1`);
+        const data = await response.json();
+
+        const feature = data.features[0];
+        if (feature && feature.properties && feature.properties.resultTime) {
+          this.latestResultTime = feature.properties.resultTime;
+          this.loadRecentObservations(station, data.numberMatched);
+        } else {
+          this.$root.catch(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
+        }
+      } catch (error) {
+        this.$root.catch(error);
+      } finally {
+        this.tab = 0;
+        this.loading = false;
+        console.log("done");
+      }
     },
-    async loadRecentObservations(station, limit: number) {
+    async loadRecentObservations(station, limit) {
       this.loading = true;
-      const self = this;
-      await this.$http({
-        method: "get",
-        url: oapi + "/collections/" + station.properties.topic + "/items",
-        params: {
-          f: "json",
-          datetime: `${self.latestResultTime}/..`,
-          wigos_station_identifier: station.id,
-          limit: limit,
-        },
-      }).then(function (response) {
-        // handle success
-        self.recentObservations = response.data.features.map(
-          (obs) => obs.properties
-        );
-      }).catch(this.$root.catch);
+      try {
+        const response = await fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${this.latestResultTime}/..&wigos_station_identifier=${station.id}&limit=${limit}`);
+        const data = await response.json();
+        this.recentObservations = data.features.map(obs => obs.properties);
+      } catch (error) {
+        this.$root.catch(error);
+      } finally {
+        this.loading = false;
+      }
     },
   },
 });

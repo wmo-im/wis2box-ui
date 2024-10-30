@@ -1,7 +1,7 @@
 <template id="data-table">
   <div class="data-table">
     <v-card min-height="500px" class="ma-4">
-      <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
+      <v-alert v-show="alert.value" type="warning" :text="alert.msg" />
 
       <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
         <v-progress-linear striped indeterminate color="primary" />
@@ -114,10 +114,10 @@ export default defineComponent({
     };
   },
   methods: {
-    onScroll(e) {
+    onScroll(e: { target: { scrollTop: number; }; }) {
       this.headerOverflow = e.target.scrollTop;
     },
-    getCol(features, key) {
+    getCol(features: any[], key: string) {
       if (key.includes(".")) {
         const split = key.split(".");
         if (split.length === 2) {
@@ -176,7 +176,6 @@ export default defineComponent({
         this.loading = false;
         return;
       } else {
-        const self = this;
         this.loading = true;
         await this.$http({
           method: "get",

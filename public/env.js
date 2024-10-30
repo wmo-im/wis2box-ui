@@ -6,3 +6,4 @@ window.VUE_APP_LANG = 'en'
 window.VUE_APP_BASEMAP_ATTRIBUTION =
   '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors}'
 window.VUE_APP_URL = 'localhost:5173'
+window.VUE_APP_OAPI = 'https://wis2box.synopticdata.com/oapi'

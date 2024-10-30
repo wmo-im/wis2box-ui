@@ -1,8 +1,7 @@
 <template id="data-plotter">
   <div class="data-plotter">
     <v-card min-height="500px" class="ma-4">
-      <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
-
+      <v-alert v-show="alert.value" type="warning" :text="alert.msg" />
       <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
         <v-progress-linear striped indeterminate color="primary" />
       </div>
@@ -72,8 +71,8 @@ export default defineComponent({
         xaxis: {
           autorange: true,
           type: "date",
-          range: [null, null],
-          rangeslider: { range: [null, null] },
+          range: [null, null] as [number | null, number | null],
+          rangeslider: { range: [null, null] as [number | null, number | null] },
         },
         yaxis: {
           type: "linear",
@@ -126,7 +125,7 @@ export default defineComponent({
         });
       }
     },
-    newTrace(features, x, y) {
+    newTrace(features: string, x: string, y: string) {
       const Trace = JSON.parse(JSON.stringify(this.trace));
       Trace.x = this.getCol(features, x);
       Trace.y = this.getCol(features, y);
@@ -138,9 +137,8 @@ export default defineComponent({
       this.data.push(Scatter);
       this.setDateLayout(features[features.length - 1]);
     },
-    async loadCollection(collection, station_id) {
+    async loadCollection(collection: { description: string; id: string; }, station_id: string) {
       this.loading = true;
-      const self = this;
       const title = collection.description;
       const datastream = this.choices_.datastream;
 

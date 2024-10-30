@@ -50,9 +50,6 @@ export default defineComponent({
   methods: {
     close() {
       this.snackbar = false;
-      this.$root.msg = '';
-      this.$root.status = 200;
-      this.$root.url = '';
     },
     open() {
       if (this.error.msg !== '') {

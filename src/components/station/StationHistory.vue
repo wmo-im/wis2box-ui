@@ -32,7 +32,6 @@ export default defineComponent({
         showlegend: false,
         xaxis: {
           type: "date",
-          // dtick: 86400000.0,
           showgrid: true,
           gridcolor: "#d5e3f0",
           gridwidth: 2,
@@ -54,15 +53,11 @@ export default defineComponent({
     };
   },
   computed: {
-    station: function () {
+    station() {
       return this.features_.station;
     },
-    wigos_station_identifier: function () {
-      if (this.station) {
-        return this.station.properties.wigos_station_identifier;
-      } else {
-        return "";
-      }
+    wigos_station_identifier() {
+      return this.station ? this.station.properties.wigos_station_identifier : "";
     },
   },
   watch: {
@@ -93,128 +88,100 @@ export default defineComponent({
     },
     async loadObservations(station) {
       this.loading = true;
-      const self = this;
       this.data = [];
-      await this.$http({
-        method: "get",
-        url: oapi + "/collections/" + station.properties.topic + "/items",
-        params: {
-          f: "json",
-          sortby: "+resultTime",
-          wigos_station_identifier: station.id,
-          limit: 1,
-        },
-      })
-        .then(function (response) {
-          // handle success
-          const feature = response.data.features[0];
+      try {
+        const response = await fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&sortby=+resultTime&wigos_station_identifier=${station.id}&limit=1`);
+        const data = await response.json();
+
+        if (response.ok && data.features.length > 0) {
+          const feature = data.features[0];
           if (feature && feature.properties && feature.properties.resultTime) {
-            self.oldestResultTime = new Date(feature.properties.resultTime);
-            const index = response.data.features[0].properties.index;
-            if (self.inDays(self.oldestResultTime, self.now) > 30) {
-              self.loadAllObservations(station, index);
+            this.oldestResultTime = new Date(feature.properties.resultTime);
+            const index = feature.properties.index;
+            if (this.inDays(this.oldestResultTime, this.now) > 30) {
+              this.loadAllObservations(station, index);
             } else {
-              self.loadDailyObservations(station, index);
+              this.loadDailyObservations(station, index);
             }
           } else {
-            self.$root.catch(self.$t("chart.station") + self.$t("messages.no_observations_in_collection"));
+            this.$root.catch(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
           }
-        })
-        .catch(this.$root.catch);
+        } else {
+          this.$root.catch(this.$t("messages.fetch_error"));
+        }
+      } catch (error) {
+        this.$root.catch(error);
+      }
     },
     async loadAllObservations(station, index) {
       this.loading = true;
-      this.layout.xaxis.range = [
-        this.oldestResultTime.toISOString(),
-        this.now.toISOString(),
-      ];
-      const self = this;
-      await this.$http({
-        method: "get",
-        url: oapi + "/collections/" + station.properties.topic + "/items",
-        params: {
-          f: "json",
-          index: index,
-          wigos_station_identifier: station.id,
-        },
-      }).then(function (response) {
-        // handle success
-        const trace = {
-          x: response.data.features.map((obs) => obs.properties.resultTime),
-          type: "histogram",
-          xbins: {
-            size: 3600000,
-          },
-        };
-        const plot = document.getElementById("station-history-" + station.id);
-        if (plot !== null) {
-          self.data.push(trace);
-          self.plot(plot);
+      this.layout.xaxis.range = [this.oldestResultTime.toISOString(), this.now.toISOString()];
+      try {
+        const response = await fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&index=${index}&wigos_station_identifier=${station.id}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          const trace = {
+            x: data.features.map((obs) => obs.properties.resultTime),
+            type: "histogram",
+            xbins: {
+              size: 3600000,
+            },
+          };
+          const plot = document.getElementById(`station-history-${station.id}`);
+          if (plot !== null) {
+            this.data.push(trace);
+            this.plot(plot);
+          }
+        } else {
+          this.$root.catch(this.$t("messages.fetch_error"));
         }
-      }).catch(this.$root.catch);
+      } catch (error) {
+        this.$root.catch(error);
+      }
       this.loading = false;
     },
     async loadDailyObservations(station, index) {
       this.loading = true;
-      this.layout.xaxis.range = [
-        this.oldestResultTime.toISOString(),
-        this.now.toISOString(),
-      ];
-      const self = this;
-      for (
-        const d = new Date(this.oldestResultTime.toISOString());
-        d <= this.now;
-        this.iterDate(d)
-      ) {
+      this.layout.xaxis.range = [this.oldestResultTime.toISOString(), this.now.toISOString()];
+      for (const d = new Date(this.oldestResultTime.toISOString()); d <= this.now; this.iterDate(d)) {
         const date_ = d.toISOString().split("T")[0];
-        await this.$http({
-          method: "get",
-          url: oapi + "/collections/" + station.properties.topic + "/items",
-          params: {
-            f: "json",
-            datetime: date_,
-            index: index,
-            wigos_station_identifier: station.id,
-          },
-        }).then(function (response: { data: { numberMatched: number; features: unknown[]; }; }) {
-          // handle success
-          let fillColor;
-          const hits = response.data.numberMatched;
-          if (hits === 0) {
-            self.getNextDate(station, index, d);
-          } else {
-            if (hits <= 7) {
-              fillColor = "#FF3300";
-            } else if (hits <= 19) {
-              fillColor = "#FF9900";
+        try {
+          const response = await fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${date_}&index=${index}&wigos_station_identifier=${station.id}`);
+          const data = await response.json();
+
+          if (response.ok) {
+            let fillColor;
+            const hits = data.numberMatched;
+            if (hits === 0) {
+              this.getNextDate(station, index, d);
             } else {
-              fillColor = "#009900";
+              fillColor = hits <= 7 ? "#FF3300" : hits <= 19 ? "#FF9900" : "#009900";
+              const trace = {
+                x: data.features.map((obs) => obs.properties.resultTime),
+                type: "histogram",
+                marker: { color: fillColor },
+                xbins: { size: 3600000 },
+                name: date_,
+              };
+              const plot = document.getElementById(`station-history-${station.id}`);
+              if (plot !== null) {
+                this.data.push(trace);
+                this.plot(plot);
+              }
             }
-            const trace = {
-              x: response.data.features.map((obs) => obs.properties.resultTime),
-              type: "histogram",
-              marker: {
-                color: fillColor,
-              },
-              xbins: {
-                size: 3600000,
-              },
-              name: date_,
-            };
-            const plot = document.getElementById("station-history-" + station.id);
-            if (plot !== null) {
-              self.data.push(trace);
-              self.plot(plot);
-            }
+          } else {
+            this.$root.catch(this.$t("messages.fetch_error"));
           }
-        }).catch(this.$root.catch);
+        } catch (error) {
+          this.$root.catch(error);
+        }
       }
       this.loading = false;
     },
-    inDays: function (d1, d2) {
+    inDays(d1, d2) {
       const t2 = d2.getTime();
       const t1 = d1.getTime();
-
       return Math.floor((t2 - t1) / (24 * 3600 * 1000));
     },
     iterDate(d) {
@@ -235,22 +202,12 @@ export default defineComponent({
     getNextDate(station, index, d) {
       const nextDate = new Date(d.toISOString());
       this.iterDate(nextDate);
-      this.$http({
-        method: "get",
-        url: oapi + "/collections/" + station.properties.topic + "/items",
-        params: {
-          f: "json",
-          datetime: `${nextDate.toISOString()}/..`,
-          sortby: "+resultTime",
-          index: index,
-          limit: 1,
-          wigos_station_identifier: station.id,
-        },
-      })
-        .then(function (response) {
+      fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${nextDate.toISOString()}/..&sortby=+resultTime&index=${index}&limit=1&wigos_station_identifier=${station.id}`)
+        .then((response) => response.json())
+        .then((data) => {
           let next;
-          if (response.data.numberMatched > 0) {
-            next = new Date(response.data.features[0].properties.resultTime);
+          if (data.numberMatched > 0) {
+            next = new Date(data.features[0].properties.resultTime);
           } else {
             next = new Date();
           }

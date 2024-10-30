@@ -37,7 +37,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(new URL(window.VUE_APP_URL).pathname),
+  history: createWebHistory(),
   routes,
 })
 
