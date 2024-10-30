@@ -22,14 +22,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { getNameTime, clean, hasLinks } from "@/scripts/helpers.js";
+import type { FeatureLayerForMap, Observation, Station } from "@/lib/types";
 
 const oapi = window.VUE_APP_OAPI;
 
-export interface Observation {
-  units: string;
-  value: string;
-  description: string;
-}
+
 
 export default defineComponent({
   name: "StationLatest",
@@ -56,14 +53,13 @@ export default defineComponent({
             "messages.no_linked_collections"
           )} <br> ${this.$t("messages.how_to_link_station")}`);
           this.loading = false;
-          this.tab = null;
         }
       },
     },
   },
   methods: {
     getNameTime,
-    async loadObservations(station) {
+    async loadObservations(station: Station) {
       try {
         const response = await fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station.id}&limit=1`);
         const data = await response.json();
@@ -78,17 +74,17 @@ export default defineComponent({
       } catch (error) {
         this.$root.catch(error);
       } finally {
-        this.tab = 0;
         this.loading = false;
         console.log("done");
       }
     },
-    async loadRecentObservations(station, limit) {
+    async loadRecentObservations(station: Station, limit: number) {
       this.loading = true;
       try {
         const response = await fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${this.latestResultTime}/..&wigos_station_identifier=${station.id}&limit=${limit}`);
         const data = await response.json();
-        this.recentObservations = data.features.map(obs => obs.properties);
+        const features: FeatureLayerForMap[] = data.features;
+        this.recentObservations = features.map((obs) => obs.properties);
       } catch (error) {
         this.$root.catch(error);
       } finally {

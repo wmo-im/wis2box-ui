@@ -37,8 +37,6 @@ const oapi = window.VUE_APP_OAPI;
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "DataViewer",
-  template: "#data-viewer",
   props: ["station"],
   components: {
     DataPlotter,
@@ -74,16 +72,15 @@ export default defineComponent({
       }
     },
     async loadCollections() {
-      await this.$http({
-        method: "get",
-        url: `${oapi}/collections`
-      })
-        .then((response) => {
-          this.parseCollections(response.data.collections);
-        })
-        .catch(this.$root.catch);
+      const response = await fetch(`${oapi}/collections`);
+      if (response.ok) {
+        const data = await response.json();
+        this.parseCollections(data.collections);
+      } else {
+        console.error(response);
+      }
     },
-    async parseCollections(collections) {
+    async parseCollections(collections: undefined) {
       for (const c of collections) {
         if (c.id === "stations") {
           await this.$http({
@@ -107,7 +104,6 @@ export default defineComponent({
           this.choices.collections.push(c);
         }
       }
-      this.loading = false;
     }
   },
   watch: {
@@ -120,9 +116,7 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.loading = true;
     this.loadCollections();
-
   },
 });
 </script>

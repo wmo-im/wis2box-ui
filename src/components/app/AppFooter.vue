@@ -1,20 +1,18 @@
 <template id="app-footer">
-  <div class="app-footer">
-    <v-footer flat height="110">
-      <v-row justify="center">
-        <v-col cols="12">
-          <v-img cover :src="foot" :lazy-src="foot" />
-        </v-col>
-        <v-col class="primary text-center" cols="12">
-          <p>
-            {{ $t("footer.powered_by") }}
-            <a :title="name" :href="home" v-html="name" />
-            {{ version }}
-          </p>
-        </v-col>
-      </v-row>
-    </v-footer>
-  </div>
+  <v-footer flat height="110">
+    <v-row justify="center">
+      <v-col cols="12">
+        <v-img cover :src="foot" :lazy-src="foot" />
+      </v-col>
+      <v-col class="primary text-center" cols="12">
+        <p>
+          {{ $t("footer.powered_by") }}
+          <a :title="name" :href="home" v-html="name" />
+          {{ version }}
+        </p>
+      </v-col>
+    </v-row>
+  </v-footer>
 </template>
 
 <script lang="ts">
@@ -25,7 +23,6 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "AppFooter",
-  template: "#app-footer",
   data: function () {
     return {
       version: version,

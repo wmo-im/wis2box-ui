@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import Plotly from "plotly.js-cartesian-dist-min";
+import Plotly from "plotly.js-cartesian-dist";
 import { clean, hasLinks } from "@/scripts/helpers.js";
 const oapi = window.VUE_APP_OAPI;
 
@@ -82,11 +82,11 @@ export default defineComponent({
     },
   },
   methods: {
-    plot(plot) {
+    plot(plot: Element) {
       Plotly.purge(plot);
       Plotly.newPlot(plot, this.data, this.layout, this.config);
     },
-    async loadObservations(station) {
+    async loadObservations(station: { properties: { topic: any; }; id: any; }) {
       this.loading = true;
       this.data = [];
       try {
@@ -113,7 +113,7 @@ export default defineComponent({
         this.$root.catch(error);
       }
     },
-    async loadAllObservations(station, index) {
+    async loadAllObservations(station: { properties: { topic: any; }; id: any; }, index: any) {
       this.loading = true;
       this.layout.xaxis.range = [this.oldestResultTime.toISOString(), this.now.toISOString()];
       try {
@@ -122,7 +122,7 @@ export default defineComponent({
 
         if (response.ok) {
           const trace = {
-            x: data.features.map((obs) => obs.properties.resultTime),
+            x: data.features.map((obs: { properties: { resultTime: any; }; }) => obs.properties.resultTime),
             type: "histogram",
             xbins: {
               size: 3600000,
@@ -141,7 +141,7 @@ export default defineComponent({
       }
       this.loading = false;
     },
-    async loadDailyObservations(station, index) {
+    async loadDailyObservations(station: { properties: { topic: any; }; id: any; }, index: any) {
       this.loading = true;
       this.layout.xaxis.range = [this.oldestResultTime.toISOString(), this.now.toISOString()];
       for (const d = new Date(this.oldestResultTime.toISOString()); d <= this.now; this.iterDate(d)) {
@@ -158,7 +158,7 @@ export default defineComponent({
             } else {
               fillColor = hits <= 7 ? "#FF3300" : hits <= 19 ? "#FF9900" : "#009900";
               const trace = {
-                x: data.features.map((obs) => obs.properties.resultTime),
+                x: data.features.map((obs: { properties: { resultTime: any; }; }) => obs.properties.resultTime),
                 type: "histogram",
                 marker: { color: fillColor },
                 xbins: { size: 3600000 },
@@ -179,12 +179,12 @@ export default defineComponent({
       }
       this.loading = false;
     },
-    inDays(d1, d2) {
+    inDays(d1: { getTime: () => any; }, d2: Date) {
       const t2 = d2.getTime();
       const t1 = d1.getTime();
       return Math.floor((t2 - t1) / (24 * 3600 * 1000));
     },
-    iterDate(d) {
+    iterDate(d: number | Date) {
       const nextDate = new Date(d.toISOString());
       nextDate.setDate(d.getDate() + 1);
       if (nextDate < d) {
@@ -199,7 +199,7 @@ export default defineComponent({
       d.setMonth(nextDate.getMonth());
       d.setDate(nextDate.getDate());
     },
-    getNextDate(station, index, d) {
+    getNextDate(station: { properties: { topic: any; }; id: any; }, index: any, d: Date) {
       const nextDate = new Date(d.toISOString());
       this.iterDate(nextDate);
       fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${nextDate.toISOString()}/..&sortby=+resultTime&index=${index}&limit=1&wigos_station_identifier=${station.id}`)

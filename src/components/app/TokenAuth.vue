@@ -29,8 +29,6 @@ import { defineComponent, ref, computed } from "vue";
 import { useGlobalStateStore } from '@/stores/global'
 
 export default defineComponent({
-  name: "TokenAuth",
-  template: "#token-auth",
   props: {
     header: Boolean
   },

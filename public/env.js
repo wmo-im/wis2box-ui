@@ -5,5 +5,6 @@
 window.VUE_APP_LANG = 'en'
 window.VUE_APP_BASEMAP_ATTRIBUTION =
   '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors}'
-window.VUE_APP_URL = 'localhost:5173'
-window.VUE_APP_OAPI = 'https://wis2box.synopticdata.com/oapi'
+window.VUE_APP_URL = 'http://localhost:5173'
+// by default use a local proxy when testing locally. This can be achieved with a tool like https://github.com/garmeeh/local-cors-proxy
+window.VUE_APP_OAPI = 'http://localhost:8010/proxy'

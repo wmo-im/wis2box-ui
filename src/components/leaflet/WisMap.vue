@@ -10,7 +10,7 @@
         </v-col>
         <v-col :cols="smAndDown ? 12 : 8">
           <v-card class="ma-1">
-            <l-map ref="wisMap" :zoom="zoom" :center="center" maxZoom=16 minZoom=2 style="height: 60vh"
+            <l-map ref="wisMap" :zoom="zoom" :center="center" :maxZoom="16" :minZoom="2" style="height: 60vh"
               @ready="onReady()">
               <template v-if="!loading">
                 <wis-station :features="features" :map="map" />

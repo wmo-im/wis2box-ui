@@ -15,15 +15,13 @@
 </template>
 
 <script lang="ts">
-import Plotly from "plotly.js-cartesian-dist-min";
+import Plotly from "plotly.js-cartesian-dist";
 import { defineComponent } from "vue";
 import { mdiOpenInNew } from "@mdi/js";
 
 const oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
-  name: "DataPlotter",
-  template: "#data-plotter",
   props: ["choices", "alert"],
   watch: {
     choices_: {
@@ -107,22 +105,16 @@ export default defineComponent({
       Plotly.newPlot(plot, this.data, this.layout, this.config);
       this.loading = false;
     },
-    getCol(features, key) {
+    getCol(features: undefined, key: string) {
       if (key.includes(".")) {
         const split = key.split(".");
         if (split.length === 2) {
-          return features.map(function (row) {
-            return row["properties"][split[0]][split[1]];
-          });
+          return features.map(row => row["properties"][split[0]][split[1]]);
         } else if (split.length === 3) {
-          return features.map(function (row) {
-            return row["properties"][split[0]][split[1]][split[2]];
-          });
+          return features.map(row => row["properties"][split[0]][split[1]][split[2]]);
         }
       } else {
-        return features.map(function (row) {
-          return row["properties"][key];
-        });
+        return features.map(row => row["properties"][key]);
       }
     },
     newTrace(features: string, x: string, y: string) {
@@ -145,30 +137,15 @@ export default defineComponent({
       this.alert_.msg =
         station_id + this.$t("messages.no_observations_in_collection") + title;
 
-      await this.$http({
-        method: "get",
-        url: `${oapi}/collections/${collection.id}/items`,
-        params: {
-          f: "json",
-          name: datastream.id,
-          index: datastream.index,
-          wigos_station_identifier: station_id,
-          resulttype: "hits",
-        },
-      })
-        .then(function (response) {
-          // handle success
-          self.loadObservations(
-            collection.id,
-            response.data.numberMatched,
-            datastream,
-            station_id
-          );
-        })
-        .catch(this.$root.catch)
-        .then(function () {
-          console.log("done");
-        });
+      try {
+        const response = await fetch(`${oapi}/collections/${collection.id}/items?f=json&name=${datastream.id}&index=${datastream.index}&wigos_station_identifier=${station_id}&resulttype=hits`);
+        const data = await response.json();
+        this.loadObservations(collection.id, data.numberMatched, datastream, station_id);
+      } catch (error) {
+        this.$root.catch(error);
+      } finally {
+        console.log("done");
+      }
     },
     async loadObservations(collection_id, limit, datastream, station_id) {
       if (limit === 0) {
@@ -176,47 +153,33 @@ export default defineComponent({
         this.loading = false;
         return;
       } else {
-        const self = this;
         this.loading = true;
-        await this.$http({
-          method: "get",
-          url: `${oapi}/collections/${collection_id}/items`,
-          params: {
-            f: "json",
-            name: datastream.id,
-            index: datastream.index,
-            wigos_station_identifier: station_id,
-            sortby: "-resultTime",
-            limit: limit,
-          },
-        })
-          .then(function (resp) {
-            // handle success
-            const dataURL = resp.request.responseURL;
-            self.config.modeBarButtonsToAdd.push({
-              name: self.$t("chart.data_source"),
-              icon: {
-                width: 24,
-                height: 24,
-                path: mdiOpenInNew,
-              },
-              click: function () {
-                const [start, end] = self.layout.xaxis.range;
-                const timeExtent = `${new Date(
-                  start + "Z"
-                ).toISOString()}/${new Date(end + "Z").toISOString()}`;
-                window.location.href = `${dataURL}&datetime=${timeExtent}`;
-              },
-            });
-            self.newTrace(resp.data.features, "resultTime", "value");
-            self.layout.yaxis.title = datastream.units;
-            self.layout.title = datastream.name;
-            self.plot();
-          })
-          .catch(this.$root.catch)
-          .then(function () {
-            console.log("done");
+        try {
+          const response = await fetch(`${oapi}/collections/${collection_id}/items?f=json&name=${datastream.id}&index=${datastream.index}&wigos_station_identifier=${station_id}&sortby=-resultTime&limit=${limit}`);
+          const data = await response.json();
+          const dataURL = response.url;
+          this.config.modeBarButtonsToAdd.push({
+            name: this.$t("chart.data_source"),
+            icon: {
+              width: 24,
+              height: 24,
+              path: mdiOpenInNew,
+            },
+            click: () => {
+              const [start, end] = this.layout.xaxis.range;
+              const timeExtent = `${new Date(start + "Z").toISOString()}/${new Date(end + "Z").toISOString()}`;
+              window.location.href = `${dataURL}&datetime=${timeExtent}`;
+            },
           });
+          this.newTrace(data.features, "resultTime", "value");
+          this.layout.yaxis.title = datastream.units;
+          this.layout.title = datastream.name;
+          this.plot();
+        } catch (error) {
+          this.$root.catch(error);
+        } finally {
+          console.log("done");
+        }
       }
     },
     setDateLayout(f) {

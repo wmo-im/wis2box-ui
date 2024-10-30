@@ -20,8 +20,6 @@ import ChartDialog from "@/components/ChartDialog.vue";
 import WisMap from "@/components/leaflet/WisMap.vue";
 
 export default defineComponent({
-  name: "MapView",
-  template: "#map",
   components: {
     ChartDialog,
     WisMap,

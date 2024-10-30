@@ -29,28 +29,17 @@
 import DataViewer from "./data/DataViewer.vue";
 
 import { defineComponent } from "vue";
-import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
-  name: "ChartDialog",
-  template: "#chart-dialog",
   components: {
     DataViewer,
   },
   props: ["features"],
   data: function () {
     return {
-      features_: this.features,
-      store: useGlobalStateStore()
+      station: this.features.station,
+      datastreams: this.features.datastreams,
     };
-  },
-  computed: {
-    station: function () {
-      return this.features_.station;
-    },
-    datastreams: function () {
-      return this.features_.datastreams;
-    },
   },
 });
 </script>

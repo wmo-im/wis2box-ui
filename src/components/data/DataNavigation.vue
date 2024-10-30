@@ -22,8 +22,6 @@ const oapi = window.VUE_APP_OAPI;
 import { getNameTime, hasLinks } from "@/scripts/helpers";
 
 export default {
-  name: "DataNavigation",
-  template: "#data-navigation",
   props: ["choices", "alert", "station", "drawer"],
   data() {
     return {

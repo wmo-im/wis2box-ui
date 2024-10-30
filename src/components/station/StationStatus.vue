@@ -34,8 +34,6 @@ import StationLatest from "./StationLatest.vue";
 
 export default defineComponent({
   components: { StationLatest, StationHistory },
-  name: "StationStatus",
-  template: "#station-status",
   props: ["features", "map"],
   data() {
     return {

@@ -3,7 +3,8 @@
 </template>
 
 <script lang="ts">
-import { circleMarker, geoJSON } from "leaflet";
+import type { FeatureLayerForMap } from "@/lib/types";
+import { circleMarker, geoJSON, type LatLngBoundsExpression, type LatLngExpression } from "leaflet";
 import { MarkerClusterGroup } from "leaflet.markercluster/dist/leaflet.markercluster-src.js";
 
 import "leaflet.markercluster/dist/MarkerCluster.css";
@@ -18,6 +19,7 @@ export default defineComponent({
   data: function () {
     return {
       features_: this.features,
+      stations: this.features.stations,
       geojsonOptions: {
         onEachFeature: this.onEachFeature,
         pointToLayer: this.pointToLayer,
@@ -62,17 +64,16 @@ export default defineComponent({
       this.$root.toggleDialog();
       e.originalEvent.stopPropagation();
     },
-    onEachFeature(feature, layer) {
-      const self = this;
-      layer.on("mouseover", function (e) {
-        self.features_.station = feature;
+    onEachFeature(feature: FeatureLayerForMap, layer) {
+      layer.on("mouseover", (e: { latLng: LatLngBoundsExpression; }) => {
+        this.features_.station = feature;
         layer.bindPopup(feature.properties.name).openPopup(e.latLng);
       });
       layer.on({
         click: this.mapClick
       });
     },
-    pointToLayer(feature, latLng) {
+    pointToLayer(feature: FeatureLayerForMap, latLng: LatLngExpression) {
       let fillColor;
       let color;
       const hits = feature.properties.num_obs;
@@ -98,11 +99,6 @@ export default defineComponent({
         fillOpacity: 0.8,
       };
       return circleMarker(latLng, markerStyle);
-    },
-  },
-  computed: {
-    stations: function () {
-      return this.features_.stations;
     },
   },
 });

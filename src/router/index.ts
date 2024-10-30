@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Datasets from '@/views/Datasets.vue'
-import Map from '@/views/Map.vue'
-import Services from '@/views/Services.vue'
+import Datasets from '@/views/DatasetView.vue'
+import Map from '@/views/MapView.vue'
+import Services from '@/views/ServiceView.vue'
 
 const Authorize = {
   template: "<div>{{ $t('messages.authorize') }}</div>",

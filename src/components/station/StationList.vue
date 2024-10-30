@@ -40,8 +40,6 @@ type stationSchema = {
 
 
 export default defineComponent({
-  name: "StationList",
-  template: "#station-list",
   props: ["features", "map"],
   data() {
     return {

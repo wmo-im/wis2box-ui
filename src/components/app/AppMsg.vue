@@ -1,3 +1,5 @@
+<!-- Component for displaying error messages -->
+
 <template id="app-msg">
   <div class="app-msg">
     <v-overlay v-model="snackbar" class="align-center justify-center">
@@ -31,8 +33,6 @@ import TokenAuth from "./TokenAuth.vue";
 
 
 export default defineComponent({
-  name: "AppMsg",
-  template: "#app-msg",
   props: ["error"],
   components: {
     TokenAuth,

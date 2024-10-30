@@ -1,48 +1,46 @@
 <template id="data-table">
-  <div class="data-table">
-    <v-card min-height="500px" class="ma-4">
-      <v-alert v-show="alert.value" type="warning" :text="alert.msg" />
+  <v-card min-height="500px" class="ma-4">
+    <v-alert v-show="alert.value" type="warning" :text="alert.msg" />
 
-      <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
-        <v-progress-linear striped indeterminate color="primary" />
-      </div>
-      <div :style="{ visibility: !loading ? 'visible' : 'hidden' }">
-        <v-container>
-          <v-row justify="center" align="end">
-            <div id="plotly-table" />
-          </v-row>
-        </v-container>
-        <v-table v-show="title !== ''" fixed-header height="500px">
-          <thead>
-            <tr>
-              <th class="text-center" v-html="$t('table.phenomenon_time')" />
-              <th class="text-center" v-html="title" />
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(date, i) in data.time" :key="i">
-              <td v-html="data.phenomenonTime[i]" />
-              <td v-html="data.value[i]" />
-            </tr>
-          </tbody>
-        </v-table>
-      </div>
-    </v-card>
-  </div>
+    <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
+      <v-progress-linear striped indeterminate color="primary" />
+    </div>
+
+    <div :style="{ visibility: !loading ? 'visible' : 'hidden' }">
+      <v-container>
+        <v-row justify="center" align="end">
+          <div id="plotly-table" />
+        </v-row>
+      </v-container>
+
+      <v-table v-show="title !== ''" fixed-header height="500px">
+        <thead>
+          <tr>
+            <th class="text-center" v-html="$t('table.phenomenon_time')" />
+            <th class="text-center" v-html="title" />
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(date, i) in data.time" :key="i">
+            <td v-html="data.phenomenonTime[i]" />
+            <td v-html="data.value[i]" />
+          </tr>
+        </tbody>
+      </v-table>
+    </div>
+  </v-card>
 </template>
 
 <script lang="ts">
-import Plotly from "plotly.js-cartesian-dist-min";
+import Plotly from "plotly.js-cartesian-dist";
 import { defineComponent } from "vue";
 import { mdiDownload } from "@mdi/js";
 
 const oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
-  name: "DataTable",
-  template: "#data-table",
   props: ["choices", "alert"],
-  mounted: function () {
+  mounted() {
     this.$nextTick(() => {
       if (this.choices_.collection !== "" && this.choices_.datastream !== "") {
         for (const station of this.choices_.station) {
@@ -54,7 +52,7 @@ export default defineComponent({
   watch: {
     choices: {
       handler(newValue) {
-        if (this.loading === true) {
+        if (this.loading) {
           return;
         }
         this.loading = true;
@@ -69,7 +67,7 @@ export default defineComponent({
       deep: true,
     },
   },
-  data: function () {
+  data() {
     return {
       choices_: this.choices,
       data: {},
@@ -114,26 +112,19 @@ export default defineComponent({
     };
   },
   methods: {
-    onScroll(e: { target: { scrollTop: number; }; }) {
+    onScroll(e) {
       this.headerOverflow = e.target.scrollTop;
     },
-    getCol(features: any[], key: string) {
+    getCol(features, key) {
       if (key.includes(".")) {
         const split = key.split(".");
-        if (split.length === 2) {
-          return features.map(function (row) {
-            return row["properties"][split[0]][split[1]];
-          });
-        } else if (split.length === 3) {
-          return features.map(function (row) {
-            return row["properties"][split[0]][split[1]][split[2]];
-          });
-        }
-      } else {
-        return features.map(function (row) {
-          return row["properties"][key];
+        return features.map(row => {
+          return split.length === 2
+            ? row["properties"][split[0]][split[1]]
+            : row["properties"][split[0]][split[1]][split[2]];
         });
       }
+      return features.map(row => row["properties"][key]);
     },
     async loadCollection(collection, station_id) {
       const title = collection.description;
@@ -143,76 +134,44 @@ export default defineComponent({
         station_id + this.$t("messages.no_observations_in_collection") + title;
 
       this.loading = true;
-      const self = this;
 
-      await this.$http({
-        method: "get",
-        url: `${oapi}/collections/${collection.id}/items`,
-        params: {
-          f: "json",
-          name: datastream.id,
-          index: datastream.index,
-          wigos_station_identifier: station_id,
-          resulttype: "hits",
-        },
-      })
-        .then(function (response) {
-          // handle success
-          self.loadObservations(
-            collection.id,
-            response.data.numberMatched,
-            datastream,
-            station_id
-          );
-        })
-        .catch(this.$root.catch)
-        .then(function () {
-          console.log("done");
-        });
+      try {
+        const response = await fetch(`${oapi}/collections/${collection.id}/items?f=json&name=${datastream.id}&index=${datastream.index}&wigos_station_identifier=${station_id}&resulttype=hits`);
+        const data = await response.json();
+        this.loadObservations(collection.id, data.numberMatched, datastream, station_id);
+      } catch (error) {
+        this.$root.catch(error);
+      } finally {
+        console.log("done");
+      }
     },
     async loadObservations(collection_id, limit, datastream, station_id) {
       if (limit === 0) {
         this.alert_.value = true;
         this.loading = false;
         return;
-      } else {
-        this.loading = true;
-        await this.$http({
-          method: "get",
-          url: `${oapi}/collections/${collection_id}/items`,
-          params: {
-            f: "json",
-            name: datastream.id,
-            index: datastream.index,
-            wigos_station_identifier: station_id,
-            sortby: "-resultTime",
-            limit: limit,
-          },
-        })
-          .then(function (response) {
-            // handle success
-            self.plot(response.request.responseURL);
-            if (datastream.units === "CODE TABLE") {
-              self.title = `${datastream.name}`;
-              self.data.value = self.getCol(
-                response.data.features,
-                "description"
-              );
-            } else {
-              self.title = `${datastream.name} (${datastream.units})`;
-              self.data.value = self.getCol(response.data.features, "value");
-            }
-            self.data.time = self.getCol(response.data.features, "resultTime");
-            self.data.phenomenonTime = self.getCol(
-              response.data.features,
-              "phenomenonTime"
-            );
-          })
-          .catch(this.$root.catch)
-          .then(function () {
-            self.loading = false;
-            console.log("done");
-          });
+      }
+
+      this.loading = true;
+
+      try {
+        const response = await fetch(`${oapi}/collections/${collection_id}/items?f=json&name=${datastream.id}&index=${datastream.index}&wigos_station_identifier=${station_id}&sortby=-resultTime&limit=${limit}`);
+        const data = await response.json();
+        this.plot(response.url);
+        if (datastream.units === "CODE TABLE") {
+          this.title = `${datastream.name}`;
+          this.data.value = this.getCol(data.features, "description");
+        } else {
+          this.title = `${datastream.name} (${datastream.units})`;
+          this.data.value = this.getCol(data.features, "value");
+        }
+        this.data.time = this.getCol(data.features, "resultTime");
+        this.data.phenomenonTime = this.getCol(data.features, "phenomenonTime");
+      } catch (error) {
+        this.$root.catch(error);
+      } finally {
+        this.loading = false;
+        console.log("done");
       }
     },
     plot(url) {
@@ -226,8 +185,7 @@ export default defineComponent({
             height: 24,
             path: mdiDownload,
           },
-          click: function () {
-            console.log(url.replace("f=json", "f=csv"));
+          click: () => {
             window.location.href = url.replace("f=json", "f=csv");
           },
         },

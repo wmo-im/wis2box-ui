@@ -4,7 +4,7 @@
       <v-progress-linear striped indeterminate color="primary" />
     </div>
     <div v-show="!loading">
-      <l-map :ref="dataset.id" :center="center" :options="options" maxZoom=16 style="height: 160px; width: 256px"
+      <l-map :ref="dataset.id" :center="center" :options="options" :maxZoom="16" style="height: 160px; width: 256px"
         @ready="onReady()">
         <l-geo-json :geojson="dataset" />
         <l-tile-layer :url="url" />
@@ -21,7 +21,6 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "DatasetMap",
-  template: "#datasets",
   components: {
     LMap,
     LTileLayer,
