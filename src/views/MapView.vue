@@ -8,7 +8,6 @@ defineProps({
 </script>
 
 <template>
-  <ChartDialog />
   <v-card flat>
     <WisMap :features="features" :params="{ collection: topic }" />
   </v-card>
@@ -17,7 +16,6 @@ defineProps({
 <script lang="ts">
 import { defineComponent } from "vue";
 import WisMap from "@/components/leaflet/WisMap.vue";
-import ChartDialog from "@/components/ChartDialog.vue";
 
 export default defineComponent({
   methods: {

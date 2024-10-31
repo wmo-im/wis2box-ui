@@ -1,6 +1,6 @@
 <template id="station-status">
   <div class="station-status">
-    <h5 class="text-left">
+    <h5 class="text-left" v-if="latestResultTime">
       {{ $t("messages.from") + " " + latestResultTime }}
     </h5>
     <v-table>
@@ -69,10 +69,10 @@ export default defineComponent({
           this.latestResultTime = feature.properties.resultTime;
           this.loadRecentObservations(station, data.numberMatched);
         } else {
-          this.$root.catch(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
+          console.error(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
         }
       } catch (error) {
-        this.$root.catch(error);
+        console.error(error);
       } finally {
         this.loading = false;
         console.log("done");

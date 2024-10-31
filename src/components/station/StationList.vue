@@ -1,18 +1,13 @@
 <template id="station-list">
   <div class="station-list">
-    <v-list lines="three">
+    <v-list>
       <v-hover v-slot="{ isHovering, props }">
         <template v-for="(s, i) in stations" :key="i">
-          <v-list-item v-bind="props" height="50" :class="{ 'on-hover': isHovering }" @click="onClick(s)"
-            @mouseover="onHover(s)">
+          <v-list-item v-bind="props" :class="{ 'on-hover': isHovering }" @click="onClick(s)" @mouseover="onHover(s)">
             <template v-slot:prepend>
               <i class="dot" :style="`background: ${getColor(s)}`" />
-            </template>
-
-            <template v-slot:title>
               <h4 class="ml-1 text-left" v-text="clean(s.properties.name)" />
             </template>
-
             <template v-slot:append>
               <v-btn variant="outlined" size="small" color="#014e9e" :target="s.id" :title="s.id"
                 :href="s.properties.url">

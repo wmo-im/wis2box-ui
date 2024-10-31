@@ -4,6 +4,10 @@
       <v-alert border="start" variant="text" color="#014e9e">
         <h2>{{ $t("messages.welcome") }}</h2>
       </v-alert>
+      <div class="d-flex justify-center mt-16">
+        <v-progress-linear v-if="loading" indeterminate color="primary" />
+      </div>
+
       <v-card class="pa-2">
         <v-row v-for="(item, i) in datasets" :key="i">
           <v-col sm="12" md="3">
@@ -82,6 +86,7 @@ export default defineComponent({
   data: function () {
     return {
       datasets: [] as Dataset[],
+      loading: true
     };
   },
   mounted() {
@@ -90,9 +95,10 @@ export default defineComponent({
   methods: {
     async loadDatasets() {
       try {
+        this.loading = true;
         const response = await fetch(oapi + "/collections/discovery-metadata/items");
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error("Fetch failed with status: " + response.status);
         }
         const data = await response.json();
         for (const c of data.features) {
@@ -137,6 +143,9 @@ export default defineComponent({
         }
       } catch (error) {
         console.error(error);
+      }
+      finally {
+        this.loading = false
       }
     },
     loadMap(topic: string) {
