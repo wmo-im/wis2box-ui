@@ -19,5 +19,15 @@ export const useGlobalStateStore = defineStore('globalState', {
     clearToken() {
       this.token = null
     },
+    setError(message: string, url: string | null, status_code: number | null) {
+      this.error.message = message
+      this.error.status_code = status_code
+      this.error.url = url
+    },
+    clearError() {
+      this.error.message = null
+      this.error.status_code = null
+      this.error.url = null
+    },
   },
 })

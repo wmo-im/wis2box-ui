@@ -87,13 +87,13 @@ export default {
       }
     },
 
-    async fetchCollectionItems(collection_id, resultTime, limit) {
+    async fetchCollectionItems(collection_id: string, resultTime: string, limit: number) {
       try {
         const response = await fetch(`${oapi}/collections/${collection_id}/items?` + new URLSearchParams({
           wigos_station_identifier: this.station.id,
           datetime: `${resultTime}/..`,
           f: "json",
-          limit: limit,
+          limit: String(limit),
         }));
 
         if (!response.ok) {

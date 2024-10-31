@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import { useGlobalStateStore } from "@/stores/global";
-const store = useGlobalStateStore();
+
+defineProps({
+  topic: String,
+})
 </script>
 
-<template id="map">
-  <div class="dialog" :style="{ opacity: store.dialog ? '1' : '0' }">
-    <chart-dialog :features="features" />
-  </div>
-  <div class="map" :style="{ opacity: store.dialog ? '0' : '1' }">
-    <v-card flat>
-      <wis-map :features="features" :params="{ collection: topic }" />
-    </v-card>
-  </div>
+<template>
+  <chart-dialog :features="features" />
+  <v-card flat>
+    <wis-map :params="{ collection: topic }" />
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -23,16 +21,6 @@ export default defineComponent({
   components: {
     ChartDialog,
     WisMap,
-  },
-  props: ["topic"],
-  data: function () {
-    return {
-      features: {
-        stations: null,
-        station: null,
-        datastreams: [],
-      },
-    };
   },
   methods: {
     goBack() {

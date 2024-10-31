@@ -6,7 +6,7 @@
           <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         </template>
         <v-toolbar-title v-show="$vuetify.display.mdAndUp" class="pa-2 text-h6">
-          {{ choices.collection.description || $t("chart.collection") }}
+          {{ choices.collection || $t("chart.collection") }}
         </v-toolbar-title>
         <v-tabs v-model="tab" end color="#014e9e">
           <v-tab v-for="(item, i) in tabs" class="text-center pa-2" :value="i" :key="i">
@@ -83,23 +83,29 @@ export default defineComponent({
     async parseCollections(collections: undefined) {
       for (const c of collections) {
         if (c.id === "stations") {
-          await this.$http({
-            method: "get",
-            url: `${oapi}/collections/stations/items`
-          })
-            .then(function (response) {
-              self.choices.stations = response.data;
-            })
-            .catch(this.$root.catch);
+          try {
+            const response = await fetch(`${oapi}/collections/stations/items`);
+            if (response.ok) {
+              const data = await response.json();
+              this.choices.stations = data;
+            } else {
+              console.error(response);
+            }
+          } catch (error) {
+            console.error(error);
+          }
         } else if (c.id === "discovery-metadata") {
-          await this.$http({
-            method: "get",
-            url: `${oapi}/collections/discovery-metadata/items`
-          })
-            .then(function (response) {
-              self.choices.discovery_metadata = response.data.features;
-            })
-            .catch(this.$root.catch);
+          try {
+            const response = await fetch(`${oapi}/collections/discovery-metadata/items`);
+            if (response.ok) {
+              const data = await response.json();
+              this.choices.discovery_metadata = data.features;
+            } else {
+              console.error(response);
+            }
+          } catch (error) {
+            console.error(error);
+          }
         } else if (c.id !== "messages") {
           this.choices.collections.push(c);
         }

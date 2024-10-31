@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import Plotly from "plotly.js-cartesian-dist";
+import Plotly from "plotly.js-cartesian-dist-min";
 import { clean, hasLinks } from "@/scripts/helpers.js";
 const oapi = window.VUE_APP_OAPI;
 

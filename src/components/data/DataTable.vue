@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import Plotly from "plotly.js-cartesian-dist";
+import Plotly from "plotly.js-cartesian-dist-min";
 import { defineComponent } from "vue";
 import { mdiDownload } from "@mdi/js";
 

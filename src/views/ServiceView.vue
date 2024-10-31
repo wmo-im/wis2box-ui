@@ -1,3 +1,5 @@
+<!-- The service view displays the links to the backend wis2box services that are used in the frontend -->
+
 <template>
   <v-row justify="center" class="ma-2">
     <v-card class="text-center pa-4" width="75%">

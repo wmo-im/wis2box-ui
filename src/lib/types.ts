@@ -54,3 +54,9 @@ export interface ItemsResponse {
   numberReturned: number
   links: Links[]
 }
+
+export interface Dataset extends Feature {
+  hasObs: boolean
+  id: string
+  bbox: number[]
+}

@@ -8,3 +8,5 @@ window.VUE_APP_BASEMAP_ATTRIBUTION =
 window.VUE_APP_URL = 'http://localhost:5173'
 // by default use a local proxy when testing locally. This can be achieved with a tool like https://github.com/garmeeh/local-cors-proxy
 window.VUE_APP_OAPI = 'http://localhost:8010/proxy'
+window.VUE_APP_BASEMAP_URL =
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'

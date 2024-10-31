@@ -21,6 +21,8 @@
 </template>
 
 <script lang="ts">
+import '@mdi/font/css/materialdesignicons.css'
+
 import { defineComponent, computed } from 'vue';
 import { useGlobalStateStore } from '@/stores/global';
 import AppFooter from "@/components/app/AppFooter.vue";

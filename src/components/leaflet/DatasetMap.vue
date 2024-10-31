@@ -1,32 +1,36 @@
-<template id="dataset-map">
-  <div class="dataset-map">
-    <div v-if="loading">
-      <v-progress-linear striped indeterminate color="primary" />
-    </div>
-    <div v-show="!loading">
-      <l-map :ref="dataset.id" :center="center" :options="options" :maxZoom="16" style="height: 160px; width: 256px"
-        @ready="onReady()">
-        <l-geo-json :geojson="dataset" />
-        <l-tile-layer :url="url" />
-      </l-map>
-    </div>
+<script setup lang="ts">
+import { defineProps } from "vue";
+import type { Dataset } from "@/lib/types";
+
+defineProps<{ dataset: Dataset }>();
+
+</script>
+
+<template>
+  <div v-if="loading">
+    <v-progress-linear striped indeterminate color="primary" />
+  </div>
+  <div v-show="!loading">
+    <l-map :ref="dataset.id" :center="center" :options="options" :maxZoom="16" style="height: 160px; width: 256px"
+      @ready="onReady()">
+      <l-geo-json :geojson="dataset.geometry" />
+      <l-tile-layer :url="url" />
+    </l-map>
   </div>
 </template>
 
 <script lang="ts">
 import "leaflet/dist/leaflet.css";
-import { geoJSON } from "leaflet";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
-import { defineComponent } from "vue";
+import type { LatLngBounds, Map } from "leaflet";
+import L from "leaflet";
 
-export default defineComponent({
-  name: "DatasetMap",
+export default {
   components: {
     LMap,
     LTileLayer,
     LGeoJson,
   },
-  props: ["dataset"],
   data: function () {
     return {
       loading: false,
@@ -37,6 +41,7 @@ export default defineComponent({
         dragging: false,
         zoomSnap: 0.25,
       },
+      map: null as unknown as Map,
       url: window.VUE_APP_BASEMAP_URL,
     };
   },
@@ -45,14 +50,11 @@ export default defineComponent({
       this.loading = true;
       this.$nextTick(() => {
         this.map = this.$refs[this.dataset.id]["leafletObject"];
-        this.map.fitBounds(geoJSON(this.dataset).getBounds());
-        this.map.zoomOut(0.25);
-        this.map.setMinZoom(this.map.getZoom());
-        this.map.setMaxZoom(this.map.getZoom());
+        this.map.fitBounds(L.geoJSON(this.dataset.geometry).getBounds());
         this.map.attributionControl.setPrefix("");
         this.loading = false;
       });
     },
   },
-});
+};
 </script>
