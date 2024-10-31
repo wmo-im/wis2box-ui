@@ -16,6 +16,7 @@
 export default {
   data: function () {
     return {
+      // all of the services that the frontend uses and we wish to expose the user
       services: {
         API: window.VUE_APP_OAPI,
         WAF: window.VUE_APP_WAF,

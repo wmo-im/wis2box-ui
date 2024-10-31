@@ -52,6 +52,7 @@ import WisStation from "../station/WisStation.vue";
 import StationInfo from "../station/StationInfo.vue";
 
 import { defineComponent } from "vue";
+import type { Map } from "leaflet";
 
 export default defineComponent({
   components: {
@@ -63,10 +64,10 @@ export default defineComponent({
   },
   data() {
     return {
-      loading: true, // Indicates if data is loading
-      map: undefined,
+      loading: true,
+      map: undefined as unknown as Map, // TODO: Type this properly
       features_: this.features,
-      center: [0, 0],
+      center: [0, 0] as [number, number],
       zoom: 1,
       attribution: window.VUE_APP_BASEMAP_ATTRIBUTION,
       url: window.VUE_APP_BASEMAP_URL,

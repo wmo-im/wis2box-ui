@@ -60,11 +60,12 @@ export interface Dataset extends Feature {
   hasObs: boolean
   id: string
   bbox: number[]
+  // links in a format that can be used by the wis2box UI
   uiLinks: Array<{
-    href: string
+    href: string | undefined
     target: string | undefined
     type: string
     msg: string
     icon: string
-  }> // links in a format that can be used by the wis2box UI
+  }>
 }

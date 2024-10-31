@@ -1,3 +1,5 @@
+<!-- Store the token in local storage for fetch requests -->
+
 <template id="token-auth">
   <div class="token-auth">
     <v-menu location="start" v-model="menuOpen" :close-on-content-click="false">

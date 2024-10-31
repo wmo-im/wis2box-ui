@@ -1,4 +1,4 @@
-<!-- TODO: If arabic is selected, the settings page disappears. This apepars to be an issue with arabic specifically -->
+<!-- TODO: If arabic is selected, the settings drop down disappears. This appears to be an issue with arabic specifically -->
 
 <template id="select-locale">
   <div class="select-locale">

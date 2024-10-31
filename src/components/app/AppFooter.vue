@@ -1,3 +1,5 @@
+<!-- The main footer for the frontend -->
+
 <template id="app-footer">
   <v-footer flat height="110">
     <v-row justify="center">
@@ -23,7 +25,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "AppFooter",
-  data: function () {
+  data: () => {
     return {
       version: version,
       name: name,

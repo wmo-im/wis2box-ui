@@ -1,3 +1,5 @@
+<!-- The main header for the frontend -->
+
 <template id="app-header">
   <div class="app-header">
     <v-app-bar flat height="124">

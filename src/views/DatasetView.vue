@@ -9,27 +9,24 @@
       </div>
 
       <v-card class="pa-2">
-        <v-row v-for="(item, i) in datasets" :key="i">
+        <v-row v-for="(dataset, index) in datasets" :key="index">
           <v-col sm="12" md="3">
             <v-container>
               <v-row justify="center" fill-height>
-                <template v-if="item.hasObs">
-                  <v-card class="pa-0 ma-0" @click="loadMap(item.id)">
+                <template v-if="dataset.hasObs">
+                  <v-card class="pa-0 ma-0" @click="loadMap(dataset.id)">
                     <v-overlay open-on-hover contained activator="parent" class="align-center justify-center">
                       <v-btn flat>
                         {{ $t("datasets.map") }}
                       </v-btn>
                     </v-overlay>
-                    <dataset-map :dataset="item" />
+                    <dataset-map :dataset="dataset" />
                   </v-card>
                 </template>
                 <template v-else>
-                  <i>
-                    {{ $t("messages.no_observations_in_collection") }}
-                  </i>
-
+                  <i>{{ $t("messages.no_observations_in_collection") }}</i>
                   <v-card class="pa-0 ma-0">
-                    <dataset-map :dataset="item" />
+                    <dataset-map :dataset="dataset" />
                   </v-card>
                 </template>
               </v-row>
@@ -37,35 +34,33 @@
           </v-col>
           <v-col sm="12" md="9" class="text-center">
             <v-col>
-              <h2>
-                {{ item.properties.title }}
-              </h2>
+              <h2>{{ dataset.properties.title }}</h2>
             </v-col>
             <v-col class="flex-nowrap">
               <span class="pt-2">
                 <strong>{{ $t("datasets.topic") + ": " }}</strong>
-                <code>{{ item.properties['wmo:topicHierarchy'] }}</code>
+                <code>{{ dataset.properties['wmo:topicHierarchy'] }}</code>
               </span>
             </v-col>
             <v-col>
               <v-btn-group v-show="$vuetify.display.mdAndUp" variant="outlined" divided>
-                <v-btn v-for="(item, i) in item.links" :key="i" :title="item.type" :href="item.href" :to="item.target"
-                  :target="`_window_${item.type}`">
-                  {{ $t(`datasets.${item.msg}`) }}
-                  <v-icon end :icon="item.icon" />
+                <v-btn v-for="(link, linkIndex) in dataset.uiLinks" :key="linkIndex" :title="link.type"
+                  :href="link.href" :to="link.target" :target="`_window_${link.type}`">
+                  {{ $t(`datasets.${link.msg}`) }}
+                  <v-icon end :icon="link.icon" />
                 </v-btn>
               </v-btn-group>
-              <v-row v-show="$vuetify.display.smAndDown" v-for="(item, i) in item.links" :key="i" justify="center"
-                class="my-1">
-                <v-btn block variant="outlined" :title="item.type" :href="item.href" :to="item.target"
-                  :target="`_window_${item.type}`">
-                  {{ $t(`datasets.${item.msg}`) }}
-                  <v-icon end :icon="item.icon" />
+              <v-row v-show="$vuetify.display.smAndDown" v-for="(link, linkIndex) in dataset.uiLinks" :key="linkIndex"
+                justify="center" class="my-1">
+                <v-btn block variant="outlined" :title="link.type" :href="link.href" :to="link.target"
+                  :target="`_window_${link.type}`">
+                  {{ $t(`datasets.${link.msg}`) }}
+                  <v-icon end :icon="link.icon" />
                 </v-btn>
               </v-row>
             </v-col>
           </v-col>
-          <v-divider v-if="i + 1 < datasets.length" />
+          <v-divider v-if="index + 1 < datasets.length" />
         </v-row>
       </v-card>
     </v-card>
@@ -83,10 +78,10 @@ export default defineComponent({
   components: {
     DatasetMap,
   },
-  data: function () {
+  data() {
     return {
       datasets: [] as Dataset[],
-      loading: true
+      loading: true,
     };
   },
   mounted() {
@@ -96,15 +91,16 @@ export default defineComponent({
     async loadDatasets() {
       try {
         this.loading = true;
-        const response = await fetch(oapi + "/collections/discovery-metadata/items");
+        const response = await fetch(`${oapi}/collections/discovery-metadata/items`);
         if (!response.ok) {
           throw new Error("Fetch failed with status: " + response.status);
         }
         const data: ItemsResponse = await response.json();
-        for (const feature of data.features) {
+
+        this.datasets = data.features.map(feature => {
+          const hasObs = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
           const uiLinks = [];
 
-          const hasObs = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
           if (hasObs) {
             uiLinks.push({
               href: undefined,
@@ -114,8 +110,8 @@ export default defineComponent({
               icon: "mdi-map-marker-circle",
             });
           }
+
           for (const link of feature.links) {
-            console.log(link.rel)
             if (link.rel === "canonical") {
               uiLinks.push({
                 href: link.href,
@@ -134,25 +130,19 @@ export default defineComponent({
               });
             }
           }
-          const bbox = [
-            feature.geometry.coordinates[0][0][0],
-            feature.geometry.coordinates[0][0][1],
-            feature.geometry.coordinates[0][2][0],
-            feature.geometry.coordinates[0][2][1],
-          ];
-          const dataset: Dataset = {
+
+          const bbox = feature.geometry.coordinates[0].flat(2);
+          return {
             hasObs,
             bbox,
             uiLinks,
             ...feature,
-          }
-          this.datasets.push(dataset);
-        }
+          } as Dataset; // Type assertion for Dataset
+        });
       } catch (error) {
         console.error(error);
-      }
-      finally {
-        this.loading = false
+      } finally {
+        this.loading = false;
       }
     },
     loadMap(topic: string) {
