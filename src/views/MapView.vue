@@ -1,3 +1,5 @@
+<!-- The Map view displays  -->
+
 <script setup lang="ts">
 
 defineProps({
@@ -6,22 +8,18 @@ defineProps({
 </script>
 
 <template>
-  <chart-dialog :features="features" />
+  <ChartDialog />
   <v-card flat>
-    <wis-map :params="{ collection: topic }" />
+    <WisMap :features="features" :params="{ collection: topic }" />
   </v-card>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import ChartDialog from "@/components/ChartDialog.vue";
 import WisMap from "@/components/leaflet/WisMap.vue";
+import ChartDialog from "@/components/ChartDialog.vue";
 
 export default defineComponent({
-  components: {
-    ChartDialog,
-    WisMap,
-  },
   methods: {
     goBack() {
       if (window.history.length > 1) {
@@ -30,6 +28,15 @@ export default defineComponent({
         this.$router.push("/");
       }
     },
+  },
+  data: function () {
+    return {
+      features: {
+        stations: null,
+        station: null,
+        datastreams: [],
+      },
+    };
   },
 });
 </script>

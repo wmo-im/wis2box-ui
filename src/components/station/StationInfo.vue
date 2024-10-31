@@ -7,7 +7,7 @@
         </v-toolbar-title>
 
         <template v-slot:prepend v-if="station !== null">
-          <v-btn icon @click="features_.station = null">
+          <v-btn icon @click="features.station = null">
             <v-icon icon="mdi-arrow-left"></v-icon>
           </v-btn>
         </template>
@@ -38,17 +38,10 @@ import StationStatus from "./StationStatus.vue";
 
 export default defineComponent({
   components: { StationList, StationStatus },
-  name: "StationInfo",
-  template: "#station-info",
   props: ["features", "map"],
-  data() {
-    return {
-      features_: this.features,
-    };
-  },
   computed: {
     station: function () {
-      return this.features_.station;
+      return this.features.station;
     },
     station_name: function () {
       if (this.station) {
@@ -60,7 +53,7 @@ export default defineComponent({
   },
   methods: {
     openData(station) {
-      this.features_.station = station;
+      this.features.station = station;
       this.$root.toggleDialog();
     },
   },

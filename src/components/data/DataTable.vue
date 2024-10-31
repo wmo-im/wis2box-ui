@@ -1,3 +1,7 @@
+<!-- This component represents the table which displays all the data for
+ a specific station
+-->
+
 <template id="data-table">
   <v-card min-height="500px" class="ma-4">
     <v-alert v-show="alert.value" type="warning" :text="alert.msg" />

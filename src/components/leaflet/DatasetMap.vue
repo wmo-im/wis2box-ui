@@ -9,10 +9,11 @@ defineProps<{ dataset: Dataset }>();
 <template>
   <div v-if="loading">
     <v-progress-linear striped indeterminate color="primary" />
+    loading
   </div>
   <div v-show="!loading">
     <l-map :ref="dataset.id" :center="center" :options="options" :maxZoom="16" style="height: 160px; width: 256px"
-      @ready="onReady()">
+      @ready="onReady">
       <l-geo-json :geojson="dataset.geometry" />
       <l-tile-layer :url="url" />
     </l-map>
@@ -22,7 +23,7 @@ defineProps<{ dataset: Dataset }>();
 <script lang="ts">
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
-import type { LatLngBounds, Map } from "leaflet";
+import type { Map } from "leaflet";
 import L from "leaflet";
 
 export default {
@@ -33,26 +34,31 @@ export default {
   },
   data: function () {
     return {
-      loading: false,
-      center: [0, 0],
+      loading: true,  // Initially set loading to true
+      center: [0, 0] as [number, number], // center is a tuple of [lat, lng]
       options: {
         zoomControl: false,
         doubleClickZoom: false,
         dragging: false,
+        scrollWheelZoom: false,  // Disable scroll wheel zoom
         zoomSnap: 0.25,
       },
       map: null as unknown as Map,
       url: window.VUE_APP_BASEMAP_URL,
     };
   },
+
+  mounted() {
+    setTimeout(function () { window.dispatchEvent(new Event('resize')) }, 250);
+  },
   methods: {
     onReady() {
-      this.loading = true;
       this.$nextTick(() => {
         this.map = this.$refs[this.dataset.id]["leafletObject"];
         this.map.fitBounds(L.geoJSON(this.dataset.geometry).getBounds());
         this.map.attributionControl.setPrefix("");
-        this.loading = false;
+        this.map.zoomIn(4);
+        this.loading = false;  // Set loading to false once the map is ready
       });
     },
   },

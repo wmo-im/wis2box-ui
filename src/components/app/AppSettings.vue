@@ -6,13 +6,12 @@
           <v-icon icon="mdi-cog" />&nbsp;{{ $t('util.settings') }}
         </v-btn>
       </template>
-
       <v-list>
         <v-list-item class="px-0">
-          <select-locale :header="false" />
+          <SelectLocale :header="false" />
         </v-list-item>
         <v-list-item class="px-0">
-          <token-auth :header="false" />
+          <TokenAuth :header="false" />
         </v-list-item>
         <v-list-item class="px-0">
           <v-btn block :ripple="false" variant="text" color="#014e9e" class="font-weight-bold">
@@ -32,8 +31,6 @@ import SelectLocale from "./SelectLocale.vue";
 import TokenAuth from "./TokenAuth.vue";
 
 export default defineComponent({
-  name: "AppSettings",
-  template: "#app-settings",
   components: {
     SelectLocale,
     TokenAuth,

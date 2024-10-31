@@ -20,7 +20,9 @@
                   </v-card>
                 </template>
                 <template v-else>
-                  {{ $t("messages.no_observations_in_collection") }}
+                  <i>
+                    {{ $t("messages.no_observations_in_collection") }}
+                  </i>
 
                   <v-card class="pa-0 ma-0">
                     <dataset-map :dataset="item" />

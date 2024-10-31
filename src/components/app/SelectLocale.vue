@@ -1,3 +1,5 @@
+<!-- TODO: If arabic is selected, the settings page disappears. This apepars to be an issue with arabic specifically -->
+
 <template id="select-locale">
   <div class="select-locale">
     <v-menu location="start">
@@ -8,7 +10,7 @@
       </template>
       <v-list>
         <v-list-item v-for="language in Object.keys(languages)" :key="`lang-${language}`"
-          :active="$i18n.locale === language" color="#014e9e" @click="$i18n.locale = language">
+          :active="$i18n.locale === language" color="#014e9e" @click="$i18n.locale = String(language)">
           <v-list-item-title>{{ languages[(language as keyof typeof languages)].language }}</v-list-item-title>
         </v-list-item>
       </v-list>

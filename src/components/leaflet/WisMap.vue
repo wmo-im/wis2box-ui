@@ -97,7 +97,6 @@ export default defineComponent({
       try {
         const response = await fetch(`${window.VUE_APP_OAPI}/processes/station-info/execution`, {
           method: "POST",
-          mode: "no-cors",
           headers: {
             "Content-Type": "application/json",
           },
@@ -113,7 +112,7 @@ export default defineComponent({
         } else {
           const errorText = await response.text();
           console.error(`Error: ${errorText}`);
-          this.$root.catch(`
+          console.error(`
             <p>${this.$t("messages.does_not_exist")}</p>
             <p>${this.$t("messages.how_to_link_station")}</p>`);
         }

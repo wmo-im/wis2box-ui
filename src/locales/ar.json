@@ -1,67 +1,66 @@
 {
-    "language": "العربية",
-    "code": "ar",
-    "navigation": {
-      "home": "الرئيسية",
-      "datasets": "مجموعات البيانات",
-      "services": "الخدمات",
-      "data": "البيانات",
-      "documentation": "التوثيق"
-    },
-    "util": {
-      "token": "الرمز المميز",
-      "cancel": "إلغاء",
-      "save": "حفظ",
-      "close": "إغلاق",
-      "settings": "الإعدادات",
-      "cluster": "مجموعة"
-    },
-    "footer": {
-      "powered_by": "مدعوم بواسطة"
-    },
-    "messages": {
-      "welcome": "مرحبًا بك في WIS 2.0 in a box!",
-      "no_observations_in_collection": " لا توجد ملاحظات في المجموعة ",
-      "authorized": "مُصرح به",
-      "not_authorized": "البيانات تتطلب التفويض؛ يرجى إضافة رمز مميز للتفويض",
-      "no_linked_collections": "لا يوجد مجموعات مرتبطة",
-      "how_to_link_station": "يرجى ربط المحطات بهذه المجموعة/الموضوع لعرض بياناتها على الخريطة",
-      "from": "من",
-      "no_of_observations": "الملاحظات منذ 24 ساعة",
-      "does_not_exist": "الصفحة غير موجودة"
-    },
-    "station": {
-      "map": "خريطة المحطة",
-      "properties": "خصائص المحطة",
-      "wigos_station_identifier": "معرف المحطة WIGOS",
-      "name": "اسم المحطة",
-      "status": "السجل",
-      "latest": "القيم الأخيرة",
-      "report": "تقرير المحطة",
-      "limit": "الحد"
-    },
-    "chart": {
-      "chart": "رسم بياني",
-      "options": "الخيارات",
-      "collection": "المجموعة",
-      "observed_property": "الخاصية المرصودة",
-      "station": "المحطة",
-      "data_source": "مصدر البيانات",
-      "download": "تحميل"
-    },
-    "table": {
-      "table": "جدول",
-      "result_time": "وقت النتيجة",
-      "phenomenon_time": "وقت الظاهرة"
-    },
-    "datasets": {
-      "topic": "الموضوع",
-      "messages": "رسائل WIS 2.0",
-      "oafeat": "الملاحظات",
-      "oarec": "بيانات الاكتشاف",
-      "map": "الخريطة",
-      "explore": "استكشاف",
-      "mqp": "PubSub"
-    }
+  "language": "العربية",
+  "code": "ar",
+  "navigation": {
+    "home": "الرئيسية",
+    "datasets": "مجموعات البيانات",
+    "services": "الخدمات",
+    "data": "البيانات",
+    "documentation": "التوثيق"
+  },
+  "util": {
+    "token": "الرمز المميز",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "close": "إغلاق",
+    "settings": "الإعدادات",
+    "cluster": "مجموعة"
+  },
+  "footer": {
+    "powered_by": "مدعوم بواسطة"
+  },
+  "messages": {
+    "welcome": "مرحبًا بك في WIS 2.0 in a box!",
+    "no_observations_in_collection": " لا توجد ملاحظات في المجموعة ",
+    "authorized": "مُصرح به",
+    "not_authorized": "البيانات تتطلب التفويض؛ يرجى إضافة رمز مميز للتفويض",
+    "no_linked_collections": "لا يوجد مجموعات مرتبطة",
+    "how_to_link_station": "يرجى ربط المحطات بهذه المجموعة/الموضوع لعرض بياناتها على الخريطة",
+    "from": "من",
+    "no_of_observations": "الملاحظات منذ 24 ساعة",
+    "does_not_exist": "الصفحة غير موجودة"
+  },
+  "station": {
+    "map": "خريطة المحطة",
+    "properties": "خصائص المحطة",
+    "wigos_station_identifier": "معرف المحطة WIGOS",
+    "name": "اسم المحطة",
+    "status": "السجل",
+    "latest": "القيم الأخيرة",
+    "report": "تقرير المحطة",
+    "limit": "الحد"
+  },
+  "chart": {
+    "chart": "رسم بياني",
+    "options": "الخيارات",
+    "collection": "المجموعة",
+    "observed_property": "الخاصية المرصودة",
+    "station": "المحطة",
+    "data_source": "مصدر البيانات",
+    "download": "تحميل"
+  },
+  "table": {
+    "table": "جدول",
+    "result_time": "وقت النتيجة",
+    "phenomenon_time": "وقت الظاهرة"
+  },
+  "datasets": {
+    "topic": "الموضوع",
+    "messages": "رسائل WIS 2.0",
+    "oafeat": "الملاحظات",
+    "oarec": "بيانات الاكتشاف",
+    "map": "الخريطة",
+    "explore": "استكشاف",
+    "mqp": "PubSub"
   }
-  
+}

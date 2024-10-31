@@ -44,7 +44,6 @@ export default defineComponent({
       status: globalStateStore.error.status_code,
       url: globalStateStore.error.url
     }));
-
     return {
       errorState
     };
