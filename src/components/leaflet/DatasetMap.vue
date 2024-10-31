@@ -1,3 +1,7 @@
+<!-- This component displays a single simple map for a given station/dataset. It is intended to give the user a brief overview and does not
+  show any datapoints / labels.
+-->
+
 <script setup lang="ts">
 import { defineProps, ref, onMounted, nextTick } from "vue";
 import type { Dataset } from "@/lib/types";

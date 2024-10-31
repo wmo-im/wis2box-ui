@@ -91,14 +91,17 @@ export default defineComponent({
     async loadDatasets() {
       try {
         this.loading = true;
-        const response = await fetch(`${oapi}/collections/discovery-metadata/items`);
+        const url = `${oapi}/collections/discovery-metadata/items`;
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Fetch failed with status: " + response.status);
         }
         const data: ItemsResponse = await response.json();
 
-        this.datasets = data.features.map(feature => {
-          const hasObs = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
+        for (const feature of data.features) {
+
+
+          const hasObs = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations"); // TODO check this originally had /synop at the end. However, it seems like this was incorrect in upstream
           const uiLinks = [];
 
           if (hasObs) {
@@ -132,13 +135,14 @@ export default defineComponent({
           }
 
           const bbox = feature.geometry.coordinates[0].flat(2);
-          return {
+
+          this.datasets.push({
             hasObs,
             bbox,
             uiLinks,
             ...feature,
-          } as Dataset; // Type assertion for Dataset
-        });
+          });
+        }
       } catch (error) {
         console.error(error);
       } finally {
