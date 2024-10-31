@@ -75,7 +75,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import DatasetMap from "../components/leaflet/DatasetMap.vue";
-import type { Dataset } from "@/lib/types";
+import type { Dataset, ItemsResponse } from "@/lib/types";
 
 const oapi = window.VUE_APP_OAPI;
 
@@ -100,30 +100,32 @@ export default defineComponent({
         if (!response.ok) {
           throw new Error("Fetch failed with status: " + response.status);
         }
-        const data = await response.json();
-        for (const c of data.features) {
-          const links = [];
-          c.hasObs = c.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
-          if (c.hasObs) {
-            links.push({
+        const data: ItemsResponse = await response.json();
+        for (const feature of data.features) {
+          const uiLinks = [];
+
+          const hasObs = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
+          if (hasObs) {
+            uiLinks.push({
               href: undefined,
-              target: `/fixed-land-station-map/${c.id}`,
+              target: `/fixed-land-station-map/${feature.id}`,
               type: "Map",
               msg: "explore",
               icon: "mdi-map-marker-circle",
             });
           }
-          for (const link of c.links) {
+          for (const link of feature.links) {
+            console.log(link.rel)
             if (link.rel === "canonical") {
-              links.push({
+              uiLinks.push({
                 href: link.href,
                 target: undefined,
                 type: "OARec",
                 msg: "oarec",
                 icon: "mdi-open-in-new",
               });
-            } else if (link.rel === "collection" && c.hasObs) {
-              links.push({
+            } else if (link.rel === "collection" && hasObs) {
+              uiLinks.push({
                 href: link.href,
                 target: undefined,
                 type: "OAFeat",
@@ -132,14 +134,19 @@ export default defineComponent({
               });
             }
           }
-          c.bbox = [
-            c.geometry.coordinates[0][0][0],
-            c.geometry.coordinates[0][0][1],
-            c.geometry.coordinates[0][2][0],
-            c.geometry.coordinates[0][2][1],
+          const bbox = [
+            feature.geometry.coordinates[0][0][0],
+            feature.geometry.coordinates[0][0][1],
+            feature.geometry.coordinates[0][2][0],
+            feature.geometry.coordinates[0][2][1],
           ];
-          c.links = links;
-          this.datasets.push(c);
+          const dataset: Dataset = {
+            hasObs,
+            bbox,
+            uiLinks,
+            ...feature,
+          }
+          this.datasets.push(dataset);
         }
       } catch (error) {
         console.error(error);
