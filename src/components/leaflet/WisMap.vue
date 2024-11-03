@@ -1,45 +1,41 @@
 <script setup lang="ts">
 defineProps({
   params: Object,
-  features: Array,
+  features: Object,
 })
 </script>
 
 <template id="wis-map">
-  <div class="wis-map">
-    <div v-if="loading">
-      <v-progress-linear striped indeterminate color="primary" />
-    </div>
-    <div class="text-center">
-      <v-row justify="center" fill-height no-gutters>
-        <v-col :cols="smAndDown ? 12 : 4" :order="smAndDown ? 'last' : 'start'">
-          <station-info :features="features" :map="map" class="ma-1" />
-        </v-col>
-        <v-col :cols="smAndDown ? 12 : 8">
-          <v-card class="ma-1">
-            <l-map ref="wisMap" :zoom="zoom" :center="center" :maxZoom="16" :minZoom="2" style="height: 60vh"
-              @ready="onReady()">
-              <template v-if="!loading">
-                <wis-station :features="features" :map="map" />
-              </template>
-              <l-tile-layer :url="url" :attribution="attribution" />
-              <l-control position="bottomleft">
-                <v-card width="124px" class="legend pa-2" border="1">
-                  <strong>{{ $t("messages.no_of_observations") }}</strong>
-                  <v-divider class="my-2" />
-                  <v-row no-gutters justify="center" v-for="(item, i) in legend" :key="i">
-                    <v-col cols="3">
-                      <i class="dot" :style="`background: ${item.color}`" />
-                    </v-col>
-                    <v-col>{{ item.range }}</v-col>
-                  </v-row>
-                </v-card>
-              </l-control>
-            </l-map>
-          </v-card>
-        </v-col>
-      </v-row>
-    </div>
+  <v-progress-linear v-if="loading" striped indeterminate color="primary" />
+  <div class="text-center">
+    <v-row justify="center" fill-height no-gutters>
+      <v-col :cols="smAndDown ? 12 : 4" :order="smAndDown ? 'last' : 'start'">
+        <station-info :features="features" :map="map" class="ma-1" />
+      </v-col>
+      <v-col :cols="smAndDown ? 12 : 8">
+        <v-card class="ma-1">
+          <l-map ref="wisMap" :zoom="zoom" :center="center" :maxZoom="16" :minZoom="2" style="height: 60vh"
+            @ready="onReady()">
+            <template v-if="!loading">
+              <wis-station :features="features" :map="map" />
+            </template>
+            <l-tile-layer :url="url" :attribution="attribution" />
+            <l-control position="bottomleft">
+              <v-card width="124px" class="legend pa-2" border="1">
+                <strong>{{ $t("messages.no_of_observations") }}</strong>
+                <v-divider class="my-2" />
+                <v-row no-gutters justify="center" v-for="(item, i) in legend" :key="i">
+                  <v-col cols="3">
+                    <i class="dot" :style="`background: ${item.color}`" />
+                  </v-col>
+                  <v-col>{{ item.range }}</v-col>
+                </v-row>
+              </v-card>
+            </l-control>
+          </l-map>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -53,6 +49,7 @@ import StationInfo from "../station/StationInfo.vue";
 
 import { defineComponent } from "vue";
 import type { Map } from "leaflet";
+import { catchAndDisplayError } from "@/lib/errors";
 
 export default defineComponent({
   components: {
@@ -113,9 +110,7 @@ export default defineComponent({
         } else {
           const errorText = await response.text();
           console.error(`Error: ${errorText}`);
-          console.error(`
-            <p>${this.$t("messages.does_not_exist")}</p>
-            <p>${this.$t("messages.how_to_link_station")}</p>`);
+          catchAndDisplayError(`${this.$t("messages.does_not_exist")}: ${this.$t("messages.how_to_link_station")}`);
         }
       } catch (error) {
         console.error(error);

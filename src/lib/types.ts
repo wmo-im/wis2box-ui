@@ -25,6 +25,7 @@ interface Links {
   href: string
 }
 
+// Represents one feature within the feature collection of a OAF items/ response
 interface Feature {
   id: string
   conformsTo: undefined
@@ -48,6 +49,7 @@ interface Feature {
   links: Links[]
 }
 
+// Represents the response from the OAF /items endpoint, such as ${oapi}/collections/discovery-metadata/items
 export interface ItemsResponse {
   type: 'FeatureCollection'
   features: Feature[]
@@ -56,6 +58,7 @@ export interface ItemsResponse {
   links: Links[]
 }
 
+// Superset of Feature, with additional helper fields for easier use in the frontend
 export interface Dataset extends Feature {
   hasObs: boolean
   id: string
@@ -68,4 +71,24 @@ export interface Dataset extends Feature {
     msg: string
     icon: string
   }>
+}
+
+// Represents the response from the OAF /collections endpoint
+export interface CollectionsResponse {
+  collections: {
+    id: 'stations' | 'messages' | 'discovery-metadata' | string // could be a few special collections or an arbitrary string
+    title: string
+    description: string
+    keywords: string
+    links: Links[]
+    extent: {
+      spatial: {
+        bbox: number[][]
+        crs: string
+      }
+    }
+    crs: string
+    storageCRS: string
+  }[]
+  links: Links[]
 }

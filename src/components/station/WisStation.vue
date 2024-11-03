@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import type { FeatureLayerForMap } from "@/lib/types";
+import { useGlobalStateStore } from "@/stores/global";
 import { circleMarker, geoJSON, type LatLngBoundsExpression, type LatLngExpression } from "leaflet";
 import { MarkerClusterGroup } from "leaflet.markercluster/dist/leaflet.markercluster-src.js";
 
@@ -59,9 +60,10 @@ export default defineComponent({
       }
     },
     mapClick(e) {
+      const store = useGlobalStateStore();
       this.features_.station = e.target.feature;
       this.features_.datastreams.length = 0;
-      this.$root.toggleDialog();
+      store.toggleDialog();
       e.originalEvent.stopPropagation();
     },
     onEachFeature(feature: FeatureLayerForMap, layer) {

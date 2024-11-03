@@ -1,4 +1,4 @@
-<!-- Store the token in local storage for fetch requests -->
+<!-- Drop down to select and store the token in local storage for fetch requests -->
 
 <template id="token-auth">
   <div class="token-auth">

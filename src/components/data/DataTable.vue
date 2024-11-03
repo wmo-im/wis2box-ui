@@ -39,6 +39,7 @@
 import Plotly from "plotly.js-cartesian-dist-min";
 import { defineComponent } from "vue";
 import { mdiDownload } from "@mdi/js";
+import { catchAndDisplayError } from "@/lib/errors";
 
 const oapi = window.VUE_APP_OAPI;
 
@@ -144,12 +145,10 @@ export default defineComponent({
         const data = await response.json();
         this.loadObservations(collection.id, data.numberMatched, datastream, station_id);
       } catch (error) {
-        this.$root.catch(error);
-      } finally {
-        console.log("done");
+        catchAndDisplayError(error as string);
       }
     },
-    async loadObservations(collection_id, limit, datastream, station_id) {
+    async loadObservations(collection_id: string, limit: number, datastream, station_id: string) {
       if (limit === 0) {
         this.alert_.value = true;
         this.loading = false;
@@ -172,7 +171,7 @@ export default defineComponent({
         this.data.time = this.getCol(data.features, "resultTime");
         this.data.phenomenonTime = this.getCol(data.features, "phenomenonTime");
       } catch (error) {
-        this.$root.catch(error);
+        catchAndDisplayError(error);
       } finally {
         this.loading = false;
         console.log("done");

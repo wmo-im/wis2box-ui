@@ -1,3 +1,5 @@
+<!-- Display a table of variables and their most recent value for a specific station -->
+
 <template id="station-status">
   <div class="station-status">
     <h5 class="text-left" v-if="latestResultTime">
@@ -5,7 +7,7 @@
     </h5>
     <v-table>
       <table>
-        <tr v-for="item in recentObservations" :key="i">
+        <tr v-for="(item, i) in recentObservations" :key="i">
           <th width="50%">{{ getNameTime(item) }}</th>
           <td v-if="item.units !== 'CODE TABLE'" width="50%">
             {{ item.value + " " + item.units }}
@@ -21,16 +23,14 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { getNameTime, clean, hasLinks } from "@/scripts/helpers.js";
+import { getNameTime, clean, hasLinks } from "@/lib/helpers.js";
 import type { FeatureLayerForMap, Observation, Station } from "@/lib/types";
+import { catchAndDisplayError } from "@/lib/errors";
 
 const oapi = window.VUE_APP_OAPI;
 
 
-
 export default defineComponent({
-  name: "StationLatest",
-  template: "#station-latest",
   props: ["features", "map"],
   data() {
     return {
@@ -48,7 +48,7 @@ export default defineComponent({
         if (hasLinks(station)) {
           this.loadObservations(station);
         } else if (station !== null) {
-          this.$root.catch(`
+          catchAndDisplayError(`
             ${clean(station.properties.name)} ${this.$t(
             "messages.no_linked_collections"
           )} <br> ${this.$t("messages.how_to_link_station")}`);
@@ -86,7 +86,7 @@ export default defineComponent({
         const features: FeatureLayerForMap[] = data.features;
         this.recentObservations = features.map((obs) => obs.properties);
       } catch (error) {
-        this.$root.catch(error);
+        catchAndDisplayError(error as string);
       } finally {
         this.loading = false;
       }

@@ -1,4 +1,8 @@
-<!-- TODO: If arabic is selected, the settings drop down disappears. This appears to be an issue with arabic specifically -->
+<!-- A Component for selecting the language used in the application -->
+
+<!-- NOTE: If arabic is selected, the settings drop down moves to the left side of the page
+    this is just an issue with arabic specifically given the nature of arabic script and how it is read on the web.
+-->
 
 <template id="select-locale">
   <div class="select-locale">

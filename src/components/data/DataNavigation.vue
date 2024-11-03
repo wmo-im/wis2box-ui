@@ -19,7 +19,8 @@
 
 <script lang="ts">
 const oapi = window.VUE_APP_OAPI;
-import { getNameTime, hasLinks } from "@/scripts/helpers";
+import { catchAndDisplayError } from "@/lib/errors";
+import { getNameTime, hasLinks } from "@/lib/helpers";
 
 export default {
   props: ["choices", "alert", "station", "drawer"],
@@ -78,10 +79,10 @@ export default {
             data.numberMatched
           );
         } else {
-          this.$root.catch(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
+          catchAndDisplayError(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
         }
       } catch (error) {
-        this.$root.catch(error);
+        catchAndDisplayError(error as string);
       } finally {
         console.log("done");
       }
@@ -105,7 +106,7 @@ export default {
           this.choices_.datastreams.push(item.properties);
         }
       } catch (error) {
-        this.$root.catch(error);
+        catchAndDisplayError(error as string);
       } finally {
         console.log("done");
       }

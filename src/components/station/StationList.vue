@@ -27,7 +27,7 @@
 import { defineComponent } from "vue";
 
 
-import { clean } from "@/scripts/helpers.js";
+import { clean } from "@/lib/helpers.js";
 
 type stationSchema = {
   properties: { num_obs: number; name: string; url: string; };

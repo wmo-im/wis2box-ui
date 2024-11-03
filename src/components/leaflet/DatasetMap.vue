@@ -1,5 +1,5 @@
-<!-- This component displays a single simple map for a given station/dataset. It is intended to give the user a brief overview and does not
-  show any datapoints / labels.
+<!-- This component displays a single simple map for a given station/dataset. It is intended to give the user a brief overview of a dataset and does not
+  show any timeseries datapoints.
 -->
 
 <script setup lang="ts">
@@ -28,7 +28,7 @@ const url = window.VUE_APP_BASEMAP_URL;
 const mapRef = ref<InstanceType<typeof LMap> | null>(null);
 
 onMounted(() => {
-  // Trigger a resize event after a brief delay. Needed to fix a vue leaflet bug: https://github.com/vue-leaflet/Vue2Leaflet/issues/96
+  // Trigger a resize event after a brief delay. Needed to fix a vue leaflet bug: https://github.com/vue-leaflet/Vue2Leaflet/issues/96#issuecomment-341459943
   setTimeout(() => window.dispatchEvent(new Event("resize")), 250);
 });
 

@@ -91,8 +91,10 @@ export default defineComponent({
     async loadDatasets() {
       try {
         this.loading = true;
+        console.log(oapi);
         const url = `${oapi}/collections/discovery-metadata/items`;
         const response = await fetch(url);
+        console.log(url);
         if (!response.ok) {
           throw new Error("Fetch failed with status: " + response.status);
         }

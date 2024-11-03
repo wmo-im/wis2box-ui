@@ -8,10 +8,10 @@
     <v-divider />
     <v-window v-model="tab">
       <v-window-item :value="0" eager>
-        <station-latest :features="features" :map="map" />
+        <StationLatest :features="features" :map="map" />
       </v-window-item>
       <v-window-item :value="1" eager>
-        <station-history :features="features" :map="map" />
+        <StationHistory :features="features" :map="map" />
       </v-window-item>
     </v-window>
     <div class="text-center ma-2">
@@ -29,8 +29,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import StationHistory from "./StationHistory.vue";
 import StationLatest from "./StationLatest.vue";
+import StationHistory from "./StationHistory.vue";
 
 export default defineComponent({
   components: { StationLatest, StationHistory },

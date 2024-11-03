@@ -13,6 +13,9 @@ export const useGlobalStateStore = defineStore('globalState', {
     }
   },
   actions: {
+    toggleDialog() {
+      this.dialog = !this.dialog
+    },
     setToken(newToken: string) {
       this.token = newToken
     },

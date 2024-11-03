@@ -1,3 +1,5 @@
+<!-- Dataviewer is a popup window which contains variables and their associated tables / plots of data -->
+
 <template id="data-viewer">
   <v-layout>
     <v-app-bar color="#EEEEEE" flat>
@@ -13,11 +15,11 @@
         </v-tab>
       </v-tabs>
     </v-app-bar>
-    <data-navigation :choices="choices" :station="station" :alert="alert" :drawer="{ model: drawer }" />
+    <DataNavigation :choices="choices" :station="station" :alert="alert" :drawer="{ model: drawer }" />
     <v-main>
       <v-window v-model="tab">
         <v-window-item :value="0">
-          <data-plotter :choices="choices" :alert="alert" />
+          <DataPlotter :choices="choices" :alert="alert" />
         </v-window-item>
         <v-window-item :value="1">
           <data-table :choices="choices" :alert="alert" />
@@ -33,6 +35,8 @@ import DataNavigation from "./DataNavigation.vue";
 import DataTable from "./DataTable.vue";
 const oapi = window.VUE_APP_OAPI;
 import { defineComponent } from "vue";
+import { catchAndDisplayError } from "@/lib/errors";
+import type { CollectionsResponse, ItemsResponse } from "@/lib/types";
 
 export default defineComponent({
   props: ["station"],
@@ -72,19 +76,19 @@ export default defineComponent({
     async loadCollections() {
       const response = await fetch(`${oapi}/collections`);
       if (response.ok) {
-        const data = await response.json();
+        const data: CollectionsResponse = await response.json();
         this.parseCollections(data.collections);
       } else {
         console.error(response);
       }
     },
-    async parseCollections(collections: undefined) {
+    async parseCollections(collections: CollectionsResponse["collections"]) {
       for (const c of collections) {
         if (c.id === "stations") {
           try {
             const response = await fetch(`${oapi}/collections/stations/items`);
             if (response.ok) {
-              const data = await response.json();
+              const data: ItemsResponse = await response.json();
               this.choices.stations = data;
             } else {
               console.error(response);
@@ -93,16 +97,17 @@ export default defineComponent({
             console.error(error);
           }
         } else if (c.id === "discovery-metadata") {
+          const url = `${oapi}/collections/discovery-metadata/items`;
           try {
-            const response = await fetch(`${oapi}/collections/discovery-metadata/items`);
+            const response = await fetch(url);
             if (response.ok) {
               const data = await response.json();
               this.choices.discovery_metadata = data.features;
             } else {
-              console.error(response);
+              catchAndDisplayError(await response.text(), url);
             }
           } catch (error) {
-            console.error(error);
+            catchAndDisplayError(error as string, url);
           }
         } else if (c.id !== "messages") {
           this.choices.collections.push(c);

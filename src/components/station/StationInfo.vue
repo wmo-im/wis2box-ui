@@ -1,40 +1,39 @@
 <template id="station-info">
-  <div class="station-info">
-    <v-card flat height="60vh" class="scroll">
-      <v-toolbar>
-        <v-toolbar-title>
-          {{ station_name || $t("chart.station") }}
-        </v-toolbar-title>
+  <v-card flat height="60vh" class="scroll">
+    <v-toolbar>
+      <v-toolbar-title>
+        {{ station_name || $t("chart.station") }}
+      </v-toolbar-title>
 
-        <template v-slot:prepend v-if="station !== null">
-          <v-btn icon @click="features.station = null">
-            <v-icon icon="mdi-arrow-left"></v-icon>
-          </v-btn>
-        </template>
+      <template v-slot:prepend v-if="station !== null">
+        <v-btn icon @click="features.station = null">
+          <v-icon icon="mdi-arrow-left"></v-icon>
+        </v-btn>
+      </template>
 
-        <template v-slot:append v-if="station != null">
-          <v-btn variant="outlined" size="small" color="#014e9e" @click.stop="openData(station)" class="my-auto">
-            {{ $t("navigation.data") }}
-            <v-icon end icon="mdi-chart-scatter-plot" />
-          </v-btn>
-        </template>
-      </v-toolbar>
+      <template v-slot:append v-if="station != null">
+        <v-btn variant="outlined" size="small" color="#014e9e" @click.stop="openData(station)" class="my-auto">
+          {{ $t("navigation.data") }}
+          <v-icon end icon="mdi-chart-scatter-plot" />
+        </v-btn>
+      </template>
+    </v-toolbar>
 
-      <v-card flat class="text-center" v-show="station === null">
-        <station-list :features="features" :map="map" />
-      </v-card>
-
-      <v-card flat class="text-center" v-show="station !== null">
-        <station-status :features="features" :map="map" />
-      </v-card>
+    <v-card flat class="text-center" v-show="station === null">
+      <station-list :features="features" :map="map" />
     </v-card>
-  </div>
+
+    <v-card flat class="text-center" v-show="station !== null">
+      <station-status :features="features" :map="map" />
+    </v-card>
+  </v-card>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import StationList from "./StationList.vue";
 import StationStatus from "./StationStatus.vue";
+import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
   components: { StationList, StationStatus },
@@ -52,9 +51,10 @@ export default defineComponent({
     },
   },
   methods: {
-    openData(station) {
+    openData(station: string) {
+      const store = useGlobalStateStore();
       this.features.station = station;
-      this.$root.toggleDialog();
+      store.toggleDialog();
     },
   },
 });
