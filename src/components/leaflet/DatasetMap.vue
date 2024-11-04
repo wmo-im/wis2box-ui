@@ -14,12 +14,12 @@ import L from "leaflet";
 const props = defineProps<{ dataset: Dataset }>();
 
 const loading = ref(true);
-const center = ref<[number, number]>([0, 0]); // center is a tuple of [lat, lng]
+const center = ref<[number, number]>([0, 0]);
 const leafletOptions = {
   zoomControl: false,
   doubleClickZoom: false,
   dragging: false,
-  scrollWheelZoom: false, // Disable scroll wheel zoom
+  scrollWheelZoom: false,
   zoomSnap: 0.25,
 };
 const map = ref<Map | null>(null);

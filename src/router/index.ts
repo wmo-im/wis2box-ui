@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Datasets from '@/views/DatasetView.vue'
 import Services from '@/views/ServiceView.vue'
 import MapView from '@/views/MapView.vue'
+import ChartDialog from '@/components/ChartDialog.vue'
 
 const Authorize = {
   template: "<div>{{ $t('messages.authorize') }}</div>",
@@ -13,6 +14,12 @@ const routes = [
     props: true,
     name: 'Topic Map',
     component: MapView,
+  },
+  {
+    path: '/fixed-land-station-map/:topic/data',
+    props: true,
+    name: 'Topic Data',
+    component: ChartDialog,
   },
   {
     path: '/',

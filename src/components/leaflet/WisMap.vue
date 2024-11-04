@@ -52,6 +52,7 @@ import StationInfo from "../station/StationInfo.vue";
 import { defineComponent } from "vue";
 import type { Map } from "leaflet";
 import { catchAndDisplayError } from "@/lib/errors";
+import type { ProcessResponse } from "@/lib/types";
 
 export default defineComponent({
   components: {
@@ -95,12 +96,13 @@ export default defineComponent({
     async loadStations() {
       this.loading = true; // Set loading to true before fetching data
       try {
+        console.log(this.params)
         const response = await fetch(`${window.VUE_APP_OAPI}/processes/station-info/execution`, {
           method: "POST",
           body: JSON.stringify({ inputs: this.params }),
         });
         if (response.ok) {
-          const data = await response.json();
+          const data: ProcessResponse = await response.json();
           this.features_.stations = data.value; // Update features with fetched data
 
           const bounds_ = geoJSON(this.features_.stations).getBounds();

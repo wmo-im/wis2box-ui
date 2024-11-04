@@ -115,7 +115,9 @@ export default defineComponent({
       const plot = document.getElementById(
         "plotly-chart-" + this.choices.collection.id
       );
-      Plotly.purge(plot);
+      if (plot !== null) {
+        Plotly.purge(plot);
+      }
       Plotly.newPlot(plot, this.data, this.layout, this.config);
       this.loading = false;
     },

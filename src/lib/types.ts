@@ -46,6 +46,12 @@ interface Feature {
     'wmo:dataPolicy': string
     'wmo:topicHierarchy': string
     id: string
+    // Many additional fields. Can't enumerate them all since the
+    // user can add additional properties they want in the backend
+    name?: string
+    topic?: string
+    topics?: string[]
+    wmo_region?: string
   }
   links: Links[]
 }
@@ -92,6 +98,13 @@ export interface CollectionsResponse {
     storageCRS: string
   }[]
   links: Links[]
+}
+
+// Represents the response from the OAF /process endpoint
+export interface ProcessResponse {
+  code: 'success' | string
+  id: string
+  value: ItemsResponse
 }
 
 // Represents the different collection choices a user can select on the DatasetView view

@@ -22,7 +22,7 @@ defineProps<{
     <div v-if="loading">
       <v-progress-linear striped indeterminate color="primary" />
     </div>
-    <div v-else>
+    <div>
       <v-container>
         <v-row justify="center" align="end">
           <div id="plotly-table" />
@@ -194,7 +194,9 @@ export default defineComponent({
     },
     plot(url: string) {
       const plot = document.getElementById("plotly-table");
-      Plotly.purge(plot);
+      if (plot !== null) {
+        Plotly.purge(plot);
+      }
       this.config.modeBarButtonsToAdd = [
         {
           name: this.$t("chart.download"),
