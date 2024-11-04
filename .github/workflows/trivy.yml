@@ -15,6 +15,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.20.0
         env:
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
+          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db:1
         with:
           image-ref: 'wis2box-ui:test'
           format: 'table'
