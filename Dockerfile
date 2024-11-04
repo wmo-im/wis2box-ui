@@ -3,7 +3,8 @@ FROM node:23.1.0 as ui-builder
 RUN mkdir /usr/src/app
 RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list \
     && apt-get -y update \
-    && apt-get -y upgrade
+    && apt-get -y upgrade \
+    && apt-get install -y chromium
 
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
