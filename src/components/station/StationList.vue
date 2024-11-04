@@ -1,4 +1,15 @@
-<!-- THe station list component represents the list of all stations which you can click into in order to get the latest values and history -->
+THe station list component represents the list of all stations which you can click into in order to get the latest
+values and history
+<script setup lang="ts">
+
+// props: ["features", "map"],
+
+defineProps<{
+  stations: ItemsResponse;
+  map: any;
+}>();
+
+</script>
 
 <template id="station-list">
   <v-list>
@@ -28,6 +39,7 @@ import { defineComponent } from "vue";
 
 
 import { clean } from "@/lib/helpers.js";
+import type { ItemsResponse } from "@/lib/types";
 
 type stationSchema = {
   properties: { num_obs: number; name: string; url: string; };
@@ -36,18 +48,17 @@ type stationSchema = {
 
 
 export default defineComponent({
-  props: ["features", "map"],
   data() {
     return {
-      features_: this.features,
+      selectedStation: null,
     };
   },
   computed: {
     stations: function () {
-      if (this.features.stations === null) {
+      if (this.stations === null) {
         return [];
       } else {
-        const stns = [...this.features.stations.features].sort((a, b) => {
+        const stns = [...this.stations.features].sort((a, b) => {
           const nameA = a.properties.name.toUpperCase(); // ignore upper and lowercase
           const nameB = b.properties.name.toUpperCase(); // ignore upper and lowercase
           if (nameA < nameB) {
@@ -65,7 +76,7 @@ export default defineComponent({
   methods: {
     clean,
     onClick(station: stationSchema) {
-      this.features_.station = station;
+      this.selectedStation = station;
       const latlng = [
         station.geometry.coordinates[1],
         station.geometry.coordinates[0],

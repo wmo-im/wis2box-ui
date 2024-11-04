@@ -1,3 +1,6 @@
+import i18n from '@/locales/i18n'
+import type { ItemsResponse, ProcessResponse } from './types'
+
 export function getNameTime(
   feature: { [x: string]: string; name: string },
   time_field = 'phenomenonTime',
@@ -47,4 +50,29 @@ export function clean(word: string) {
 
 export function hasLinks(feature: { links: string }) {
   return feature && feature.links && feature.links.length > 0
+}
+
+export async function getStationsFromCollection(
+  collectionName: string,
+): Promise<ItemsResponse> {
+  const { t } = i18n.global
+
+  const response = await fetch(
+    `${window.VUE_APP_OAPI}/processes/station-info/execution`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ inputs: { collection: collectionName } }),
+    },
+  )
+  if (response.ok) {
+    const data: ProcessResponse = await response.json()
+    if (data.code !== 'success') {
+      throw new Error('Failed to get OGC API Process Info')
+    }
+    return data.value // value represents the result of the process
+  } else {
+    throw new Error(
+      `${t('messages.does_not_exist')}: ${t('messages.how_to_link_station')}`,
+    )
+  }
 }

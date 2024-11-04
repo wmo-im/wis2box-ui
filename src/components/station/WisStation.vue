@@ -3,24 +3,20 @@
 </template>
 
 <script lang="ts">
-import type { FeatureLayerForMap } from "@/lib/types";
+import type { FeatureLayerForMap, ItemsResponse } from "@/lib/types";
 import { useGlobalStateStore } from "@/stores/global";
 import { circleMarker, geoJSON, type LatLngExpression } from "leaflet";
+// @ts-expect-error no types from leaflet.markercluster
 import { MarkerClusterGroup } from "leaflet.markercluster/dist/leaflet.markercluster-src.js";
 
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 
 export default defineComponent({
-  name: "WisStation",
-  template: "#wis-station",
-  props: ["features", "map"],
   data: function () {
     return {
-      features_: this.features,
-      stations: this.features.stations,
       geojsonOptions: {
         onEachFeature: this.onEachFeature,
         pointToLayer: this.pointToLayer,
@@ -28,6 +24,16 @@ export default defineComponent({
       layer: null,
       clusterLayer: null,
     };
+  },
+  props: {
+    features: {
+      type: Object as PropType<ItemsResponse>,
+      required: true
+    },
+    map: {
+      type: Object as PropType<L.Map>,
+      required: true
+    }
   },
   mounted: function () {
     this.$nextTick(() => {
@@ -41,7 +47,7 @@ export default defineComponent({
   },
   methods: {
     onReady() {
-      this.layer = new geoJSON(this.stations, this.geojsonOptions);
+      this.layer = new geoJSON(this.features, this.geojsonOptions);
       this.clusterLayer = new MarkerClusterGroup({
         disableClusteringAtZoom: 9,
         chunkedLoading: true,
