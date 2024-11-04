@@ -1,4 +1,4 @@
-FROM node:23.1.0-slim as ui-builder
+FROM node:23.1.0 as ui-builder
 
 RUN mkdir /usr/src/app
 RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list \
