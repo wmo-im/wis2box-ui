@@ -13,7 +13,7 @@ COPY package.json /usr/src/app/package.json
 
 WORKDIR /usr/src/app
 
-RUN npm install && \
+RUN npm install --legacy-peer-deps && \
     npm install -g @vue/cli
 
 COPY . /usr/src/app
