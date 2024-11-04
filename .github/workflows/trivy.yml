@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Build wis2box-api
+      - name: Build wis2box-ui
         run: |
           docker build -t wis2box-ui:test .
       - name: Run Trivy vulnerability scanner on wis2box-ui
