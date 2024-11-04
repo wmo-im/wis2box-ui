@@ -9,7 +9,6 @@ defineProps({
   }
 })
 
-
 </script>
 
 <template id="data-viewer">
@@ -62,11 +61,13 @@ export default defineComponent({
       tab: 0,
       tabs: ["chart.chart", "table.table"],
       choices: {
-        collection: "",
-        datastream: "",
-        discovery_metadata: "",
+        collection: {
+          title: "",
+        },
+        datastream: "" as unknown as Choices["datastream"],
+        discovery_metadata: [] as ItemsResponse["features"],
         station: new Set([this.station.id]),
-        stations: [],
+        stations: {} as ItemsResponse,
         collections: [],
         datastreams: [],
       } as Choices,
@@ -139,4 +140,5 @@ export default defineComponent({
     this.loadCollections();
   },
 });
+
 </script>

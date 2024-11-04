@@ -10,6 +10,7 @@
 </template>
 
 <script lang="ts">
+// @ts-expect-error no types from plotly min
 import Plotly from "plotly.js-cartesian-dist-min";
 import { clean, hasLinks } from "@/lib/helpers.js";
 const oapi = window.VUE_APP_OAPI;

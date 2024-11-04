@@ -3,14 +3,15 @@
 
 <script setup lang="ts">
 
+const store = useGlobalStateStore();
+
 defineProps({
   features: {
     type: Object,
-    required: true,
-  },
+    required: true
+  }
 })
 
-const store = useGlobalStateStore();
 </script>
 
 <template id="chart-dialog">

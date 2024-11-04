@@ -18,6 +18,7 @@ export interface Station {
   id: string
 }
 
+// A link response from pygeoapi
 interface Links {
   type: string
   rel: string
@@ -95,11 +96,13 @@ export interface CollectionsResponse {
 
 // Represents the different collection choices a user can select on the DatasetView view
 export interface Choices {
-  collection: CollectionsResponse['collections']
+  collection: {
+    title: string
+  }
   discovery_metadata: ItemsResponse['features']
   stations: ItemsResponse
   collections: CollectionsResponse['collections']
-  station: number
+  station: Set<string>
   datastream: {
     id: string
     index: string

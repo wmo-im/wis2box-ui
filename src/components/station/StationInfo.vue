@@ -20,11 +20,11 @@
     </v-toolbar>
 
     <v-card flat class="text-center" v-show="station === null">
-      <station-list :features="features" :map="map" />
+      <StationList :features="features" :map="map" />
     </v-card>
 
     <v-card flat class="text-center" v-show="station !== null">
-      <station-status :features="features" :map="map" />
+      <StationStatus :features="features" :map="map" />
     </v-card>
   </v-card>
 </template>

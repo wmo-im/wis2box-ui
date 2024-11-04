@@ -1,8 +1,13 @@
 import { useGlobalStateStore } from '@/stores/global'
 import i18n from '@/locales/i18n'
 
-// Take in error info, pass it to pinia for global state, and display it
-// Since app.vue watches for errors, this will trigger the error dialog popup
+/**
+ * Take in error info, pass it to pinia for global state, and display it
+ * Since app.vue watches for errors, this will trigger the error dialog popup
+ * @param {string} errorMessage - the error message to display
+ * @param {string} [url] - the URL of the error source
+ * @param {number} [status] - the HTTP status code of the error
+ */
 export function catchAndDisplayError(
   errorMessage: string,
   url?: string,

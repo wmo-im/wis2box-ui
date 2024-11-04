@@ -19,11 +19,10 @@ defineProps<{
   <v-card min-height="500px" class="ma-4">
     <v-alert v-show="alert.value" type="warning" :text="alert.msg" />
 
-    <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
+    <div v-if="loading">
       <v-progress-linear striped indeterminate color="primary" />
     </div>
-
-    <div :style="{ visibility: !loading ? 'visible' : 'hidden' }">
+    <div v-else>
       <v-container>
         <v-row justify="center" align="end">
           <div id="plotly-table" />
@@ -49,18 +48,21 @@ defineProps<{
 </template>
 
 <script lang="ts">
+// have to ignore the dist-min import since it doesn't have ts types
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import Plotly from "plotly.js-cartesian-dist-min";
 import { defineComponent } from "vue";
 import { mdiDownload } from "@mdi/js";
 import { catchAndDisplayError } from "@/lib/errors";
-import type { Choices } from "@/lib/types";
+import type { Choices, CollectionsResponse } from "@/lib/types";
 
 const oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
   mounted() {
     this.$nextTick(() => {
-      if (this.choices_.collection !== "" && this.choices_.datastream !== "") {
+      if (this.choices_.collection.title !== "" && this.choices_.datastream.name !== "") {
         for (const station of this.choices_.station) {
           this.loadCollection(this.choices_.collection, station);
         }
@@ -144,7 +146,7 @@ export default defineComponent({
       }
       return features.map(row => row["properties"][key]);
     },
-    async loadCollection(collection: { description: string; id: string; }, station_id: string) {
+    async loadCollection(collection: CollectionsResponse["collections"][number], station_id: string) {
       const title = collection.description;
       const datastream = this.choices_.datastream;
 
