@@ -5,7 +5,7 @@
 <script lang="ts">
 import type { FeatureLayerForMap } from "@/lib/types";
 import { useGlobalStateStore } from "@/stores/global";
-import { circleMarker, geoJSON, type LatLngBoundsExpression, type LatLngExpression } from "leaflet";
+import { circleMarker, geoJSON, type LatLngExpression } from "leaflet";
 import { MarkerClusterGroup } from "leaflet.markercluster/dist/leaflet.markercluster-src.js";
 
 import "leaflet.markercluster/dist/MarkerCluster.css";
@@ -66,10 +66,10 @@ export default defineComponent({
       store.toggleDialog();
       e.originalEvent.stopPropagation();
     },
-    onEachFeature(feature: FeatureLayerForMap, layer) {
-      layer.on("mouseover", (e: { latLng: LatLngBoundsExpression; }) => {
+    onEachFeature(feature: FeatureLayerForMap, layer: L.Layer) {
+      layer.on("mouseover", (e: L.LeafletMouseEvent) => {
         this.features_.station = feature;
-        layer.bindPopup(feature.properties.name).openPopup(e.latLng);
+        layer.bindPopup(feature.properties.name).openPopup(e.latlng);
       });
       layer.on({
         click: this.mapClick

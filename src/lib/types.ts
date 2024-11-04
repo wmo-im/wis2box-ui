@@ -100,4 +100,10 @@ export interface Choices {
   stations: ItemsResponse
   collections: CollectionsResponse['collections']
   station: number
+  datastream: {
+    id: string
+    index: string
+    name: string
+    units: string
+  }
 }

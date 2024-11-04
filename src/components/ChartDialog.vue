@@ -1,3 +1,6 @@
+<!-- ChartDialog is a popup window which contains a sidebar with a list of observed properties.
+ When an associated property is selected, it shows either a table or chart for the associated data -->
+
 <script setup lang="ts">
 
 defineProps({

@@ -16,6 +16,7 @@ const oapi = window.VUE_APP_OAPI;
 
 import { defineComponent } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
+import type { ItemsResponse } from "@/lib/types";
 
 export default defineComponent({
   name: "StationHistory",
@@ -98,7 +99,7 @@ export default defineComponent({
 
         // Clone the response to be able to read the body twice in case of an error
         const responseClone = response.clone();
-        const data = await response.json();
+        const data: ItemsResponse = await response.json();
 
         if (response.ok && data.features.length > 0) {
           const feature = data.features[0];

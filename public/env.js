@@ -1,6 +1,6 @@
 /// env.js sets global environment variables for the entire application. It is static and does not change
 /// at build time since it is inside the public/ folder.
-/// To override these in your application, change these values or mount
+/// To override these in your application, change these values or if deploying with Docker mount
 /// a new env.js file into your docker container
 
 window.VUE_APP_LANG = 'en' // what language to use when translating with i18n

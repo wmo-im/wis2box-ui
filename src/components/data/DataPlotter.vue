@@ -141,7 +141,7 @@ export default defineComponent({
       Scatter.x = this.getCol(features, x);
       Scatter.y = this.getCol(features, y);
       this.data.push(Scatter);
-      this.setDateLayout(features[features.length - 1]);
+      this.setDateLayout(features[features.length - 1].properties.resultTime);
     },
     async loadCollection(collection: { description: string; id: string; }, station_id: string) {
       this.loading = true;
@@ -196,13 +196,13 @@ export default defineComponent({
         }
       }
     },
-    setDateLayout(f) {
+    setDateLayout(resultTime: string) {
       const startTime = new Date(
-        new Date(f.properties.resultTime).setUTCHours(0, 0, 0, 0)
-      ).toISOString();
+        new Date(resultTime).setUTCHours(0, 0, 0, 0)
+      ).getTime();
       const endTime = new Date(
         new Date().setUTCHours(23, 59, 59, 999)
-      ).toISOString();
+      ).getTime();
       this.layout.xaxis.range = [startTime, endTime];
       this.layout.xaxis.rangeslider.range = [startTime, endTime];
     },

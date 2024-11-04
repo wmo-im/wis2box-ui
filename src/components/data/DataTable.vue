@@ -1,6 +1,19 @@
 <!-- This component represents the table which displays all the data for
  a specific station
 -->
+<script setup lang="ts">
+
+
+defineProps<{
+  choices: Choices,
+  alert: {
+    value: boolean,
+    msg: string,
+  }
+}>()
+
+</script>
+
 
 <template id="data-table">
   <v-card min-height="500px" class="ma-4">
@@ -45,7 +58,6 @@ import type { Choices } from "@/lib/types";
 const oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
-  props: ["choices", "alert"],
   mounted() {
     this.$nextTick(() => {
       if (this.choices_.collection !== "" && this.choices_.datastream !== "") {
@@ -118,7 +130,7 @@ export default defineComponent({
     };
   },
   methods: {
-    onScroll(e) {
+    onScroll(e: { target: { scrollTop: number; }; }) {
       this.headerOverflow = e.target.scrollTop;
     },
     getCol(features, key) {
