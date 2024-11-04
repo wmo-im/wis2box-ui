@@ -1,20 +1,20 @@
+<!-- DataNavigation is the sidebar within the ChartDialog popup window. It contains a list of observed properties that you can click on to view their data/chart -->
+
 <template id="data-navigation">
-  <div class="data-navigation">
-    <v-navigation-drawer v-model="drawer_" bottom absolute class="text-center">
-      <v-list-item-subtitle class="mt-2">
-        {{ $t('chart.observed_property') }}
-      </v-list-item-subtitle>
-      <v-list nav>
-        <template v-for="(item, i) in choices.datastreams" :key="i">
-          <v-list-item :value="i" active-color="#014e9e" :active="model === i" class="text-left text-body-2"
-            @click="updateData(item, i)">
-            {{ getNameTime(item) }}
-          </v-list-item>
-          <v-divider class="pb-1 mx-2" v-if="i < choices.datastreams.length - 1" />
-        </template>
-      </v-list>
-    </v-navigation-drawer>
-  </div>
+  <v-navigation-drawer v-model="drawer_" bottom absolute class="text-center">
+    <v-list-item-subtitle class="mt-2">
+      {{ $t('chart.observed_property') }}
+    </v-list-item-subtitle>
+    <v-list nav>
+      <div v-for="(item, i) in choices.datastreams" :key="i">
+        <v-list-item :value="i" color="#014e9e" :active="model === i" class="text-left text-body-2"
+          @click="updateData(item, i)">
+          {{ getNameTime(item) }}
+        </v-list-item>
+        <v-divider class="pb-1 mx-2" v-if="i < choices.datastreams.length - 1" />
+      </div>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts">

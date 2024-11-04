@@ -1,3 +1,5 @@
+<!-- App represents the main tree of the application UI -->
+
 <template>
   <v-app id="v-app">
     <app-header app />
@@ -37,6 +39,7 @@ export default defineComponent({
     AppNav,
     AppMsg
   },
+  // watch for any global errors that we may want to pass to AppMsg component and present to the user
   setup() {
     const globalStateStore = useGlobalStateStore();
     const errorState = computed(() => ({

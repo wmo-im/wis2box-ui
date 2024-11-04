@@ -1,3 +1,5 @@
+<!-- WisMap displays a leaflet map with all the stations labeled on it -->
+
 <script setup lang="ts">
 defineProps({
   params: Object,
@@ -17,7 +19,7 @@ defineProps({
           <l-map ref="wisMap" :zoom="zoom" :center="center" :maxZoom="16" :minZoom="2" style="height: 60vh"
             @ready="onReady()">
             <template v-if="!loading">
-              <wis-station :features="features" :map="map" />
+              <WisStation :features="features" :map="map" />
             </template>
             <l-tile-layer :url="url" :attribution="attribution" />
             <l-control position="bottomleft">
@@ -95,15 +97,11 @@ export default defineComponent({
       try {
         const response = await fetch(`${window.VUE_APP_OAPI}/processes/station-info/execution`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
           body: JSON.stringify({ inputs: this.params }),
         });
         if (response.ok) {
           const data = await response.json();
           this.features_.stations = data.value; // Update features with fetched data
-          this.numberMatched = data.numberMatched;
 
           const bounds_ = geoJSON(this.features_.stations).getBounds();
           this.map.fitBounds(bounds_); // Fit map bounds to the fetched stations

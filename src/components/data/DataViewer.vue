@@ -1,5 +1,17 @@
 <!-- Dataviewer is a popup window which contains variables and their associated tables / plots of data -->
 
+<script setup lang="ts">
+
+defineProps({
+  station: {
+    type: Object,
+    required: true,
+  }
+})
+
+
+</script>
+
 <template id="data-viewer">
   <v-layout>
     <v-app-bar color="#EEEEEE" flat>
@@ -7,7 +19,7 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       </template>
       <v-toolbar-title v-show="$vuetify.display.mdAndUp" class="pa-2 text-h6">
-        {{ choices.collection || $t("chart.collection") }}
+        {{ choices.collection.title || $t("chart.collection") }}
       </v-toolbar-title>
       <v-tabs v-model="tab" end color="#014e9e">
         <v-tab v-for="(item, i) in tabs" class="text-center pa-2" :value="i" :key="i">
@@ -22,7 +34,7 @@
           <DataPlotter :choices="choices" :alert="alert" />
         </v-window-item>
         <v-window-item :value="1">
-          <data-table :choices="choices" :alert="alert" />
+          <DataTable :choices="choices" :alert="alert" />
         </v-window-item>
       </v-window>
     </v-main>
@@ -36,10 +48,9 @@ import DataTable from "./DataTable.vue";
 const oapi = window.VUE_APP_OAPI;
 import { defineComponent } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
-import type { CollectionsResponse, ItemsResponse } from "@/lib/types";
+import type { Choices, CollectionsResponse, ItemsResponse } from "@/lib/types";
 
 export default defineComponent({
-  props: ["station"],
   components: {
     DataPlotter,
     DataNavigation,
@@ -58,7 +69,7 @@ export default defineComponent({
         stations: [],
         collections: [],
         datastreams: [],
-      },
+      } as Choices,
       alert: {
         value: false,
         msg: "",
@@ -101,7 +112,7 @@ export default defineComponent({
           try {
             const response = await fetch(url);
             if (response.ok) {
-              const data = await response.json();
+              const data: ItemsResponse = await response.json();
               this.choices.discovery_metadata = data.features;
             } else {
               catchAndDisplayError(await response.text(), url);

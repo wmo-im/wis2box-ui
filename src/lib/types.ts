@@ -92,3 +92,12 @@ export interface CollectionsResponse {
   }[]
   links: Links[]
 }
+
+// Represents the different collection choices a user can select on the DatasetView view
+export interface Choices {
+  collection: CollectionsResponse['collections']
+  discovery_metadata: ItemsResponse['features']
+  stations: ItemsResponse
+  collections: CollectionsResponse['collections']
+  station: number
+}

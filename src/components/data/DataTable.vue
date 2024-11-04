@@ -40,6 +40,7 @@ import Plotly from "plotly.js-cartesian-dist-min";
 import { defineComponent } from "vue";
 import { mdiDownload } from "@mdi/js";
 import { catchAndDisplayError } from "@/lib/errors";
+import type { Choices } from "@/lib/types";
 
 const oapi = window.VUE_APP_OAPI;
 
@@ -74,7 +75,7 @@ export default defineComponent({
   },
   data() {
     return {
-      choices_: this.choices,
+      choices_: this.choices as Choices,
       data: {},
       loading: false,
       title: "",
@@ -131,7 +132,7 @@ export default defineComponent({
       }
       return features.map(row => row["properties"][key]);
     },
-    async loadCollection(collection, station_id) {
+    async loadCollection(collection: { description: string; id: string; }, station_id: string) {
       const title = collection.description;
       const datastream = this.choices_.datastream;
 
@@ -171,13 +172,13 @@ export default defineComponent({
         this.data.time = this.getCol(data.features, "resultTime");
         this.data.phenomenonTime = this.getCol(data.features, "phenomenonTime");
       } catch (error) {
-        catchAndDisplayError(error);
+        catchAndDisplayError(error as string);
       } finally {
         this.loading = false;
         console.log("done");
       }
     },
-    plot(url) {
+    plot(url: string) {
       const plot = document.getElementById("plotly-table");
       Plotly.purge(plot);
       this.config.modeBarButtonsToAdd = [

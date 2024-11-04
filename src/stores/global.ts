@@ -1,3 +1,6 @@
+// This file uses pinia to manage global state. It stores it in a global object that can be accessed with the context hook, useGlobalStateStore
+// This is the only place where global state is stored and makes it easier to manage rather than emitting events to multiple parents
+
 import { defineStore } from 'pinia'
 
 export const useGlobalStateStore = defineStore('globalState', {
@@ -13,6 +16,7 @@ export const useGlobalStateStore = defineStore('globalState', {
     }
   },
   actions: {
+    // Toggle whether or not the dialog window containing the chart and more detailed data is open or not.
     toggleDialog() {
       this.dialog = !this.dialog
     },

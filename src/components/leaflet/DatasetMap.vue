@@ -1,5 +1,6 @@
-<!-- This component displays a single simple map for a given station/dataset. It is intended to give the user a brief overview of a dataset and does not
-  show any timeseries datapoints.
+<!-- This component displays a single simple map for a given dataset.
+  It is intended to give the user an overview at a glance for a dataset and
+  does not show any timeseries datapoints or station labels.
 -->
 
 <script setup lang="ts">
@@ -14,7 +15,7 @@ const props = defineProps<{ dataset: Dataset }>();
 
 const loading = ref(true);
 const center = ref<[number, number]>([0, 0]); // center is a tuple of [lat, lng]
-const options = {
+const leafletOptions = {
   zoomControl: false,
   doubleClickZoom: false,
   dragging: false,
@@ -55,7 +56,7 @@ const onReady = () => {
     <v-progress-linear striped indeterminate color="primary" />
   </div>
   <div v-show="!loading">
-    <l-map ref="mapRef" :center="center" :options="options" :maxZoom="16" style="height: 160px; width: 256px"
+    <l-map ref="mapRef" :center="center" :options="leafletOptions" :maxZoom="16" style="height: 160px; width: 256px"
       @ready="onReady">
       <l-geo-json :geojson="dataset.geometry" />
       <l-tile-layer :url="url" />

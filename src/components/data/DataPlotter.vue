@@ -1,3 +1,17 @@
+<script setup lang="ts">
+
+import type { Choices, ItemsResponse } from "@/lib/types";
+
+defineProps<{
+  choices: Choices,
+  alert: {
+    value: boolean,
+    msg: string,
+  },
+}>()
+
+</script>
+
 <template id="data-plotter">
   <div class="data-plotter">
     <v-card min-height="500px" class="ma-4">
@@ -23,7 +37,6 @@ import { catchAndDisplayError } from "@/lib/errors";
 const oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
-  props: ["choices", "alert"],
   watch: {
     choices_: {
       handler(newValue) {
@@ -106,7 +119,7 @@ export default defineComponent({
       Plotly.newPlot(plot, this.data, this.layout, this.config);
       this.loading = false;
     },
-    getCol(features: undefined, key: string) {
+    getCol(features: ItemsResponse["features"], key: string) {
       if (key.includes(".")) {
         const split = key.split(".");
         if (split.length === 2) {
@@ -118,7 +131,7 @@ export default defineComponent({
         return features.map(row => row["properties"][key]);
       }
     },
-    newTrace(features: string, x: string, y: string) {
+    newTrace(features: ItemsResponse["features"], x: string, y: string) {
       const Trace = JSON.parse(JSON.stringify(this.trace));
       Trace.x = this.getCol(features, x);
       Trace.y = this.getCol(features, y);
@@ -143,12 +156,12 @@ export default defineComponent({
         const data = await response.json();
         this.loadObservations(collection.id, data.numberMatched, datastream, station_id);
       } catch (error) {
-        catchAndDisplayError(error);
+        catchAndDisplayError(error as string);
       } finally {
         console.log("done");
       }
     },
-    async loadObservations(collection_id, limit, datastream, station_id) {
+    async loadObservations(collection_id: string, limit: number, datastream, station_id: string) {
       if (limit === 0) {
         this.alert_.value = true;
         this.loading = false;
@@ -157,7 +170,7 @@ export default defineComponent({
         this.loading = true;
         try {
           const response = await fetch(`${oapi}/collections/${collection_id}/items?f=json&name=${datastream.id}&index=${datastream.index}&wigos_station_identifier=${station_id}&sortby=-resultTime&limit=${limit}`);
-          const data = await response.json();
+          const data: ItemsResponse = await response.json();
           const dataURL = response.url;
           this.config.modeBarButtonsToAdd.push({
             name: this.$t("chart.data_source"),
@@ -177,7 +190,7 @@ export default defineComponent({
           this.layout.title = datastream.name;
           this.plot();
         } catch (error) {
-          catchAndDisplayError(error);
+          catchAndDisplayError(error as string);
         } finally {
           console.log("done");
         }

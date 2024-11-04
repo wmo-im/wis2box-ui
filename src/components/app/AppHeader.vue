@@ -35,7 +35,6 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "AppHeader",
-  template: "#app-header",
   components: {
     AppSettings
   },

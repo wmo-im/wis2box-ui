@@ -1,4 +1,4 @@
-<!-- The Map view displays  -->
+<!-- The Map view displays a Map with an associated chart dialog if the user requests the chart data -->
 
 <script setup lang="ts">
 

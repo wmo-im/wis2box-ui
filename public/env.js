@@ -12,3 +12,5 @@ window.VUE_APP_BASEMAP_ATTRIBUTION =
 window.VUE_APP_OAPI = 'http://localhost:8010/proxy/oapi' // backend to use for wis2box
 window.VUE_APP_BASEMAP_URL =
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+
+window.VUE_APP_WAF = `${window.VUE_APP_OAPI}/data/`
