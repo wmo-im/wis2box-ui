@@ -5,7 +5,7 @@
   <div class="text-center">
     <v-row justify="center" fill-height no-gutters>
       <v-col :cols="smAndDown ? 12 : 4" :order="smAndDown ? 'last' : 'start'" v-if="map !== undefined">
-        <StationInfo :features="features" :map="map" class="ma-1" />
+        <StationInfo :topic="topic" :features="features" :map="map" class="ma-1" />
       </v-col>
       <v-col :cols="smAndDown ? 12 : 8">
         <v-card class="ma-1">
@@ -78,6 +78,10 @@ export default defineComponent({
       type: Object as PropType<ItemsResponse>,
       required: true
     },
+    topic: {
+      type: String,
+      required: true
+    }
   },
   computed: {
     smAndDown() {

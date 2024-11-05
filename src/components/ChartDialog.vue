@@ -2,28 +2,30 @@
  When an associated property is selected, it shows either a table or chart for the associated data -->
 
 <template id="chart-dialog">
-  <v-card :width="$vuetify.display.width" :max-height="$vuetify.display.height * 0.95" max-width="1100"
-    class="pa-4 scroll">
-    <v-card-title class="text-h4" v-if="featuresFetched">
-      {{
-        stations.features[0].properties.name }}
-    </v-card-title>
-    <v-spacer />
-    <v-card-subtitle v-if="featuresFetched">
-      {{ stations.features[0].properties.id }}
-    </v-card-subtitle>
+  <v-overlay class="align-center justify-center" v-model="featuresFetched">
+    <v-card :width="$vuetify.display.width" :max-height="$vuetify.display.height * 0.95" max-width="1100"
+      class="pa-4 scroll">
+      <v-card-title class="text-h4" v-if="featuresFetched">
+        {{
+          selectedStation.properties.name }}
+      </v-card-title>
+      <v-spacer />
+      <v-card-subtitle v-if="featuresFetched">
+        {{ selectedStation.properties.id }}
+      </v-card-subtitle>
 
-    <v-responsive height="590" v-if="featuresFetched">
-      <DataViewer :station="stations.features[0]" />
-    </v-responsive>
-  </v-card>
+      <v-responsive height="590" v-if="featuresFetched">
+        <DataViewer :station="selectedStation" />
+      </v-responsive>
+    </v-card>
+  </v-overlay>
 </template>
 
 <script lang="ts">
-import type { ItemsResponse } from "@/lib/types";
+import type { Feature, ItemsResponse } from "@/lib/types";
 import DataViewer from "./data/DataViewer.vue";
 
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import { getStationsFromCollection } from "@/lib/helpers";
 import { catchAndDisplayError } from "@/lib/errors";
 
@@ -47,10 +49,10 @@ export default defineComponent({
       type: String,
       required: true
     },
-    // id: {
-    //   type: String,
-    //   required: true
-    // }
+    selectedStation: {
+      type: Object as PropType<Feature>,
+      required: true
+    }
   },
   // add an onloaded event
   mounted() {

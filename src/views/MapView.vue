@@ -2,7 +2,7 @@
 <template>
   <v-card flat>
     <template v-if="featuresReady">
-      <WisMap :features="features" />
+      <WisMap :topic="topic" :features="features" />
     </template>
     <v-progress-linear v-else striped indeterminate color="primary" />
   </v-card>

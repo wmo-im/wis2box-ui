@@ -22,13 +22,13 @@ const selectedStation = computed(() => store.selectedStation);
       </template>
 
       <template v-slot:append v-if="selectedStation != null">
-        <v-btn variant="outlined" size="small" color="#014e9e"
-          @click.stop="openData(selectedStation?.properties.name || '')" class="my-auto">
+        <v-btn variant="outlined" size="small" color="#014e9e" @click.stop="toggleDataset" class="my-auto">
           {{ $t("navigation.data") }}
           <v-icon end icon="mdi-chart-scatter-plot" />
         </v-btn>
       </template>
     </v-toolbar>
+    <ChartDialog :topic="topic" :selected-station="selectedStation" v-if="showDataset && selectedStation" />
 
     <v-card flat class="text-center" v-if="!selectedStation">
       <StationList :features="features" :map="map" />
@@ -44,10 +44,10 @@ import { defineComponent, type PropType } from "vue";
 import StationList from "./StationList.vue";
 import StationStatus from "./StationStatus.vue";
 import type { ItemsResponse } from "@/lib/types";
-import router from "@/router";
+import ChartDialog from '../ChartDialog.vue';
 
 export default defineComponent({
-  components: { StationList, StationStatus },
+  components: { StationList, StationStatus, ChartDialog },
   props: {
     features: {
       type: Object as PropType<ItemsResponse>,
@@ -57,11 +57,20 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    topic: {
+      type: String,
+      required: true
+    }
+  },
+  data() {
+    return {
+      showDataset: false
+    }
   },
   methods: {
-    openData(station: string) {
-      router.push(`/fixed-land-station-map/${station}/data`);
-    },
+    toggleDataset() {
+      this.showDataset = !this.showDataset;
+    }
   },
 });
 </script>

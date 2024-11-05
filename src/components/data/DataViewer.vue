@@ -1,16 +1,5 @@
 <!-- Dataviewer is a popup window which contains variables and their associated tables / plots of data -->
 
-<script setup lang="ts">
-
-defineProps({
-  station: {
-    type: Object,
-    required: true,
-  }
-})
-
-</script>
-
 <template id="data-viewer">
   <v-layout>
     <v-app-bar color="#EEEEEE" flat>
@@ -45,15 +34,21 @@ import DataPlotter from "./DataPlotter.vue";
 import DataNavigation from "./DataNavigation.vue";
 import DataTable from "./DataTable.vue";
 const oapi = window.VUE_APP_OAPI;
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
-import type { Choices, CollectionsResponse, ItemsResponse } from "@/lib/types";
+import type { Choices, CollectionsResponse, Feature, ItemsResponse } from "@/lib/types";
 
 export default defineComponent({
   components: {
     DataPlotter,
     DataNavigation,
     DataTable,
+  },
+  props: {
+    station: {
+      type: Object as PropType<Feature>,
+      required: true,
+    }
   },
   data() {
     return {
