@@ -26,6 +26,8 @@ export interface Trace {
   name?: string
 }
 
+export type Datastreams = Array<ItemsResponse['features'][0]['properties']>
+
 // Represents one feature within the feature collection of a OAF items/ response
 export interface Feature {
   id: string

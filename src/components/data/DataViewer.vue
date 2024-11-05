@@ -7,7 +7,7 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       </template>
       <v-toolbar-title v-show="$vuetify.display.mdAndUp" class="pa-2 text-h6">
-        {{ choices.collection.title || $t("chart.collection") }}
+        {{ selectedStation.properties.name || $t("chart.collection") }}
       </v-toolbar-title>
       <v-tabs v-model="tab" end color="#014e9e">
         <v-tab v-for="(item, i) in tabs" class="text-center pa-2" :value="i" :key="i">
@@ -15,28 +15,28 @@
         </v-tab>
       </v-tabs>
     </v-app-bar>
-    <DataNavigation :choices="choices" :station="station" :alert="alert" :drawer="{ model: drawer }" />
-    <v-main>
-      <v-window v-model="tab">
+    <DataNavigation :datastreams="datastreams" :station="selectedStation" />
+    <v-main style="height: 100vh">
+      <v-window v-model="tab" style="height: 100%">
         <v-window-item :value="0">
-          <DataPlotter :choices="choices" :alert="alert" />
+          test
+          <!-- <DataPlotter :choices="null" :alert="alert" /> -->
         </v-window-item>
         <v-window-item :value="1">
-          <DataTable :choices="choices" :alert="alert" />
+          <!-- <DataTable :choices="choices" :alert="alert" /> -->
         </v-window-item>
       </v-window>
     </v-main>
   </v-layout>
+
 </template>
 
 <script lang="ts">
 import DataPlotter from "./DataPlotter.vue";
 import DataNavigation from "./DataNavigation.vue";
 import DataTable from "./DataTable.vue";
-const oapi = window.VUE_APP_OAPI;
 import { defineComponent, type PropType } from "vue";
-import { catchAndDisplayError } from "@/lib/errors";
-import type { Choices, CollectionsResponse, Feature, ItemsResponse } from "@/lib/types";
+import type { Choices, CollectionsResponse, Datastreams, Feature, ItemsResponse } from "@/lib/types";
 
 export default defineComponent({
   components: {
@@ -45,8 +45,12 @@ export default defineComponent({
     DataTable,
   },
   props: {
-    station: {
+    selectedStation: {
       type: Object as PropType<Feature>,
+      required: true,
+    },
+    datastreams: {
+      type: Object as PropType<Datastreams>,
       required: true,
     }
   },
@@ -55,84 +59,11 @@ export default defineComponent({
       drawer: true,
       tab: 0,
       tabs: ["chart.chart", "table.table"],
-      choices: {
-        collection: {
-          title: "",
-        },
-        datastream: "" as unknown as Choices["datastream"],
-        discovery_metadata: [] as ItemsResponse["features"],
-        station: new Set([this.station.id]),
-        stations: {} as ItemsResponse,
-        collections: [],
-        datastreams: [],
-      } as Choices,
       alert: {
         value: false,
         msg: "",
       },
     };
-  },
-  methods: {
-    goBack() {
-      if (window.history.length > 1) {
-        this.$router.go(-1);
-      } else {
-        this.$router.push("/");
-      }
-    },
-    async loadCollections() {
-      const response = await fetch(`${oapi}/collections`);
-      if (response.ok) {
-        const data: CollectionsResponse = await response.json();
-        this.parseCollections(data.collections);
-      } else {
-        console.error(response);
-      }
-    },
-    async parseCollections(collections: CollectionsResponse["collections"]) {
-      for (const c of collections) {
-        if (c.id === "stations") {
-          try {
-            const response = await fetch(`${oapi}/collections/stations/items`);
-            if (response.ok) {
-              const data: ItemsResponse = await response.json();
-              this.choices.stations = data;
-            } else {
-              console.error(response);
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        } else if (c.id === "discovery-metadata") {
-          const url = `${oapi}/collections/discovery-metadata/items`;
-          try {
-            const response = await fetch(url);
-            if (response.ok) {
-              const data: ItemsResponse = await response.json();
-              this.choices.discovery_metadata = data.features;
-            } else {
-              catchAndDisplayError(await response.text(), url);
-            }
-          } catch (error) {
-            catchAndDisplayError(error as string, url);
-          }
-        } else if (c.id !== "messages") {
-          this.choices.collections.push(c);
-        }
-      }
-    }
-  },
-  watch: {
-    "choices.datastream": {
-      handler(datastream) {
-        if (datastream !== "" && this.$vuetify.display.smAndDown) {
-          this.drawer = false;
-        }
-      },
-    },
-  },
-  mounted() {
-    this.loadCollections();
   },
 });
 

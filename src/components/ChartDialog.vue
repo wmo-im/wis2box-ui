@@ -1,32 +1,36 @@
-<!-- ChartDialog is a popup window which contains a sidebar with a list of observed properties.
- When an associated property is selected, it shows either a table or chart for the associated data -->
+<!-- ChartDialog is the main component for displaying station data
+    in greater detail. It contains a list of observed properties
+    as well as a table and plot of data for each property
+-->
 
 <template id="chart-dialog">
-  <v-overlay class="align-center justify-center" v-model="featuresFetched">
+  <v-overlay class="align-center justify-center" v-model="alwaysVisible">
     <v-card :width="$vuetify.display.width" :max-height="$vuetify.display.height * 0.95" max-width="1100"
       class="pa-4 scroll">
-      <v-card-title class="text-h4" v-if="featuresFetched">
-        {{
-          selectedStation.properties.name }}
+
+      <v-card-title class="text-h4">
+        {{ selectedStation.properties.name }}
       </v-card-title>
       <v-spacer />
-      <v-card-subtitle v-if="featuresFetched">
+
+      <v-card-subtitle>
         {{ selectedStation.properties.id }}
       </v-card-subtitle>
 
-      <v-responsive height="590" v-if="featuresFetched">
-        <DataViewer :station="selectedStation" />
+      <v-progress-linear v-if="loading" indeterminate color="primary" />
+
+      <v-responsive height="590">
+        <DataViewer :datastreams="datastreams" :selected-station="selectedStation" />
       </v-responsive>
     </v-card>
   </v-overlay>
 </template>
 
 <script lang="ts">
-import type { Feature, ItemsResponse } from "@/lib/types";
+import type { Datastreams, Feature, ItemsResponse } from "@/lib/types";
 import DataViewer from "./data/DataViewer.vue";
 
 import { defineComponent, type PropType } from "vue";
-import { getStationsFromCollection } from "@/lib/helpers";
 import { catchAndDisplayError } from "@/lib/errors";
 
 export default defineComponent({
@@ -36,13 +40,10 @@ export default defineComponent({
   data() {
     return {
       loading: false,
-      stations: {} as ItemsResponse
+      stations: {} as ItemsResponse,
+      alwaysVisible: true,
+      datastreams: [] as Datastreams,
     };
-  },
-  computed: {
-    featuresFetched() {
-      return !this.loading && this.stations.features && this.stations.features.length > 0;
-    }
   },
   props: {
     topic: {
@@ -54,27 +55,45 @@ export default defineComponent({
       required: true
     }
   },
-  // add an onloaded event
-  mounted() {
-    this.loadStations();
-  },
   methods: {
-    async loadStations() {
+    async fetchCollectionItems() {
       this.loading = true;
       try {
-        this.stations = await getStationsFromCollection(this.topic);
-      }
-      catch (error) {
+        const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?` + new URLSearchParams({
+          wigos_station_identifier: this.selectedStation.id
+        });
+        console.log(url)
+        const response = await fetch(`${window.VUE_APP_OAPI}/collections/${this.topic}/items?` + new URLSearchParams({
+          wigos_station_identifier: this.selectedStation.id
+        }));
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data: ItemsResponse = await response.json();
+        if (!data.features) {
+          catchAndDisplayError(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
+        }
+        for (const item of data.features) {
+          this.datastreams.push(item.properties);
+        }
+      } catch (error) {
         catchAndDisplayError(error as string);
+      } finally {
+        console.log("done");
+        this.loading = false;
       }
-      this.loading = false;
     },
-  }
+  },
+  async mounted() {
+    await this.fetchCollectionItems();
+  },
 });
 </script>
 
 <style scoped>
 .scroll {
-  overflow-y: scroll
+  overflow-y: scroll;
 }
 </style>
