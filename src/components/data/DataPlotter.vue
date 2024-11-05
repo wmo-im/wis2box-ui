@@ -91,13 +91,21 @@ export default defineComponent({
         yaxis: {
           type: "linear",
           autorange: true,
-          title: null,
+          title: "",
         },
       },
       config: {
         responsive: true,
         displayModeBar: true,
-        modeBarButtonsToAdd: [],
+        modeBarButtonsToAdd: [] as {
+          name: string;
+          icon: {
+            width: number;
+            height: number;
+            path: string;
+          };
+          click: () => void;
+        }[],
         modeBarButtonsToRemove: [
           "zoom2d",
           "pan2d",
@@ -165,7 +173,7 @@ export default defineComponent({
         console.log("done");
       }
     },
-    async loadObservations(collection_id: string, limit: number, datastream, station_id: string) {
+    async loadObservations(collection_id: string, limit: number, datastream: { id: string; index: string; units: string; name: string; }, station_id: string) {
       if (limit === 0) {
         this.alert_.value = true;
         this.loading = false;

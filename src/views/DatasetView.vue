@@ -69,6 +69,7 @@
 import { defineComponent } from "vue";
 import DatasetMap from "../components/leaflet/DatasetMap.vue";
 import type { Dataset, ItemsResponse } from "@/lib/types";
+import { catchAndDisplayError } from "@/lib/errors";
 
 const oapi = window.VUE_APP_OAPI;
 
@@ -89,12 +90,11 @@ export default defineComponent({
     async loadDatasets() {
       try {
         this.loading = true;
-        console.log(oapi);
         const url = `${oapi}/collections/discovery-metadata/items`;
         const response = await fetch(url);
-        console.log(url);
         if (!response.ok) {
-          throw new Error("Fetch failed with status: " + response.status);
+          catchAndDisplayError("", url, response.status);
+          return
         }
         const data: ItemsResponse = await response.json();
 
@@ -144,7 +144,7 @@ export default defineComponent({
           });
         }
       } catch (error) {
-        console.error(error);
+        catchAndDisplayError(error as string);
       } finally {
         this.loading = false;
       }

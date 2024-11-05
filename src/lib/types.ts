@@ -59,6 +59,7 @@ export interface Feature {
     phenomenonTime?: string
     wigos_station_identifier?: string
     value?: number
+    url?: string
   }
   links: Links[]
 }

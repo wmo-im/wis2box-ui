@@ -1,14 +1,4 @@
 <!-- The Map view displays a Map with an associated chart dialog if the user requests the chart data -->
-
-<script setup lang="ts">
-defineProps({
-  topic: {
-    type: String,
-    required: true,
-  }
-});
-</script>
-
 <template>
   <v-card flat>
     <template v-if="featuresReady">
@@ -29,7 +19,12 @@ export default defineComponent({
   components: {
     WisMap,
   },
-
+  props: {
+    topic: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       features: {} as ItemsResponse,

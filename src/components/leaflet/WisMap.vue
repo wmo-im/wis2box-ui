@@ -60,7 +60,7 @@ export default defineComponent({
   data() {
     return {
       loading: true,
-      map: undefined as unknown as typeof Map, // TODO: Type this properly
+      map: undefined as unknown as Map, // TODO: Type this properly
       center: [0, 0] as [number, number],
       zoom: 1,
       attribution: window.VUE_APP_BASEMAP_ATTRIBUTION,
@@ -94,6 +94,7 @@ export default defineComponent({
     onReady() {
       this.$nextTick(() => {
         this.loading = true;
+        // @ts-expect-error map ref is not typable
         this.map = this.$refs.wisMap["leafletObject"];
         this.map.attributionControl.setPrefix("");
         this.map.zoomControl.setPosition("topright");

@@ -2,7 +2,7 @@
 <template id="station-list">
   <v-list>
     <v-hover v-slot="{ isHovering, props }">
-      <template v-for="(s, i) in features.features" :key="i">
+      <template v-for="(s, i) in stationsSortedByName" :key="i">
         <v-list-item v-bind="props" :class="{ 'on-hover': isHovering }" @click="onClick(s)" @mouseover="onHover(s)">
           <template v-slot:prepend>
             <i class="dot" :style="`background: ${getColor(s)}`" />
@@ -16,7 +16,7 @@
             </v-btn>
           </template>
         </v-list-item>
-        <v-divider v-if="i + 1 < features.length" />
+        <v-divider v-if="i + 1 < stationsSortedByName.length" />
       </template>
     </v-hover>
   </v-list>
@@ -41,11 +41,14 @@ export default defineComponent({
     },
   },
   computed: {
-    stationNames: function () {
+    stationsSortedByName: function () {
       if (this.features === null) {
         return [];
       } else {
         const stns = [...this.features.features].sort((a, b) => {
+          if (a.properties.name === undefined || b.properties.name === undefined) {
+            return 0;
+          }
           const nameA = a.properties.name.toUpperCase(); // ignore upper and lowercase
           const nameB = b.properties.name.toUpperCase(); // ignore upper and lowercase
           if (nameA < nameB) {

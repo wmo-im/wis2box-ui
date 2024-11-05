@@ -15,7 +15,7 @@ const oapi = window.VUE_APP_OAPI;
 
 import { defineComponent, type PropType } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
-import type { Feature, ItemsResponse } from "@/lib/types";
+import type { Feature, ItemsResponse, Trace } from "@/lib/types";
 
 
 export default defineComponent({

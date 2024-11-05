@@ -22,8 +22,8 @@ const selectedStation = computed(() => store.selectedStation);
       </template>
 
       <template v-slot:append v-if="selectedStation != null">
-        <v-btn variant="outlined" size="small" color="#014e9e" @click.stop="openData(selectedStation.properties.name)"
-          class="my-auto">
+        <v-btn variant="outlined" size="small" color="#014e9e"
+          @click.stop="openData(selectedStation?.properties.name || '')" class="my-auto">
           {{ $t("navigation.data") }}
           <v-icon end icon="mdi-chart-scatter-plot" />
         </v-btn>

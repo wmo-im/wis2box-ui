@@ -5,7 +5,7 @@
 <script lang="ts">
 import type { Feature, ItemsResponse } from "@/lib/types";
 import { useGlobalStateStore } from "@/stores/global";
-import { circleMarker, geoJSON, Layer, type LatLngExpression } from "leaflet";
+import { circleMarker, geoJSON, Layer, type LatLngExpression, type Map } from "leaflet";
 // @ts-expect-error no types
 import { MarkerClusterGroup } from "leaflet.markercluster/dist/leaflet.markercluster-src.js";
 
@@ -21,7 +21,7 @@ export default defineComponent({
         onEachFeature: this.onEachFeature as () => void,
         pointToLayer: this.pointToLayer as () => Layer,
       },
-      layer: null as L.GeoJSON | null,
+      layer: null as Layer | null,
       clusterLayer: null as Layer | null,
     };
   },
@@ -31,7 +31,7 @@ export default defineComponent({
       required: true
     },
     map: {
-      type: Object as PropType<L.Map>,
+      type: Object as PropType<Map>,
       required: true
     }
   },
@@ -41,7 +41,7 @@ export default defineComponent({
     })
   },
   watch: {
-    "$root.cluster": function () {
+    "window.VUE_APP_CLUSTER": function () {
       this.renderLayer();
     }
   },
@@ -54,17 +54,30 @@ export default defineComponent({
         chunkInterval: 500,
       });
       if (this.clusterLayer) {
+        //@ts-expect-error no types for this
         this.clusterLayer.addLayer(this.layer);
       }
       this.renderLayer();
     },
     renderLayer() {
       if (window.VUE_APP_CLUSTER) {
+        if (!this.layer) {
+          return
+        }
         this.layer.removeFrom(this.map);
-        this.map.addLayer(this.clusterLayer);
+        if (this.clusterLayer) {
+          if (this.clusterLayer) {
+            this.clusterLayer.addTo(this.map);
+          }
+        }
       } else {
+        if (!this.clusterLayer) {
+          return
+        }
         this.clusterLayer.removeFrom(this.map)
-        this.map.addLayer(this.layer);
+        if (this.layer) {
+          this.map.addLayer(this.layer as L.Layer);
+        }
       }
     },
     mapClick(e: { target: { feature: Feature; }; originalEvent: { stopPropagation: () => void; }; }) {

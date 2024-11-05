@@ -1,4 +1,4 @@
-<!-- This component displays a single simple map for a given dataset.
+<!-- This component displays a single simple map on the homepage for a given dataset.
   It is intended to give the user an overview at a glance for a dataset and
   does not show any timeseries datapoints or station labels.
 -->
