@@ -18,10 +18,7 @@ defineProps<{
 <template id="data-table">
   <v-card min-height="500px" class="ma-4">
     <v-alert v-show="alert.value" type="warning" :text="alert.msg" />
-
-    <div v-if="loading">
-      <v-progress-linear striped indeterminate color="primary" />
-    </div>
+    <v-progress-linear striped indeterminate color="primary" v-if="loading" />
     <div>
       <v-container>
         <v-row justify="center" align="end">

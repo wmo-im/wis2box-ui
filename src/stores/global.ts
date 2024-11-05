@@ -5,6 +5,7 @@ import type { Feature } from '@/lib/types'
 import { defineStore } from 'pinia'
 
 export const useGlobalStateStore = defineStore('globalState', {
+  // All the variables that can be accessed globally
   state: () => {
     return {
       token: null as string | null,

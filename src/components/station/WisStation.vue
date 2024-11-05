@@ -5,7 +5,8 @@
 <script lang="ts">
 import type { Feature, ItemsResponse } from "@/lib/types";
 import { useGlobalStateStore } from "@/stores/global";
-import { circleMarker, geoJSON, type LatLngExpression } from "leaflet";
+import { circleMarker, geoJSON, Layer, type LatLngExpression } from "leaflet";
+// @ts-expect-error no types
 import { MarkerClusterGroup } from "leaflet.markercluster/dist/leaflet.markercluster-src.js";
 
 import "leaflet.markercluster/dist/MarkerCluster.css";
@@ -17,11 +18,11 @@ export default defineComponent({
   data: function () {
     return {
       geojsonOptions: {
-        onEachFeature: this.onEachFeature,
-        pointToLayer: this.pointToLayer,
+        onEachFeature: this.onEachFeature as () => void,
+        pointToLayer: this.pointToLayer as () => Layer,
       },
       layer: null as L.GeoJSON | null,
-      clusterLayer: null,
+      clusterLayer: null as Layer | null,
     };
   },
   props: {
@@ -52,11 +53,13 @@ export default defineComponent({
         chunkedLoading: true,
         chunkInterval: 500,
       });
-      this.clusterLayer.addLayer(this.layer);
+      if (this.clusterLayer) {
+        this.clusterLayer.addLayer(this.layer);
+      }
       this.renderLayer();
     },
     renderLayer() {
-      if (this.$root.cluster) {
+      if (window.VUE_APP_CLUSTER) {
         this.layer.removeFrom(this.map);
         this.map.addLayer(this.clusterLayer);
       } else {

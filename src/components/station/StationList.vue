@@ -69,14 +69,18 @@ export default defineComponent({
       ];
       const store = useGlobalStateStore();
       store.setSelectedStation(station);
-      this.map.flyTo(latlng);
+      if (this.map) {
+        this.map.flyTo(latlng);
+      }
     },
     onHover(station: Feature) {
       const latlng = [
         station.geometry.coordinates[1],
         station.geometry.coordinates[0],
       ];
-      this.map.openPopup(station.properties.name, latlng);
+      if (this.map) {
+        this.map.openPopup(station.properties.name, latlng);
+      }
     },
     getColor(station: Feature) {
       const hits = station.properties.num_obs;

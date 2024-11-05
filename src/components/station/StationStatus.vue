@@ -2,7 +2,7 @@
 
 const store = useGlobalStateStore();
 
-const selectedStation: ComputedRef<Feature> = computed(() => store.selectedStation);
+const selectedStation: ComputedRef<Feature | null> = computed(() => store.selectedStation);
 
 </script>
 
@@ -15,11 +15,11 @@ const selectedStation: ComputedRef<Feature> = computed(() => store.selectedStati
     </v-tabs>
     <v-divider />
     <v-window v-model="tab">
-      <v-window-item :value="0" eager>
-        <StationLatest :selectedStation="selectedStation" :map="map" />
+      <v-window-item :value="0" eager v-if="selectedStation">
+        <StationLatest :selectedStation="selectedStation" />
       </v-window-item>
-      <v-window-item :value="1" eager>
-        <StationHistory :selectedStation="selectedStation" :map="map" />
+      <v-window-item :value="1" eager v-if="selectedStation">
+        <StationHistory :selectedStation="selectedStation" />
       </v-window-item>
     </v-window>
     <div class="text-center ma-2">

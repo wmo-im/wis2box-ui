@@ -29,10 +29,12 @@ defineProps<{
 </template>
 
 <script lang="ts">
+//@ts-expect-error no types
 import Plotly from "plotly.js-cartesian-dist-min";
 import { defineComponent } from "vue";
 import { mdiOpenInNew } from "@mdi/js";
 import { catchAndDisplayError } from "@/lib/errors";
+import type { Trace } from "../station/StationHistory.vue";
 
 const oapi = window.VUE_APP_OAPI;
 
@@ -134,7 +136,7 @@ export default defineComponent({
       }
     },
     newTrace(features: ItemsResponse["features"], x: string, y: string) {
-      const Trace = JSON.parse(JSON.stringify(this.trace));
+      const Trace: Trace = JSON.parse(JSON.stringify(this.trace));
       Trace.x = this.getCol(features, x);
       Trace.y = this.getCol(features, y);
       this.data.push(Trace);

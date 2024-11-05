@@ -1,4 +1,5 @@
 <!-- WisMap displays a leaflet map with all the stations labeled on it -->
+
 <template id="wis-map">
   <v-progress-linear v-if="loading" striped indeterminate color="primary" />
   <div class="text-center">
@@ -46,7 +47,7 @@ import StationInfo from "../station/StationInfo.vue";
 
 import { defineComponent } from "vue";
 import type { Map } from "leaflet";
-import type { ItemsResponse } from "@/lib/types";
+import { LegendColors, type ItemsResponse } from "@/lib/types";
 
 export default defineComponent({
   components: {
@@ -59,16 +60,16 @@ export default defineComponent({
   data() {
     return {
       loading: true,
-      map: undefined as unknown as Map, // TODO: Type this properly
+      map: undefined as unknown as typeof Map, // TODO: Type this properly
       center: [0, 0] as [number, number],
       zoom: 1,
       attribution: window.VUE_APP_BASEMAP_ATTRIBUTION,
       url: window.VUE_APP_BASEMAP_URL,
       legend: [
-        { color: "#009900", range: "20 or more" },
-        { color: "#FF9900", range: "8 - 19" },
-        { color: "#FF3300", range: "1 - 7" },
-        { color: "#708090", range: "None" },
+        { color: LegendColors.Green, range: "20 or more" },
+        { color: LegendColors.Yellow, range: "8 - 19" },
+        { color: LegendColors.Red, range: "1 - 7" },
+        { color: LegendColors.Gray, range: "None" },
       ],
     };
   },
@@ -93,7 +94,7 @@ export default defineComponent({
     onReady() {
       this.$nextTick(() => {
         this.loading = true;
-        this.map = this.$refs.wisMap.leafletObject;
+        this.map = this.$refs.wisMap["leafletObject"];
         this.map.attributionControl.setPrefix("");
         this.map.zoomControl.setPosition("topright");
 

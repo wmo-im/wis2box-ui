@@ -17,8 +17,8 @@ import { defineComponent, type PropType } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
 import type { Feature, ItemsResponse } from "@/lib/types";
 
+
 export default defineComponent({
-  name: "StationHistory",
   props: {
     selectedStation: {
       type: Object as PropType<Feature>,
@@ -29,8 +29,8 @@ export default defineComponent({
     return {
       now: new Date(),
       loading: true,
-      oldestResultTime: null as Date | null,
-      data: [],
+      oldestResultTime: new Date(),
+      data: [] as Trace[],
       layout: {
         height: 300,
         width: 450,
@@ -40,6 +40,7 @@ export default defineComponent({
           showgrid: true,
           gridcolor: "#d5e3f0",
           gridwidth: 2,
+          range: ["", ""] as [string, string],
         },
         yaxis: {
           autorange: true,
@@ -106,6 +107,9 @@ export default defineComponent({
           if (feature && feature.properties && feature.properties.resultTime) {
             this.oldestResultTime = new Date(feature.properties.resultTime);
             const index = feature.properties.index;
+            if (!index) {
+              throw new Error("The index is not defined");
+            }
             if (this.differenceInDays(this.oldestResultTime, this.now) > 30) {
               this.loadAllObservations(station, index);
             } else {
@@ -137,7 +141,7 @@ export default defineComponent({
 
         if (response.ok) {
           const trace = {
-            x: data.features.map((obs) => obs.properties.resultTime),
+            x: data.features.map((obs: Feature) => obs.properties.resultTime),
             type: "histogram",
             xbins: {
               size: 3600000,
@@ -164,7 +168,7 @@ export default defineComponent({
         const date_ = d.toISOString().split("T")[0];
         try {
           const response = await fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${date_}&index=${index}&wigos_station_identifier=${station.id}`);
-          const data = await response.json();
+          const data: ItemsResponse = await response.json();
 
           if (response.ok) {
             let fillColor;
@@ -174,12 +178,16 @@ export default defineComponent({
             } else {
               fillColor = hits <= 7 ? "#FF3300" : hits <= 19 ? "#FF9900" : "#009900";
               const trace = {
-                x: data.features.map((obs: { properties: { resultTime: any; }; }) => obs.properties.resultTime),
+                x: data.features.map((obs: Feature) => obs.properties.resultTime).filter((time) => time !== undefined),
                 type: "histogram",
                 marker: { color: fillColor },
                 xbins: { size: 3600000 },
                 name: date_,
               };
+              if (trace.x.length === 0) {
+                throw new Error("The server returned no resultTime values and thus could not consult the plot");
+              }
+
               const plot = document.getElementById(`station-history-${station.id}`);
               if (plot !== null) {
                 this.data.push(trace);
@@ -215,7 +223,7 @@ export default defineComponent({
       d.setMonth(nextDate.getMonth());
       d.setDate(nextDate.getDate());
     },
-    async getNextDate(station: Feature, index: any, d: Date) {
+    async getNextDate(station: Feature, index: number, d: Date) {
       const nextDate = new Date(d.toISOString());
       this.iterDate(nextDate);
       try {

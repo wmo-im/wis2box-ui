@@ -1,7 +1,9 @@
-export interface Observation {
-  units: string
-  value: string
-  description: string
+// Colors used for representing density on the map legend
+export enum LegendColors {
+  Green = '#009900',
+  Yellow = '#FF9900',
+  Red = '#FF3300',
+  Gray = '#708090',
 }
 
 // A link response from pygeoapi
@@ -10,6 +12,18 @@ interface Links {
   rel: string
   title: string
   href: string
+}
+
+export interface Trace {
+  x: string[]
+  type: string
+  marker?: {
+    color: string
+  }
+  xbins: {
+    size: number
+  }
+  name?: string
 }
 
 // Represents one feature within the feature collection of a OAF items/ response
@@ -39,11 +53,17 @@ export interface Feature {
     topics?: string[]
     wmo_region?: string
     num_obs?: number
+    index?: number
+    resultTime?: string
+    units?: string
+    phenomenonTime?: string
+    wigos_station_identifier?: string
+    value?: number
   }
   links: Links[]
 }
 
-// Represents the response from the OAF /items endpoint, such as ${oapi}/collections/discovery-metadata/items
+// Represents the JSON response from the OAF /items endpoint, such as ${oapi}/collections/discovery-metadata/items
 export interface ItemsResponse {
   type: 'FeatureCollection'
   features: Feature[]
@@ -67,7 +87,7 @@ export interface Dataset extends Feature {
   }>
 }
 
-// Represents the response from the OAF /collections endpoint
+// Represents the JSON response from the OAF /collections endpoint
 export interface CollectionsResponse {
   collections: {
     id: 'stations' | 'messages' | 'discovery-metadata' | string // could be a few special collections or an arbitrary string
@@ -87,7 +107,7 @@ export interface CollectionsResponse {
   links: Links[]
 }
 
-// Represents the response from the OAF /process endpoint
+// Represents the JSON response from the OAF /process endpoint
 export interface ProcessResponse {
   code: 'success' | string
   id: string

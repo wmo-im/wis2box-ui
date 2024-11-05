@@ -38,6 +38,7 @@ export default defineComponent({
   },
 
   async mounted() {
+    this.featuresReady = false;
     try {
       this.features = await getStationsFromCollection(this.topic);
       this.featuresReady = true;

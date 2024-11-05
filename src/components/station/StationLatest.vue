@@ -8,7 +8,8 @@
     <v-table>
       <table>
         <tr v-for="(item, i) in recentObservations" :key="i">
-          <th width="50%">{{ getNameTime(item) }}</th>
+          <th width="50%">{{ getNameTime(item.name ? item.name : "", item.phenomenonTime ? item.phenomenonTime : "") }}
+          </th>
           <td v-if="item.units !== 'CODE TABLE'" width="50%">
             {{ item.value + " " + item.units }}
           </td>
@@ -24,7 +25,7 @@
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
 import { getNameTime, clean, hasLinks } from "@/lib/helpers.js";
-import type { Feature, Observation } from "@/lib/types";
+import type { Feature } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
 
 const oapi = window.VUE_APP_OAPI;
@@ -32,7 +33,7 @@ const oapi = window.VUE_APP_OAPI;
 export default defineComponent({
   data() {
     return {
-      recentObservations: [] as Observation[],
+      recentObservations: [] as Feature["properties"][],
       latestResultTime: null,
       loading: false,
     };
@@ -71,12 +72,12 @@ export default defineComponent({
           this.latestResultTime = feature.properties.resultTime;
           this.loadRecentObservations(station, data.numberMatched);
         } else {
-          console.error(
+          throw new Error(
             this.$t("chart.station") + this.$t("messages.no_observations_in_collection")
           );
         }
       } catch (error) {
-        console.error(error);
+        catchAndDisplayError(error as string);
       } finally {
         this.loading = false;
         console.log("done");
@@ -90,7 +91,7 @@ export default defineComponent({
         );
         const data = await response.json();
         const features: Feature[] = data.features;
-        this.recentObservations = features.map((obs) => obs.properties);
+        this.recentObservations = features.map((obs: Feature) => obs.properties);
       } catch (error) {
         catchAndDisplayError(error as string);
       } finally {
