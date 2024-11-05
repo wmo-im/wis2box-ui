@@ -83,3 +83,41 @@ export async function getStationsFromCollection(
     )
   }
 }
+
+export function getColumnFromKey(
+  features: ItemsResponse['features'],
+  key: Extract<
+    keyof ItemsResponse['features'][0]['properties'],
+    string | number
+  >,
+): Array<number | string> {
+  const result: Array<number | string> = []
+
+  const split = key.split('.')
+
+  if (split.length === 1) {
+    for (const feature of features) {
+      const row = feature.properties[key]
+      if (typeof row === 'number' || typeof row === 'string') {
+        result.push(row)
+      }
+    }
+  } else {
+    for (const feature of features) {
+      let value: any = feature.properties
+      for (const part of split) {
+        if (value && typeof value === 'object' && part in value) {
+          value = value[part]
+        } else {
+          value = undefined
+          break
+        }
+      }
+      if (typeof value === 'number' || typeof value === 'string') {
+        result.push(value)
+      }
+    }
+  }
+
+  return result
+}

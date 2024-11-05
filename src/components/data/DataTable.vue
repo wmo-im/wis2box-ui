@@ -20,7 +20,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(date, i) in data.time" :key="i">
+          <tr v-for="(_, i) in data.time" :key="i">
             <td v-html="data.phenomenonTime[i]" />
             <td v-html="data.value[i]" />
           </tr>
@@ -39,28 +39,11 @@ import { defineComponent, type PropType } from "vue";
 import { mdiDownload } from "@mdi/js";
 import { catchAndDisplayError } from "@/lib/errors";
 import type { Datastreams, Feature } from "@/lib/types";
+import { clean, getColumnFromKey } from "@/lib/helpers";
 
 const oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
-  watch: {
-    selectedStation: {
-      handler(newValue) {
-        if (this.loading) {
-          return;
-        }
-        this.loading = true;
-        if (this.topic !== "" && this.selectedDatastream.name !== "") {
-          for (const station of newValue) {
-            this.loadCollection(this.topic, station);
-          }
-        }
-        this.loading = false;
-      },
-      deep: true,
-      immediate: true,
-    },
-  },
   props: {
     topic: {
       type: String,
@@ -85,7 +68,11 @@ export default defineComponent({
   },
   data() {
     return {
-      data: {},
+      data: {} as {
+        time: string[],
+        phenomenonTime: string[],
+        value: string[],
+      },
       loading: false,
       title: "",
       headerOverflow: 0,
@@ -138,55 +125,24 @@ export default defineComponent({
     onScroll(e: { target: { scrollTop: number; }; }) {
       this.headerOverflow = e.target.scrollTop;
     },
-    getCol(features, key) {
-      if (key.includes(".")) {
-        const split = key.split(".");
-        return features.map(row => {
-          return split.length === 2
-            ? row["properties"][split[0]][split[1]]
-            : row["properties"][split[0]][split[1]][split[2]];
-        });
-      }
-      return features.map(row => row["properties"][key]);
-    },
-    async loadCollection() {
-      const title = collection.description;
-
-      this.alert_.msg =
-        station_id + this.$t("messages.no_observations_in_collection") + title;
+    getColumnFromKey,
+    async loadObservations() {
 
       this.loading = true;
 
       try {
-        const response = await fetch(`${oapi}/collections/${this.topic}/items?f=json&name=${datastream.id}&index=${datastream.index}&wigos_station_identifier=${station_id}&resulttype=hits`);
-        const data = await response.json();
-        this.loadObservations(collection.id, data.numberMatched, datastream, station_id);
-      } catch (error) {
-        catchAndDisplayError(error as string);
-      }
-    },
-    async loadObservations(collection_id: string, limit: number, datastream, station_id: string) {
-      if (limit === 0) {
-        this.alert_.value = true;
-        this.loading = false;
-        return;
-      }
-
-      this.loading = true;
-
-      try {
-        const response = await fetch(`${oapi}/collections/${collection_id}/items?f=json&name=${datastream.id}&index=${datastream.index}&wigos_station_identifier=${station_id}&sortby=-resultTime&limit=${limit}`);
+        const response = await fetch(`${oapi}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}&sortby=-resultTime`);
         const data = await response.json();
         this.plot(response.url);
-        if (datastream.units === "CODE TABLE") {
-          this.title = `${datastream.name}`;
-          this.data.value = this.getCol(data.features, "description");
+        if (this.selectedDatastream.units === "CODE TABLE") {
+          this.title = clean(`${this.selectedDatastream.name}`);
+          this.data.value = this.getColumnFromKey(data.features, "description");
         } else {
-          this.title = `${datastream.name} (${datastream.units})`;
-          this.data.value = this.getCol(data.features, "value");
+          this.title = `${clean(this.selectedDatastream.name)} (${this.selectedDatastream.units})`;
+          this.data.value = this.getColumnFromKey(data.features, "value");
         }
-        this.data.time = this.getCol(data.features, "resultTime");
-        this.data.phenomenonTime = this.getCol(data.features, "phenomenonTime");
+        this.data.time = this.getColumnFromKey(data.features, "resultTime");
+        this.data.phenomenonTime = this.getColumnFromKey(data.features, "phenomenonTime");
       } catch (error) {
         catchAndDisplayError(error as string);
       } finally {

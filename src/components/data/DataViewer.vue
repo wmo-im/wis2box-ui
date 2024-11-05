@@ -18,10 +18,10 @@
     <DataNavigation :datastreams="datastreams" :station="selectedStation" />
     <v-main style="height: 100vh">
       <v-window v-model="tab" style="height: 100%">
-        <v-window-item :value="0" v-if="tab === 0 && selectedDatastream">
+        <v-window-item :value="0" v-if="selectedDatastream">
           <DataPlotter :selected-datastream="selectedDatastream" :selected-station="selectedStation" :topic="topic" />
         </v-window-item>
-        <v-window-item :value="1" v-if="tab === 1 && selectedDatastream">
+        <v-window-item :value="1" v-if="selectedDatastream">
           <DataTable :selected-datastream="selectedDatastream" :selected-station="selectedStation" :topic="topic" />
         </v-window-item>
       </v-window>

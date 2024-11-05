@@ -20,7 +20,7 @@ import { defineComponent, type PropType } from "vue";
 import { mdiOpenInNew } from "@mdi/js";
 import { catchAndDisplayError } from "@/lib/errors";
 import type { Trace, Datastreams, Feature, ItemsResponse } from "@/lib/types";
-import { clean } from "@/lib/helpers";
+import { clean, getColumnFromKey } from "@/lib/helpers";
 
 const oapi = window.VUE_APP_OAPI;
 
@@ -123,32 +123,22 @@ export default defineComponent({
       Plotly.newPlot(plot, this.data, this.layout, this.config);
       this.loading = false;
     },
-    getCol(features: ItemsResponse["features"], key: keyof ItemsResponse["features"][0]["properties"]) {
-      if (key.includes(".")) {
-        const split = key.split(".");
-        if (split.length === 2) {
-          return features.map(row => row.properties[split[0]][split[1]]);
-        } else if (split.length === 3) {
-          return features.map(row => row["properties"][split[0]][split[1]][split[2]]);
-        }
-      } else {
-        return features.map(row => row["properties"][key]);
-      }
-    },
+    getColumnFromKey,
     newTrace(features: ItemsResponse["features"], xAxis: keyof ItemsResponse["features"][0]["properties"], yAxis: keyof ItemsResponse["features"][0]["properties"]) {
 
       const Trace: Trace = JSON.parse(JSON.stringify(this.trace));
-      Trace.x = this.getCol(features, xAxis);
-      Trace.y = this.getCol(features, yAxis);
+      Trace.x = this.getColumnFromKey(features, xAxis);
+      Trace.y = this.getColumnFromKey(features, yAxis);
       this.data.push(Trace);
 
       const Scatter = JSON.parse(JSON.stringify(this.scatter));
-      Scatter.x = this.getCol(features, xAxis);
-      Scatter.y = this.getCol(features, yAxis);
+      Scatter.x = this.getColumnFromKey(features, xAxis);
+      Scatter.y = this.getColumnFromKey(features, yAxis);
       this.data.push(Scatter);
       this.setDateLayout(features.slice(-1)[0].properties.resultTime);
     },
     async loadObservations() {
+      this.data = [];
       this.loading = true;
       try {
         const url = `${oapi}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}&sortby=resultTime`;

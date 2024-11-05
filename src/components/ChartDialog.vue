@@ -4,9 +4,16 @@
 -->
 
 <template id="chart-dialog">
-  <v-overlay class="align-center justify-center" v-model="alwaysVisible">
+  <v-overlay class="align-center justify-center" v-model="open">
     <v-card :width="$vuetify.display.width" :max-height="$vuetify.display.height * 0.95" max-width="1100"
       class="pa-4 scroll">
+
+      <!-- x icon to close the dialog -->
+      <v-row justify="end">
+        <v-btn variant="text" color="pink" icon @click="open = !open">
+          <v-icon icon="mdi-close"> </v-icon>
+        </v-btn>
+      </v-row>
 
       <v-card-title class="text-h4">
         {{ selectedStation.properties.name }}
@@ -42,7 +49,7 @@ export default defineComponent({
     return {
       loading: false,
       stations: {} as ItemsResponse,
-      alwaysVisible: true,
+      open: true,
       datastreams: [] as Datastreams,
     };
   },

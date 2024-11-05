@@ -45,7 +45,7 @@ export interface Feature {
     type: string
     created: string
     updated: string
-    contacts: undefined[]
+    contacts: []
     'wmo:dataPolicy': string
     'wmo:topicHierarchy': string
     id: string
@@ -92,7 +92,7 @@ export interface Dataset extends Feature {
 }
 
 // Represents the JSON response from the OAF /collections endpoint
-// when requesting multiple collections. 
+// when requesting multiple collections.
 export interface CollectionsResponse {
   collections: {
     id: 'stations' | 'messages' | 'discovery-metadata' | string // could be a few special collections or an arbitrary string
