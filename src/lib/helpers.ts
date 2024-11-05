@@ -1,5 +1,13 @@
 import i18n from '@/locales/i18n'
-import type { ItemsResponse, ProcessResponse } from './types'
+import type { Feature, ItemsResponse, ProcessResponse } from './types'
+
+// create an enum for green, yellow, red, and gray as hex
+export enum ObservationLevel {
+  'green' = '#4CAF50',
+  'yellow' = '#FFC107',
+  'red' = '#F44336',
+  'gray' = '#757575',
+}
 
 export function getNameTime(
   feature: { [x: string]: string; name: string },
@@ -48,7 +56,7 @@ export function clean(word: string) {
   }
 }
 
-export function hasLinks(feature: { links: string }) {
+export function hasLinks(feature: Feature) {
   return feature && feature.links && feature.links.length > 0
 }
 

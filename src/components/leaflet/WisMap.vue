@@ -3,7 +3,7 @@
   <v-progress-linear v-if="loading" striped indeterminate color="primary" />
   <div class="text-center">
     <v-row justify="center" fill-height no-gutters>
-      <v-col :cols="smAndDown ? 12 : 4" :order="smAndDown ? 'last' : 'start'">
+      <v-col :cols="smAndDown ? 12 : 4" :order="smAndDown ? 'last' : 'start'" v-if="map !== undefined">
         <StationInfo :features="features" :map="map" class="ma-1" />
       </v-col>
       <v-col :cols="smAndDown ? 12 : 8">
@@ -76,7 +76,7 @@ export default defineComponent({
     features: {
       type: Object as PropType<ItemsResponse>,
       required: true
-    }
+    },
   },
   computed: {
     smAndDown() {

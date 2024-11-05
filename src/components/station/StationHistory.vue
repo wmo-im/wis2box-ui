@@ -1,5 +1,3 @@
-<!-- Station history displays -->
-
 <template id="station-history">
   <div class="pt-0 mb-2" v-if="loading">
     <v-progress-linear height="6" indeterminate color="primary" />
@@ -15,18 +13,22 @@ import Plotly from "plotly.js-cartesian-dist-min";
 import { clean, hasLinks } from "@/lib/helpers.js";
 const oapi = window.VUE_APP_OAPI;
 
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
-import type { ItemsResponse } from "@/lib/types";
+import type { Feature, ItemsResponse } from "@/lib/types";
 
 export default defineComponent({
   name: "StationHistory",
-  props: ["features", "map"],
+  props: {
+    selectedStation: {
+      type: Object as PropType<Feature>,
+      required: true,
+    },
+  },
   data() {
     return {
       now: new Date(),
       loading: true,
-      features_: this.features,
       oldestResultTime: null as Date | null,
       data: [],
       layout: {
@@ -56,21 +58,20 @@ export default defineComponent({
     };
   },
   computed: {
-    station() {
-      return this.features_.station;
-    },
     wigos_station_identifier() {
-      return this.station ? this.station.properties.wigos_station_identifier : "";
+      return this.selectedStation ? this.selectedStation.properties.wigos_station_identifier : "";
     },
   },
-  watch: {
-    "features_.station": {
-      async handler(station) {
-        if (station !== null) {
-          this.data = [];
-          for (const plot of document.getElementsByClassName("plot-history")) {
-            this.plot(plot);
-          }
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      const station = this.selectedStation;
+      if (station !== null) {
+        this.data = [];
+        for (const plot of document.getElementsByClassName("plot-history")) {
+          this.plot(plot);
         }
         if (hasLinks(station)) {
           this.loadObservations(station);
@@ -81,19 +82,17 @@ export default defineComponent({
           )}, ${this.$t("messages.how_to_link_station")}`);
           this.loading = false;
         }
-      },
+      }
     },
-  },
-  methods: {
     plot(plot: Element) {
       Plotly.purge(plot);
       Plotly.newPlot(plot, this.data, this.layout, this.config);
     },
-    async loadObservations(station: { properties: { topic: string; }; id: number; }) {
+    async loadObservations(station: Feature) {
       this.loading = true;
       this.data = [];
       // NOTE: It appears that sorting with +resultTime is not supported by the OAPI
-      const url = `${oapi}/collections/${station.properties.topic}/items?f=json&sortby=resultTime&wigos_station_identifier=${station.id}&limit=1`
+      const url = `${oapi}/collections/${station.properties.topic}/items?f=json&sortby=resultTime&wigos_station_identifier=${station.id}&limit=1`;
 
       try {
         const response = await fetch(url);
@@ -125,7 +124,7 @@ export default defineComponent({
         this.loading = false;
       }
     },
-    async loadAllObservations(station: { properties: { topic: string; }; id: number; }, index: number) {
+    async loadAllObservations(station: Feature, index: number) {
       this.loading = true;
       this.layout.xaxis.range = [
         this.oldestResultTime.toISOString(),
@@ -158,7 +157,7 @@ export default defineComponent({
         this.loading = false;
       }
     },
-    async loadDailyObservations(station: { properties: { topic: any; }; id: any; }, index: any) {
+    async loadDailyObservations(station: Feature, index: number) {
       this.loading = true;
       this.layout.xaxis.range = [this.oldestResultTime.toISOString(), this.now.toISOString()];
       for (const d = new Date(this.oldestResultTime.toISOString()); d <= this.now; this.iterDate(d)) {
@@ -216,7 +215,7 @@ export default defineComponent({
       d.setMonth(nextDate.getMonth());
       d.setDate(nextDate.getDate());
     },
-    async getNextDate(station: { properties: { topic: any; }; id: any; }, index: any, d: Date) {
+    async getNextDate(station: Feature, index: any, d: Date) {
       const nextDate = new Date(d.toISOString());
       this.iterDate(nextDate);
       try {

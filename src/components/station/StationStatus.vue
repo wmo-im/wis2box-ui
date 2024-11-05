@@ -1,3 +1,11 @@
+<script setup lang="ts">
+
+const store = useGlobalStateStore();
+
+const selectedStation: ComputedRef<Feature> = computed(() => store.selectedStation);
+
+</script>
+
 <template id="station-status">
   <div class="station-status">
     <v-tabs grow v-model="tab" color="#014e9e">
@@ -8,10 +16,10 @@
     <v-divider />
     <v-window v-model="tab">
       <v-window-item :value="0" eager>
-        <StationLatest :features="features" :map="map" />
+        <StationLatest :selectedStation="selectedStation" :map="map" />
       </v-window-item>
       <v-window-item :value="1" eager>
-        <StationHistory :features="features" :map="map" />
+        <StationHistory :selectedStation="selectedStation" :map="map" />
       </v-window-item>
     </v-window>
     <div class="text-center ma-2">
@@ -28,16 +36,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, type ComputedRef, type PropType } from "vue";
 import StationLatest from "./StationLatest.vue";
 import StationHistory from "./StationHistory.vue";
+import { type Feature, type ItemsResponse } from "@/lib/types";
+import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
   components: { StationLatest, StationHistory },
-  props: ["features", "map"],
   data() {
     return {
-      features_: this.features,
       snackbar: false,
       msg: "",
       tab: null,
@@ -60,17 +68,15 @@ export default defineComponent({
       tabs: ["station.latest", "station.status"],
     };
   },
-  computed: {
-    station: function () {
-      return this.features_.station;
+  props: {
+    features: {
+      type: Object as PropType<ItemsResponse>,
+      required: true,
     },
-    station_name: function () {
-      if (this.station) {
-        return this.station.properties.name;
-      } else {
-        return this.station;
-      }
+    map: {
+      type: Object,
+      required: true,
     },
-  },
+  }
 });
 </script>

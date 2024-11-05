@@ -1,21 +1,7 @@
-export interface FeatureLayerForMap {
-  properties: {
-    num_obs: number
-    name: string
-  }
-}
-
 export interface Observation {
   units: string
   value: string
   description: string
-}
-
-export interface Station {
-  properties: {
-    topic: string
-  }
-  id: string
 }
 
 // A link response from pygeoapi
@@ -27,7 +13,7 @@ interface Links {
 }
 
 // Represents one feature within the feature collection of a OAF items/ response
-interface Feature {
+export interface Feature {
   id: string
   conformsTo: undefined
   geometry: {
@@ -52,6 +38,7 @@ interface Feature {
     topic?: string
     topics?: string[]
     wmo_region?: string
+    num_obs?: number
   }
   links: Links[]
 }

@@ -1,60 +1,66 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useGlobalStateStore } from "@/stores/global";
+
+const store = useGlobalStateStore();
+
+const selectedStation = computed(() => store.selectedStation);
+
+</script>
+
 <template id="station-info">
   <v-card flat height="60vh" class="scroll">
     <v-toolbar>
       <v-toolbar-title>
-        {{ station_name || $t("chart.station") }}
+        {{ selectedStation?.properties.name || $t("chart.station") }}
       </v-toolbar-title>
 
-      <template v-slot:prepend v-if="station !== null">
-        <v-btn icon @click="features.station = null">
+      <template v-slot:prepend v-if="selectedStation">
+        <v-btn icon @click="store.clearSelectedStation">
           <v-icon icon="mdi-arrow-left"></v-icon>
         </v-btn>
       </template>
 
-      <template v-slot:append v-if="station != null">
-        <v-btn variant="outlined" size="small" color="#014e9e" @click.stop="openData(station)" class="my-auto">
+      <template v-slot:append v-if="selectedStation != null">
+        <v-btn variant="outlined" size="small" color="#014e9e" @click.stop="openData(selectedStation.properties.name)"
+          class="my-auto">
           {{ $t("navigation.data") }}
           <v-icon end icon="mdi-chart-scatter-plot" />
         </v-btn>
       </template>
     </v-toolbar>
 
-    <v-card flat class="text-center" v-show="station === null">
+    <v-card flat class="text-center" v-if="!selectedStation">
       <StationList :features="features" :map="map" />
     </v-card>
-
-    <v-card flat class="text-center" v-show="station !== null">
+    <v-card flat class="text-center" v-else>
       <StationStatus :features="features" :map="map" />
     </v-card>
   </v-card>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import StationList from "./StationList.vue";
 import StationStatus from "./StationStatus.vue";
-import { useGlobalStateStore } from "@/stores/global";
+import type { ItemsResponse } from "@/lib/types";
+import router from "@/router";
 
 export default defineComponent({
   components: { StationList, StationStatus },
-  props: ["features", "map"],
-  computed: {
-    station: function () {
-      return this.features.station;
+  props: {
+    features: {
+      type: Object as PropType<ItemsResponse>,
+      required: true,
     },
-    station_name: function () {
-      if (this.station) {
-        return this.station.properties.name;
-      } else {
-        return this.station;
-      }
+    map: {
+      type: Object,
+      required: true,
     },
   },
   methods: {
     openData(station: string) {
-      const store = useGlobalStateStore();
-      this.features.station = station;
-      store.toggleDialog();
+      router.push(`/fixed-land-station-map/${station}/data`);
     },
   },
 });

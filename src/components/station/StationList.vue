@@ -1,20 +1,8 @@
-THe station list component represents the list of all stations which you can click into in order to get the latest
-values and history
-<script setup lang="ts">
-
-// props: ["features", "map"],
-
-defineProps<{
-  stations: ItemsResponse;
-  map: any;
-}>();
-
-</script>
-
+<!-- THe station list component represents the list of all stations which you can click into in order to get the latest values and history -->
 <template id="station-list">
   <v-list>
     <v-hover v-slot="{ isHovering, props }">
-      <template v-for="(s, i) in stations" :key="i">
+      <template v-for="(s, i) in features.features" :key="i">
         <v-list-item v-bind="props" :class="{ 'on-hover': isHovering }" @click="onClick(s)" @mouseover="onHover(s)">
           <template v-slot:prepend>
             <i class="dot" :style="`background: ${getColor(s)}`" />
@@ -28,37 +16,36 @@ defineProps<{
             </v-btn>
           </template>
         </v-list-item>
-        <v-divider v-if="i + 1 < stations.length" />
+        <v-divider v-if="i + 1 < features.length" />
       </template>
     </v-hover>
   </v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 
 
 import { clean } from "@/lib/helpers.js";
+
+import type { Feature } from "@/lib/types";
 import type { ItemsResponse } from "@/lib/types";
-
-type stationSchema = {
-  properties: { num_obs: number; name: string; url: string; };
-  geometry: { coordinates: number[]; };
-};
-
+import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
-  data() {
-    return {
-      selectedStation: null,
-    };
+  props: {
+    map: Object,
+    features: {
+      type: Object as PropType<ItemsResponse>,
+      required: true,
+    },
   },
   computed: {
-    stations: function () {
-      if (this.stations === null) {
+    stationNames: function () {
+      if (this.features === null) {
         return [];
       } else {
-        const stns = [...this.stations.features].sort((a, b) => {
+        const stns = [...this.features.features].sort((a, b) => {
           const nameA = a.properties.name.toUpperCase(); // ignore upper and lowercase
           const nameB = b.properties.name.toUpperCase(); // ignore upper and lowercase
           if (nameA < nameB) {
@@ -75,24 +62,25 @@ export default defineComponent({
   },
   methods: {
     clean,
-    onClick(station: stationSchema) {
-      this.selectedStation = station;
+    onClick(station: Feature) {
       const latlng = [
         station.geometry.coordinates[1],
         station.geometry.coordinates[0],
       ];
+      const store = useGlobalStateStore();
+      store.setSelectedStation(station);
       this.map.flyTo(latlng);
     },
-    onHover(station: stationSchema) {
+    onHover(station: Feature) {
       const latlng = [
         station.geometry.coordinates[1],
         station.geometry.coordinates[0],
       ];
       this.map.openPopup(station.properties.name, latlng);
     },
-    getColor(station: stationSchema) {
+    getColor(station: Feature) {
       const hits = station.properties.num_obs;
-      if (hits === 0) {
+      if (hits === 0 || hits === undefined) {
         return "#708090";
       } else if (hits <= 7) {
         return "#FF3300";

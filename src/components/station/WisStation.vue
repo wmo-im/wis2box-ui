@@ -3,10 +3,9 @@
 </template>
 
 <script lang="ts">
-import type { FeatureLayerForMap, ItemsResponse } from "@/lib/types";
+import type { Feature, ItemsResponse } from "@/lib/types";
 import { useGlobalStateStore } from "@/stores/global";
 import { circleMarker, geoJSON, type LatLngExpression } from "leaflet";
-// @ts-expect-error no types from leaflet.markercluster
 import { MarkerClusterGroup } from "leaflet.markercluster/dist/leaflet.markercluster-src.js";
 
 import "leaflet.markercluster/dist/MarkerCluster.css";
@@ -21,7 +20,7 @@ export default defineComponent({
         onEachFeature: this.onEachFeature,
         pointToLayer: this.pointToLayer,
       },
-      layer: null,
+      layer: null as L.GeoJSON | null,
       clusterLayer: null,
     };
   },
@@ -47,7 +46,7 @@ export default defineComponent({
   },
   methods: {
     onReady() {
-      this.layer = new geoJSON(this.features, this.geojsonOptions);
+      this.layer = geoJSON(this.features, this.geojsonOptions);
       this.clusterLayer = new MarkerClusterGroup({
         disableClusteringAtZoom: 9,
         chunkedLoading: true,
@@ -65,27 +64,26 @@ export default defineComponent({
         this.map.addLayer(this.layer);
       }
     },
-    mapClick(e) {
+    mapClick(e: { target: { feature: Feature; }; originalEvent: { stopPropagation: () => void; }; }) {
       const store = useGlobalStateStore();
-      this.features_.station = e.target.feature;
-      this.features_.datastreams.length = 0;
-      store.toggleDialog();
+      store.setSelectedStation(e.target.feature);
       e.originalEvent.stopPropagation();
     },
-    onEachFeature(feature: FeatureLayerForMap, layer: L.Layer) {
+    onEachFeature(feature: Feature, layer: L.Layer) {
+      const store = useGlobalStateStore();
       layer.on("mouseover", (e: L.LeafletMouseEvent) => {
-        this.features_.station = feature;
-        layer.bindPopup(feature.properties.name).openPopup(e.latlng);
+        store.setSelectedStation(feature);
+        layer.bindPopup(feature.properties.name!).openPopup(e.latlng);
       });
       layer.on({
         click: this.mapClick
       });
     },
-    pointToLayer(feature: FeatureLayerForMap, latLng: LatLngExpression) {
+    pointToLayer(feature: Feature, latLng: LatLngExpression) {
       let fillColor;
       let color;
       const hits = feature.properties.num_obs;
-      if (hits === 0) {
+      if (hits === 0 || hits === undefined) {
         fillColor = "#708090";
         color = "#2E343B";
       } else if (hits <= 7) {
