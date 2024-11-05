@@ -1,23 +1,9 @@
 <!-- This component represents the table which displays all the data for
  a specific station
 -->
-<script setup lang="ts">
-
-
-defineProps<{
-  choices: Choices,
-  alert: {
-    value: boolean,
-    msg: string,
-  }
-}>()
-
-</script>
-
 
 <template id="data-table">
   <v-card min-height="500px" class="ma-4">
-    <v-alert v-show="alert.value" type="warning" :text="alert.msg" />
     <v-progress-linear striped indeterminate color="primary" v-if="loading" />
     <div>
       <v-container>
@@ -49,44 +35,56 @@ defineProps<{
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Plotly from "plotly.js-cartesian-dist-min";
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import { mdiDownload } from "@mdi/js";
 import { catchAndDisplayError } from "@/lib/errors";
-import type { Choices, CollectionsResponse } from "@/lib/types";
+import type { Datastreams, Feature } from "@/lib/types";
 
 const oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
-  mounted() {
-    this.$nextTick(() => {
-      if (this.choices_.collection.title !== "" && this.choices_.datastream.name !== "") {
-        for (const station of this.choices_.station) {
-          this.loadCollection(this.choices_.collection, station);
-        }
-      }
-    });
-  },
   watch: {
-    choices: {
+    selectedStation: {
       handler(newValue) {
         if (this.loading) {
           return;
         }
         this.loading = true;
-        if (newValue.collection !== "" && newValue.datastream !== "") {
-          this.data = {};
-          for (const station of this.choices_.station) {
-            this.loadCollection(newValue.collection, station);
+        if (this.topic !== "" && this.selectedDatastream.name !== "") {
+          for (const station of newValue) {
+            this.loadCollection(this.topic, station);
           }
         }
         this.loading = false;
       },
       deep: true,
+      immediate: true,
     },
+  },
+  props: {
+    topic: {
+      type: String,
+      required: true,
+    },
+    selectedStation: {
+      type: Object as PropType<Feature>,
+      required: true,
+    },
+    selectedDatastream: {
+      type: Object as PropType<Datastreams[0]>,
+      required: true,
+    }
+  },
+  mounted: function () {
+    this.loadObservations();
+  },
+  watch: {
+    selectedDatastream: function () {
+      this.loadObservations();
+    }
   },
   data() {
     return {
-      choices_: this.choices as Choices,
       data: {},
       loading: false,
       title: "",
@@ -113,7 +111,15 @@ export default defineComponent({
         editable: false,
         responsive: true,
         displayModeBar: true,
-        modeBarButtonsToAdd: [],
+        modeBarButtonsToAdd: [] as {
+          name: string,
+          icon: {
+            path: string
+            height: number
+            width: number
+          },
+          click: () => void
+        }[],
         modeBarButtonsToRemove: [
           "toImage",
           "resetScale2d",
@@ -143,9 +149,8 @@ export default defineComponent({
       }
       return features.map(row => row["properties"][key]);
     },
-    async loadCollection(collection: CollectionsResponse["collections"][number], station_id: string) {
+    async loadCollection() {
       const title = collection.description;
-      const datastream = this.choices_.datastream;
 
       this.alert_.msg =
         station_id + this.$t("messages.no_observations_in_collection") + title;
@@ -153,7 +158,7 @@ export default defineComponent({
       this.loading = true;
 
       try {
-        const response = await fetch(`${oapi}/collections/${collection.id}/items?f=json&name=${datastream.id}&index=${datastream.index}&wigos_station_identifier=${station_id}&resulttype=hits`);
+        const response = await fetch(`${oapi}/collections/${this.topic}/items?f=json&name=${datastream.id}&index=${datastream.index}&wigos_station_identifier=${station_id}&resulttype=hits`);
         const data = await response.json();
         this.loadObservations(collection.id, data.numberMatched, datastream, station_id);
       } catch (error) {

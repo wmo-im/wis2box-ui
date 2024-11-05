@@ -20,7 +20,7 @@
       <v-progress-linear v-if="loading" indeterminate color="primary" />
 
       <v-responsive height="590">
-        <DataViewer :datastreams="datastreams" :selected-station="selectedStation" />
+        <DataViewer :datastreams="datastreams" :topic="topic" :selected-station="selectedStation" />
       </v-responsive>
     </v-card>
   </v-overlay>
@@ -32,6 +32,7 @@ import DataViewer from "./data/DataViewer.vue";
 
 import { defineComponent, type PropType } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
+import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
   components: {
@@ -56,16 +57,13 @@ export default defineComponent({
     }
   },
   methods: {
-    async fetchCollectionItems() {
+    async fetchDatastreams() {
       this.loading = true;
       try {
         const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?` + new URLSearchParams({
           wigos_station_identifier: this.selectedStation.id
         });
-        console.log(url)
-        const response = await fetch(`${window.VUE_APP_OAPI}/collections/${this.topic}/items?` + new URLSearchParams({
-          wigos_station_identifier: this.selectedStation.id
-        }));
+        const response = await fetch(url);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -97,7 +95,11 @@ export default defineComponent({
     },
   },
   async mounted() {
-    await this.fetchCollectionItems();
+    await this.fetchDatastreams();
+    const store = useGlobalStateStore();
+    if (!store.selectedDatastream) {
+      store.setSelectedDatastream(this.datastreams[0]);
+    }
   },
 });
 </script>

@@ -2,7 +2,6 @@
 // This is the only place where global state is stored and makes it easier to manage rather than emitting events to multiple parents
 
 import type { Datastreams, Feature } from '@/lib/types'
-import type { Data } from '@vue-leaflet/vue-leaflet/dist/src/utils'
 import { defineStore } from 'pinia'
 
 export const useGlobalStateStore = defineStore('globalState', {
@@ -19,6 +18,7 @@ export const useGlobalStateStore = defineStore('globalState', {
       selectedDatastream: null as Datastreams[0] | null,
     }
   },
+  // explicitly define which actions we intend to use allow on the store
   actions: {
     setToken(newToken: string) {
       this.token = newToken

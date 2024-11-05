@@ -1,27 +1,12 @@
-<script setup lang="ts">
-
-import type { Choices, ItemsResponse } from "@/lib/types";
-
-defineProps<{
-  choices: Choices,
-  alert: {
-    value: boolean,
-    msg: string,
-  },
-}>()
-
-</script>
+<!-- Plot values for a datastream of a station within a collection -->
 
 <template id="data-plotter">
   <div class="data-plotter">
     <v-card min-height="500px" class="ma-4">
-      <v-alert v-show="alert.value" type="warning" :text="alert.msg" />
-      <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
-        <v-progress-linear striped indeterminate color="primary" />
-      </div>
+      <v-progress-linear striped indeterminate color="primary" v-if="loading" />
       <div :style="{ visibility: !loading ? 'visible' : 'hidden' }">
         <v-card class="mx-auto" flat>
-          <div :id="'plotly-chart-' + choices_.collection.id" />
+          <div :id="'plotly-chart-' + selectedStation.id" />
         </v-card>
       </div>
     </v-card>
@@ -31,28 +16,36 @@ defineProps<{
 <script lang="ts">
 //@ts-expect-error no types
 import Plotly from "plotly.js-cartesian-dist-min";
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import { mdiOpenInNew } from "@mdi/js";
 import { catchAndDisplayError } from "@/lib/errors";
-import type { Trace } from "../station/StationHistory.vue";
+import type { Trace, Datastreams, Feature, ItemsResponse } from "@/lib/types";
+import { clean } from "@/lib/helpers";
 
 const oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
-  watch: {
-    choices_: {
-      handler(newValue) {
-        if (newValue.collection !== "" && newValue.datastream !== "") {
-          this.data = [];
-          this.config.modeBarButtonsToAdd = [];
-          for (const station of this.choices_.station) {
-            this.loadCollection(newValue.collection, station);
-          }
-        }
-        this.loading = false;
-      },
-      deep: true,
+  props: {
+    topic: {
+      type: String,
+      required: true,
     },
+    selectedStation: {
+      type: Object as PropType<Feature>,
+      required: true,
+    },
+    selectedDatastream: {
+      type: Object as PropType<Datastreams[0]>,
+      required: true,
+    }
+  },
+  mounted: function () {
+    this.loadObservations();
+  },
+  watch: {
+    selectedDatastream: function () {
+      this.loadObservations();
+    }
   },
   data: function () {
     return {
@@ -77,7 +70,6 @@ export default defineComponent({
         },
         name: "",
       },
-      choices_: this.choices,
       data: [],
       loading: false,
       layout: {
@@ -117,13 +109,13 @@ export default defineComponent({
         ],
       },
       font: { size: 14 },
-      alert_: this.alert,
     };
   },
   methods: {
     plot() {
+      this.loading = true;
       const plot = document.getElementById(
-        "plotly-chart-" + this.choices.collection.id
+        "plotly-chart-" + this.selectedStation.id
       );
       if (plot !== null) {
         Plotly.purge(plot);
@@ -131,11 +123,11 @@ export default defineComponent({
       Plotly.newPlot(plot, this.data, this.layout, this.config);
       this.loading = false;
     },
-    getCol(features: ItemsResponse["features"], key: string) {
+    getCol(features: ItemsResponse["features"], key: keyof ItemsResponse["features"][0]["properties"]) {
       if (key.includes(".")) {
         const split = key.split(".");
         if (split.length === 2) {
-          return features.map(row => row["properties"][split[0]][split[1]]);
+          return features.map(row => row.properties[split[0]][split[1]]);
         } else if (split.length === 3) {
           return features.map(row => row["properties"][split[0]][split[1]][split[2]]);
         }
@@ -143,69 +135,49 @@ export default defineComponent({
         return features.map(row => row["properties"][key]);
       }
     },
-    newTrace(features: ItemsResponse["features"], x: string, y: string) {
+    newTrace(features: ItemsResponse["features"], xAxis: keyof ItemsResponse["features"][0]["properties"], yAxis: keyof ItemsResponse["features"][0]["properties"]) {
+
       const Trace: Trace = JSON.parse(JSON.stringify(this.trace));
-      Trace.x = this.getCol(features, x);
-      Trace.y = this.getCol(features, y);
+      Trace.x = this.getCol(features, xAxis);
+      Trace.y = this.getCol(features, yAxis);
       this.data.push(Trace);
 
       const Scatter = JSON.parse(JSON.stringify(this.scatter));
-      Scatter.x = this.getCol(features, x);
-      Scatter.y = this.getCol(features, y);
+      Scatter.x = this.getCol(features, xAxis);
+      Scatter.y = this.getCol(features, yAxis);
       this.data.push(Scatter);
-      this.setDateLayout(features[features.length - 1].properties.resultTime);
+      this.setDateLayout(features.slice(-1)[0].properties.resultTime);
     },
-    async loadCollection(collection: { description: string; id: string; }, station_id: string) {
+    async loadObservations() {
       this.loading = true;
-      const title = collection.description;
-      const datastream = this.choices_.datastream;
-
-      this.alert_.msg =
-        station_id + this.$t("messages.no_observations_in_collection") + title;
-
       try {
-        const response = await fetch(`${oapi}/collections/${collection.id}/items?f=json&name=${datastream.id}&index=${datastream.index}&wigos_station_identifier=${station_id}&resulttype=hits`);
-        const data = await response.json();
-        this.loadObservations(collection.id, data.numberMatched, datastream, station_id);
+        const url = `${oapi}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}&sortby=resultTime`;
+        const response = await fetch(url);
+        const data: ItemsResponse = await response.json();
+        const dataURL = response.url;
+        this.config.modeBarButtonsToAdd = [{
+          name: this.$t("chart.data_source"),
+          icon: {
+            width: 24,
+            height: 24,
+            path: mdiOpenInNew,
+          },
+          click: () => {
+            const [start, end] = this.layout.xaxis.range;
+            const timeExtent = `${new Date(start + "Z").toISOString()}/${new Date(end + "Z").toISOString()}`;
+            window.location.href = `${dataURL}&datetime=${timeExtent}`;
+          },
+        }];
+        const xAxis = "resultTime";
+        const yAxis = "value";
+        this.newTrace(data.features, xAxis, yAxis);
+        this.layout.yaxis.title = this.selectedDatastream.units || '';
+        this.layout.title = clean(this.selectedDatastream.name || '');
+        this.plot();
       } catch (error) {
         catchAndDisplayError(error as string);
       } finally {
-        console.log("done");
-      }
-    },
-    async loadObservations(collection_id: string, limit: number, datastream: { id: string; index: string; units: string; name: string; }, station_id: string) {
-      if (limit === 0) {
-        this.alert_.value = true;
         this.loading = false;
-        return;
-      } else {
-        this.loading = true;
-        try {
-          const response = await fetch(`${oapi}/collections/${collection_id}/items?f=json&name=${datastream.id}&index=${datastream.index}&wigos_station_identifier=${station_id}&sortby=-resultTime&limit=${limit}`);
-          const data: ItemsResponse = await response.json();
-          const dataURL = response.url;
-          this.config.modeBarButtonsToAdd.push({
-            name: this.$t("chart.data_source"),
-            icon: {
-              width: 24,
-              height: 24,
-              path: mdiOpenInNew,
-            },
-            click: () => {
-              const [start, end] = this.layout.xaxis.range;
-              const timeExtent = `${new Date(start + "Z").toISOString()}/${new Date(end + "Z").toISOString()}`;
-              window.location.href = `${dataURL}&datetime=${timeExtent}`;
-            },
-          });
-          this.newTrace(data.features, "resultTime", "value");
-          this.layout.yaxis.title = datastream.units;
-          this.layout.title = datastream.name;
-          this.plot();
-        } catch (error) {
-          catchAndDisplayError(error as string);
-        } finally {
-          console.log("done");
-        }
       }
     },
     setDateLayout(resultTime: string) {

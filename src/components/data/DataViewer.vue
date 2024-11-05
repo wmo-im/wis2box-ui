@@ -7,7 +7,7 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       </template>
       <v-toolbar-title v-show="$vuetify.display.mdAndUp" class="pa-2 text-h6">
-        {{ selectedStation.properties.name || $t("chart.collection") }}
+        {{ verboseTopicName || $t("chart.collection") }}
       </v-toolbar-title>
       <v-tabs v-model="tab" end color="#014e9e">
         <v-tab v-for="(item, i) in tabs" class="text-center pa-2" :value="i" :key="i">
@@ -18,11 +18,11 @@
     <DataNavigation :datastreams="datastreams" :station="selectedStation" />
     <v-main style="height: 100vh">
       <v-window v-model="tab" style="height: 100%">
-        <v-window-item :value="0">
-          <!-- <DataPlotter :choices="null" :alert="alert" /> -->
+        <v-window-item :value="0" v-if="tab === 0 && selectedDatastream">
+          <DataPlotter :selected-datastream="selectedDatastream" :selected-station="selectedStation" :topic="topic" />
         </v-window-item>
-        <v-window-item :value="1">
-          <!-- <DataTable :choices="choices" :alert="alert" /> -->
+        <v-window-item :value="1" v-if="tab === 1 && selectedDatastream">
+          <DataTable :selected-datastream="selectedDatastream" :selected-station="selectedStation" :topic="topic" />
         </v-window-item>
       </v-window>
     </v-main>
@@ -35,7 +35,8 @@ import DataPlotter from "./DataPlotter.vue";
 import DataNavigation from "./DataNavigation.vue";
 import DataTable from "./DataTable.vue";
 import { defineComponent, type PropType } from "vue";
-import type { Choices, CollectionsResponse, Datastreams, Feature, ItemsResponse } from "@/lib/types";
+import type { CollectionsResponse, Datastreams, Feature } from "@/lib/types";
+import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
   components: {
@@ -51,6 +52,23 @@ export default defineComponent({
     datastreams: {
       type: Object as PropType<Datastreams>,
       required: true,
+    },
+    topic: {
+      type: String,
+      required: true,
+    }
+  },
+  computed: {
+    selectedDatastream() {
+      const store = useGlobalStateStore();
+      return store.selectedDatastream;
+    }
+  },
+  async mounted() {
+    const request = await fetch(`${window.VUE_APP_OAPI}/collections/${this.topic}`);
+    if (request.ok) {
+      const json: CollectionsResponse["collections"][0] = await request.json();
+      this.verboseTopicName = json.title;
     }
   },
   data() {
@@ -58,10 +76,7 @@ export default defineComponent({
       drawer: true,
       tab: 0,
       tabs: ["chart.chart", "table.table"],
-      alert: {
-        value: false,
-        msg: "",
-      },
+      verboseTopicName: "",
     };
   },
 });

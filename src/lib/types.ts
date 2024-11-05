@@ -26,6 +26,7 @@ export interface Trace {
   name?: string
 }
 
+// Any of the properties in the items response could be a datastream
 export type Datastreams = Array<ItemsResponse['features'][0]['properties']>
 
 // Represents one feature within the feature collection of a OAF items/ response
@@ -91,6 +92,7 @@ export interface Dataset extends Feature {
 }
 
 // Represents the JSON response from the OAF /collections endpoint
+// when requesting multiple collections. 
 export interface CollectionsResponse {
   collections: {
     id: 'stations' | 'messages' | 'discovery-metadata' | string // could be a few special collections or an arbitrary string
