@@ -19,7 +19,6 @@
     <v-main style="height: 100vh">
       <v-window v-model="tab" style="height: 100%">
         <v-window-item :value="0">
-          test
           <!-- <DataPlotter :choices="null" :alert="alert" /> -->
         </v-window-item>
         <v-window-item :value="1">

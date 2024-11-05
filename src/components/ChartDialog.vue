@@ -75,8 +75,18 @@ export default defineComponent({
         if (!data.features) {
           catchAndDisplayError(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
         }
+
+        // There is no way in OAF to get the enumeration of all distinct values
+        // for a given property. So we need to just fetch a lot, then
+        // use a set to get all unique values
+        const propSet = new Set();
+
         for (const item of data.features) {
+          if (propSet.has(item.properties.name)) {
+            continue;
+          }
           this.datastreams.push(item.properties);
+          propSet.add(item.properties.name);
         }
       } catch (error) {
         catchAndDisplayError(error as string);
