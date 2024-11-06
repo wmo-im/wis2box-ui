@@ -1,10 +1,6 @@
-<script setup lang="ts">
-
-const store = useGlobalStateStore();
-
-const selectedStation: ComputedRef<Feature | null> = computed(() => store.selectedStation);
-
-</script>
+<!-- StationStatus is a tabbed component that contains both
+  the latest data as well as a history of how many observations have been coming in
+-->
 
 <template id="station-status">
   <div class="station-status">
@@ -36,10 +32,10 @@ const selectedStation: ComputedRef<Feature | null> = computed(() => store.select
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, type ComputedRef, type PropType } from "vue";
+import { computed, defineComponent, type PropType } from "vue";
 import StationLatest from "./StationLatest.vue";
 import StationHistory from "./StationHistory.vue";
-import { type Feature, type ItemsResponse } from "@/lib/types";
+import { type ItemsResponse } from "@/lib/types";
 import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
@@ -66,6 +62,7 @@ export default defineComponent({
         responsive: true,
       },
       tabs: ["station.latest", "station.status"],
+      selectedStation: computed(() => useGlobalStateStore().selectedStation)
     };
   },
   props: {

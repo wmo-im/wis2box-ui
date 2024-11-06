@@ -44,9 +44,6 @@ const onReady = () => {
         loading.value = false;
       }
     }
-    else {
-      console.error("Map ref not found");
-    }
   });
 };
 </script>

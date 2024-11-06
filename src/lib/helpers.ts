@@ -1,5 +1,4 @@
-import i18n from '@/locales/i18n'
-import type { Feature, ItemsResponse, ProcessResponse } from './types'
+import type { Feature, ItemsResponse } from './types'
 import { useGlobalStateStore } from '@/stores/global'
 
 // create an enum for green, yellow, red, and gray as hex
@@ -60,38 +59,13 @@ export function hasLinks(feature: Feature) {
   return feature && feature.links && feature.links.length > 0
 }
 
-export async function getStationsFromCollection(
-  collectionName: string,
-): Promise<ItemsResponse> {
-  const { t } = i18n.global
-
-  const response = await fetchWithToken(
-    `${window.VUE_APP_OAPI}/processes/station-info/execution`,
-    {
-      method: 'POST',
-      body: JSON.stringify({ inputs: { collection: collectionName } }),
-    },
-  )
-  if (response.ok) {
-    const data: ProcessResponse = await response.json()
-    if (data.code !== 'success') {
-      throw new Error('Failed to get OGC API Process Info')
-    }
-    return data.value // value represents the result of the process
-  } else {
-    throw new Error(
-      `${t('messages.does_not_exist')}: ${t('messages.how_to_link_station')}`,
-    )
-  }
-}
-
-export function getColumnFromKey<
-  T extends keyof ItemsResponse['features'][0]['properties'],
->(
-  features: ItemsResponse['features'],
+// For every feature in a feature array, extract the value of the specified key
+// and return the array of values. Handle cases where the key is nested
+export function getColumnFromKey<T extends keyof Feature['properties']>(
+  features: Feature[],
   key: T,
-): Array<ItemsResponse['features'][0]['properties'][T]> {
-  const result: Array<ItemsResponse['features'][0]['properties'][T]> = []
+): Array<Feature['properties'][T]> {
+  const result: Array<Feature['properties'][T]> = []
 
   const split = key.toString().split('.')
 
@@ -134,8 +108,6 @@ export function getColumnFromKey<
 // in OAF endpoints there is no way to get all the features in a collection at once
 // so we need to fetch as hits, then fetch as features using the hits as the limit
 export async function fetchAllOAFFeatures(urlWithParams: string) {
-  const { t } = i18n.global
-
   const hitsURL = `${urlWithParams}&${new URLSearchParams({
     resulttype: 'hits',
   }).toString()}`
@@ -157,6 +129,7 @@ export async function fetchAllOAFFeatures(urlWithParams: string) {
   }
 }
 
+// Same as a normal fetch function, but overrides and adds the Authorization header from the global store
 export async function fetchWithToken(
   input: RequestInfo,
   init?: RequestInit,

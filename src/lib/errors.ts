@@ -30,7 +30,7 @@ export function catchAndDisplayError(
         msg = t('messages.does_not_exist')
         break
       default:
-        msg = t('messages.generic_error', { errorMessage }) // Optionally use a generic error message
+        msg = errorMessage // fall back if the statuscode is not associated with a specific error message
     }
   } else {
     msg = errorMessage

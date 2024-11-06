@@ -16,6 +16,7 @@ export const useGlobalStateStore = defineStore('globalState', {
       },
       selectedStation: null as Feature | null,
       selectedDatastream: null as Datastreams[0] | null,
+      cluster: window.VUE_APP_CLUSTER,
     }
   },
   // explicitly define which actions we intend to use allow on the store
@@ -47,6 +48,9 @@ export const useGlobalStateStore = defineStore('globalState', {
     },
     clearSelectedDatastream() {
       this.selectedDatastream = null
+    },
+    toggleCluster() {
+      this.cluster = !this.cluster
     },
   },
 })

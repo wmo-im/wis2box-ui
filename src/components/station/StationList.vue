@@ -1,4 +1,5 @@
-<!-- THe station list component represents the list of all stations which you can click into in order to get the latest values and history -->
+<!-- StationList lists all stations which you can click into in order to get the latest values and history -->
+
 <template id="station-list">
   <v-list>
     <v-hover v-slot="{ isHovering, props }">
@@ -28,7 +29,7 @@ import { defineComponent, type PropType } from "vue";
 
 import { clean } from "@/lib/helpers.js";
 
-import type { Feature } from "@/lib/types";
+import { LegendColors, type Feature } from "@/lib/types";
 import type { ItemsResponse } from "@/lib/types";
 import { useGlobalStateStore } from "@/stores/global";
 
@@ -88,13 +89,13 @@ export default defineComponent({
     getColor(station: Feature) {
       const hits = station.properties.num_obs;
       if (hits === 0 || hits === undefined) {
-        return "#708090";
+        return LegendColors.Gray;
       } else if (hits <= 7) {
-        return "#FF3300";
+        return LegendColors.Red;
       } else if (hits <= 19) {
-        return "#FF9900";
+        return LegendColors.Yellow;
       } else {
-        return "#009900";
+        return LegendColors.Green;
       }
     },
   },

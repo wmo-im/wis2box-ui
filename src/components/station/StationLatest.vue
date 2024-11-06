@@ -1,4 +1,4 @@
-<!-- Display a table of variables and their most recent value for a specific station -->
+<!-- StationLatest displays a table of variables and their most recent value for a specific station -->
 
 <template id="station-status">
   <div class="station-status">

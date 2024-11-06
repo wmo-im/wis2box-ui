@@ -12,7 +12,7 @@ import { MarkerClusterGroup } from "leaflet.markercluster/dist/leaflet.markerclu
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
-import { defineComponent, type PropType } from "vue";
+import { computed, defineComponent, type PropType } from "vue";
 
 export default defineComponent({
   data: function () {
@@ -23,6 +23,7 @@ export default defineComponent({
       },
       layer: null as Layer | null,
       clusterLayer: null as Layer | null,
+      renderAsCluster: computed(() => useGlobalStateStore().cluster)
     };
   },
   props: {
@@ -41,7 +42,7 @@ export default defineComponent({
     })
   },
   watch: {
-    "window.VUE_APP_CLUSTER": function () {
+    renderAsCluster: function () {
       this.renderLayer();
     }
   },
@@ -60,7 +61,7 @@ export default defineComponent({
       this.renderLayer();
     },
     renderLayer() {
-      if (window.VUE_APP_CLUSTER) {
+      if (this.renderAsCluster) {
         if (!this.layer) {
           return
         }

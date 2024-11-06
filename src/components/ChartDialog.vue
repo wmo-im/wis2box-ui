@@ -8,7 +8,6 @@
     <v-card :width="$vuetify.display.width" :max-height="$vuetify.display.height * 0.95" max-width="1100"
       class="pa-4 scroll">
 
-      <!-- x icon to close the dialog -->
       <v-row justify="end">
         <v-btn variant="text" color="pink" icon @click="open = !open">
           <v-icon icon="mdi-close"> </v-icon>
@@ -74,12 +73,12 @@ export default defineComponent({
         const response = await fetchWithToken(url);
 
         if (!response.ok) {
-          const errMsg = `${this.topic} ${this.$t("messages.no_observations_in_collection")}`;
+          const errMsg = `${this.topic} ${this.$t("messages.no_linked_collections")}`;
           return catchAndDisplayError(errMsg, url, response.status);
         }
 
         const data: ItemsResponse = await response.json();
-        if (!data.features) {
+        if (!data.features || data.numberMatched === 0) {
           return catchAndDisplayError(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
         }
 
@@ -98,7 +97,6 @@ export default defineComponent({
       } catch (error) {
         catchAndDisplayError(error as string);
       } finally {
-        console.log("done");
         this.loading = false;
       }
     },
@@ -106,6 +104,8 @@ export default defineComponent({
   async mounted() {
     await this.fetchDatastreams();
     const store = useGlobalStateStore();
+    // If no datastream is selected, select the first one so
+    // that the dialog opens with a plot already loaded
     if (!store.selectedDatastream) {
       store.setSelectedDatastream(this.datastreams[0]);
     }

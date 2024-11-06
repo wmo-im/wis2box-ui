@@ -1,3 +1,11 @@
+<script setup lang="ts">
+
+import { useGlobalStateStore } from "@/stores/global";
+
+const store = useGlobalStateStore();
+
+</script>
+
 <template id="select-locale">
   <v-menu :close-on-content-click="false">
     <template v-slot:activator="{ props }">
@@ -15,7 +23,7 @@
       <v-list-item class="px-0">
         <v-btn block :ripple="false" variant="text" color="#014e9e" class="font-weight-bold">
           <v-icon icon="mdi-map-marker-multiple" />&nbsp;{{ $t('util.cluster') }}
-          <v-switch hide-details color="#014e9e" />
+          <v-switch hide-details color="#014e9e" v-model="store.cluster" />
         </v-btn>
       </v-list-item>
     </v-list>
@@ -27,6 +35,7 @@ import { defineComponent } from "vue";
 
 import SelectLocale from "./SelectLocale.vue";
 import TokenAuth from "./TokenAuth.vue";
+
 
 export default defineComponent({
   components: {

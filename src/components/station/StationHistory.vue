@@ -1,4 +1,4 @@
-<!-- StationHistory is -->
+<!-- StationHistory displays a plot of how many observations were gathered each day -->
 
 <template id="station-history">
   <div class="pt-0 mb-2" v-if="loading">
@@ -230,10 +230,10 @@ export default defineComponent({
       this.iterDate(nextDate);
       try {
         const response = await fetchWithToken(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${nextDate.toISOString()}/..&sortby=+resultTime&index=${index}&limit=1&wigos_station_identifier=${station.id}`);
-        const data = await response.json();
+        const data: ItemsResponse = await response.json();
         let next;
         if (data.numberMatched > 0) {
-          next = new Date(data.features[0].properties.resultTime);
+          next = new Date(data.features[0].properties.resultTime || "");
         } else {
           next = new Date();
         }

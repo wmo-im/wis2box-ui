@@ -124,7 +124,7 @@ export default defineComponent({
       this.loading = false;
     },
     getColumnFromKey,
-    newTrace(features: ItemsResponse["features"], xAxis: keyof ItemsResponse["features"][0]["properties"], yAxis: keyof ItemsResponse["features"][0]["properties"]) {
+    newTrace(features: Feature[], xAxis: keyof Feature["properties"], yAxis: keyof Feature["properties"]) {
 
       const Trace: Trace = JSON.parse(JSON.stringify(this.trace));
       Trace.x = this.getColumnFromKey(features, xAxis) as string[];
@@ -144,7 +144,16 @@ export default defineComponent({
       this.loading = true;
       try {
         const url = `${oapi}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}&sortby=resultTime`;
-        const response = await fetchWithToken(url);
+
+        let response
+        try {
+          response = await fetchWithToken(url);
+        }
+        catch (error) {
+          catchAndDisplayError(error as string, undefined, response?.status);
+          return;
+        }
+
         const data: ItemsResponse = await response.json();
         const dataURL = response.url;
         this.config.modeBarButtonsToAdd = [{

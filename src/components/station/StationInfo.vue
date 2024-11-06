@@ -1,12 +1,6 @@
-<script setup lang="ts">
-import { computed } from 'vue';
-import { useGlobalStateStore } from "@/stores/global";
-
-const store = useGlobalStateStore();
-
-const selectedStation = computed(() => store.selectedStation);
-
-</script>
+<!-- If a station is not selected, StationInfo displays a list of stations with their names. If one is selected,
+    the it displays the latest values and history
+-->
 
 <template id="station-info">
   <v-card flat height="60vh" class="scroll">
@@ -40,11 +34,12 @@ const selectedStation = computed(() => store.selectedStation);
 </template>
 
 <script lang="ts">
-import { defineComponent, type PropType } from "vue";
+import { computed, defineComponent, type PropType } from "vue";
 import StationList from "./StationList.vue";
 import StationStatus from "./StationStatus.vue";
 import type { ItemsResponse } from "@/lib/types";
 import ChartDialog from '../ChartDialog.vue';
+import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
   components: { StationList, StationStatus, ChartDialog },
@@ -64,7 +59,9 @@ export default defineComponent({
   },
   data() {
     return {
-      showDataset: false
+      showDataset: false,
+      selectedStation: computed(() => useGlobalStateStore().selectedStation),
+      store: useGlobalStateStore()
     }
   },
   methods: {
