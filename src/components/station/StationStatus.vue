@@ -1,3 +1,7 @@
+<!-- StationStatus is a tabbed component that contains both
+  the latest data as well as a history of how many observations have been coming in
+-->
+
 <template id="station-status">
   <div class="station-status">
     <v-tabs grow v-model="tab" color="#014e9e">
@@ -7,11 +11,11 @@
     </v-tabs>
     <v-divider />
     <v-window v-model="tab">
-      <v-window-item :value="0" eager>
-        <station-latest :features="features" :map="map" />
+      <v-window-item :value="0" eager v-if="selectedStation">
+        <StationLatest :selectedStation="selectedStation" />
       </v-window-item>
-      <v-window-item :value="1" eager>
-        <station-history :features="features" :map="map" />
+      <v-window-item :value="1" eager v-if="selectedStation">
+        <StationHistory :selectedStation="selectedStation" />
       </v-window-item>
     </v-window>
     <div class="text-center ma-2">
@@ -27,19 +31,17 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-import StationHistory from "./StationHistory.vue";
+<script lang="ts">
+import { computed, defineComponent, type PropType } from "vue";
 import StationLatest from "./StationLatest.vue";
+import StationHistory from "./StationHistory.vue";
+import { type ItemsResponse } from "@/lib/types";
+import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
   components: { StationLatest, StationHistory },
-  name: "StationStatus",
-  template: "#station-status",
-  props: ["features", "map"],
   data() {
     return {
-      features_: this.features,
       snackbar: false,
       msg: "",
       tab: null,
@@ -60,19 +62,18 @@ export default defineComponent({
         responsive: true,
       },
       tabs: ["station.latest", "station.status"],
+      selectedStation: computed(() => useGlobalStateStore().selectedStation)
     };
   },
-  computed: {
-    station: function () {
-      return this.features_.station;
+  props: {
+    features: {
+      type: Object as PropType<ItemsResponse>,
+      required: true,
     },
-    station_name: function () {
-      if (this.station) {
-        return this.station.properties.name;
-      } else {
-        return this.station;
-      }
+    map: {
+      type: Object,
+      required: true,
     },
-  },
+  }
 });
 </script>

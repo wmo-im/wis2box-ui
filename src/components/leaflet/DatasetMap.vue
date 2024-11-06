@@ -1,64 +1,62 @@
-<template id="dataset-map">
-  <div class="dataset-map">
-    <div v-if="loading">
-      <v-progress-linear striped indeterminate color="primary" />
-    </div>
-    <div v-show="!loading">
-      <l-map
-        :ref="dataset.id"
-        :center="center"
-        :options="options"
-        maxZoom="16"
-        style="height: 160px; width: 256px"
-        @ready="onReady()"
-      >
-        <l-geo-json :geojson="dataset" />
-        <l-tile-layer :url="url" />
-      </l-map>
-    </div>
-  </div>
-</template>
+<!-- This component displays a single simple map on the homepage for a given dataset.
+  It is intended to give the user an overview at a glance for a dataset and
+  does not show any timeseries datapoints or station labels.
+-->
 
-<script>
+<script setup lang="ts">
+import { defineProps, ref, onMounted, nextTick } from "vue";
+import type { Dataset } from "@/lib/types";
 import "leaflet/dist/leaflet.css";
-import { geoJSON } from "leaflet/dist/leaflet-src.esm";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
+import type { Map } from "leaflet";
+import L from "leaflet";
 
-export default {
-  name: "datasets",
-  template: "#datasets",
-  components: {
-    LMap,
-    LTileLayer,
-    LGeoJson,
-  },
-  props: ["dataset"],
-  data: function () {
-    return {
-      loading: false,
-      center: [0, 0],
-      options: {
-        zoomControl: false,
-        doubleClickZoom: false,
-        dragging: false,
-        zoomSnap: 0.25,
-      },
-      url: window.VUE_APP_BASEMAP_URL,
-    };
-  },
-  methods: {
-    onReady() {
-      this.loading = true;
-      this.$nextTick(() => {
-        this.map = this.$refs[this.dataset.id]["leafletObject"];
-        this.map.fitBounds(geoJSON(this.dataset).getBounds());
-        this.map.zoomOut(0.25);
-        this.map.setMinZoom(this.map.getZoom());
-        this.map.setMaxZoom(this.map.getZoom());
-        this.map.attributionControl.setPrefix("");
-        this.loading = false;
-      });
-    },
-  },
+const props = defineProps<{ dataset: Dataset }>();
+
+const loading = ref(true);
+const center = ref<[number, number]>([0, 0]);
+const leafletOptions = {
+  zoomControl: false,
+  doubleClickZoom: false,
+  dragging: false,
+  scrollWheelZoom: false,
+  zoomSnap: 0.25,
+};
+const map = ref<Map | null>(null);
+const url = window.VUE_APP_BASEMAP_URL;
+
+// Create a ref for the map component
+const mapRef = ref<InstanceType<typeof LMap> | null>(null);
+
+onMounted(() => {
+  // Trigger a resize event after a brief delay. Needed to fix a vue leaflet bug: https://github.com/vue-leaflet/Vue2Leaflet/issues/96#issuecomment-341459943
+  setTimeout(() => window.dispatchEvent(new Event("resize")), 250);
+});
+
+const onReady = () => {
+  nextTick(() => {
+    if (mapRef.value && mapRef.value["leafletObject"]) {
+      map.value = mapRef.value["leafletObject"];
+      if (map.value) {
+        map.value.fitBounds(L.geoJSON(props.dataset.geometry).getBounds());
+        map.value.attributionControl.setPrefix("");
+        map.value.zoomIn(4);
+        loading.value = false;
+      }
+    }
+  });
 };
 </script>
+
+<template>
+  <div v-if="loading">
+    <v-progress-linear striped indeterminate color="primary" />
+  </div>
+  <div v-show="!loading">
+    <l-map ref="mapRef" :center="center" :options="leafletOptions" :maxZoom="16" style="height: 160px; width: 256px"
+      @ready="onReady">
+      <l-geo-json :geojson="dataset.geometry" />
+      <l-tile-layer :url="url" />
+    </l-map>
+  </div>
+</template>

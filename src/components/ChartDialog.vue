@@ -1,60 +1,120 @@
+<!-- ChartDialog is the main component for displaying station data
+    in greater detail. It contains a list of observed properties
+    as well as a table and plot of data for each property
+-->
+
 <template id="chart-dialog">
-  <div class="chart-dialog">
-    <v-overlay v-model="$root.dialog" class="align-center justify-center">
-      <div>
-        <v-card
-          :width="$vuetify.display.width"
-          :max-height="$vuetify.display.height * 0.95"
-          max-width="1100"
-          class="pa-4 scroll"
-        >
-          <v-toolbar color="#FFF">
-            <v-card-title class="text-h4" v-html="station.properties.name" />
-            <v-spacer />
-            <v-btn varaint="text" color="pink" icon @click="$root.toggleDialog">
-              <v-icon icon="mdi-close"></v-icon>
-            </v-btn>
-          </v-toolbar>
-          <v-card-subtitle v-html="station.id" />
-          <v-responsive height="590">
-            <data-viewer :station="station" />
-          </v-responsive>
-        </v-card>
-      </div>
-    </v-overlay>
-  </div>
+  <v-overlay class="align-center justify-center" v-model="open">
+    <v-card :width="$vuetify.display.width" :max-height="$vuetify.display.height * 0.95" max-width="1100"
+      class="pa-4 scroll">
+
+      <v-row justify="end">
+        <v-btn variant="text" color="pink" icon @click="open = !open">
+          <v-icon icon="mdi-close"> </v-icon>
+        </v-btn>
+      </v-row>
+
+      <v-card-title class="text-h4">
+        {{ selectedStation.properties.name }}
+      </v-card-title>
+      <v-spacer />
+
+      <v-card-subtitle>
+        {{ selectedStation.properties.id }}
+      </v-card-subtitle>
+
+      <v-progress-linear v-if="loading" indeterminate color="primary" />
+
+      <v-responsive height="590">
+        <DataViewer :datastreams="datastreams" :topic="topic" :selected-station="selectedStation" />
+      </v-responsive>
+    </v-card>
+  </v-overlay>
 </template>
 
-<script>
+<script lang="ts">
+import type { Datastreams, Feature, ItemsResponse } from "@/lib/types";
 import DataViewer from "./data/DataViewer.vue";
 
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
+import { catchAndDisplayError } from "@/lib/errors";
+import { useGlobalStateStore } from "@/stores/global";
+import { fetchWithToken } from "@/lib/helpers";
 
 export default defineComponent({
-  name: "ChartDialog",
-  template: "#chart-dialog",
   components: {
     DataViewer,
   },
-  props: ["features"],
-  data: function () {
+  data() {
     return {
-      features_: this.features,
+      loading: false,
+      stations: {} as ItemsResponse,
+      open: true,
+      datastreams: [] as Datastreams,
     };
   },
-  computed: {
-    station: function () {
-      return this.features_.station;
+  props: {
+    topic: {
+      type: String,
+      required: true
     },
-    datastreams: function () {
-      return this.features_.datastreams;
+    selectedStation: {
+      type: Object as PropType<Feature>,
+      required: true
+    }
+  },
+  methods: {
+    async fetchDatastreams() {
+      this.loading = true;
+      try {
+        const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?` + new URLSearchParams({
+          wigos_station_identifier: this.selectedStation.id
+        });
+        const response = await fetchWithToken(url);
+
+        if (!response.ok) {
+          const errMsg = `${this.topic} ${this.$t("messages.no_linked_collections")}`;
+          return catchAndDisplayError(errMsg, url, response.status);
+        }
+
+        const data: ItemsResponse = await response.json();
+        if (!data.features || data.numberMatched === 0) {
+          return catchAndDisplayError(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
+        }
+
+        // There is no way in OAF to get the enumeration of all distinct values
+        // for a given property. So we need to just fetch a lot, then
+        // use a set to get all unique values
+        const propSet = new Set();
+
+        for (const item of data.features) {
+          if (propSet.has(item.properties.name)) {
+            continue;
+          }
+          this.datastreams.push(item.properties);
+          propSet.add(item.properties.name);
+        }
+      } catch (error) {
+        catchAndDisplayError(error as string);
+      } finally {
+        this.loading = false;
+      }
     },
+  },
+  async mounted() {
+    await this.fetchDatastreams();
+    const store = useGlobalStateStore();
+    // If no datastream is selected, select the first one so
+    // that the dialog opens with a plot already loaded
+    if (!store.selectedDatastream) {
+      store.setSelectedDatastream(this.datastreams[0]);
+    }
   },
 });
 </script>
 
 <style scoped>
 .scroll {
-   overflow-y: scroll
+  overflow-y: scroll;
 }
 </style>

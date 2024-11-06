@@ -1,74 +1,73 @@
+<!-- If a station is not selected, StationInfo displays a list of stations with their names. If one is selected,
+    the it displays the latest values and history
+-->
+
 <template id="station-info">
-  <div class="station-info">
-    <v-card flat height="60vh" class="scroll">
-      <v-toolbar>
-        <v-toolbar-title>
-          {{ station_name || $t("chart.station") }}
-        </v-toolbar-title>
+  <v-card flat height="60vh" class="scroll">
+    <v-toolbar>
+      <v-toolbar-title>
+        {{ selectedStation?.properties.name || $t("chart.station") }}
+      </v-toolbar-title>
 
-        <template v-slot:prepend v-if="station !== null">
-          <v-btn icon @click="features_.station = null">
-            <v-icon icon="mdi-arrow-left"></v-icon>
-          </v-btn>
-        </template>
+      <template v-slot:prepend v-if="selectedStation">
+        <v-btn icon @click="store.clearSelectedStation">
+          <v-icon icon="mdi-arrow-left"></v-icon>
+        </v-btn>
+      </template>
 
-        <template v-slot:append v-if="station != null">
-          <v-btn
-            variant="outlined"
-            size="small"
-            color="#014e9e"
-            @click.stop="openData(station)"
-            class="my-auto"
-          >
-            {{ $t("navigation.data") }}
-            <v-icon end icon="mdi-chart-scatter-plot" />
-          </v-btn>
-        </template>
-      </v-toolbar>
+      <template v-slot:append v-if="selectedStation != null">
+        <v-btn variant="outlined" size="small" color="#014e9e" @click.stop="toggleDataset" class="my-auto">
+          {{ $t("navigation.data") }}
+          <v-icon end icon="mdi-chart-scatter-plot" />
+        </v-btn>
+      </template>
+    </v-toolbar>
+    <ChartDialog :topic="topic" :selected-station="selectedStation" v-if="showDataset && selectedStation" />
 
-      <v-card flat class="text-center" v-show="station === null">
-        <station-list :features="features" :map="map" />
-      </v-card>
-
-      <v-card flat class="text-center" v-show="station !== null">
-        <station-status :features="features" :map="map" />
-      </v-card>
+    <v-card flat class="text-center" v-if="!selectedStation">
+      <StationList :features="features" :map="map" />
     </v-card>
-  </div>
+    <v-card flat class="text-center" v-else>
+      <StationStatus :features="features" :map="map" />
+    </v-card>
+  </v-card>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script lang="ts">
+import { computed, defineComponent, type PropType } from "vue";
 import StationList from "./StationList.vue";
 import StationStatus from "./StationStatus.vue";
+import type { ItemsResponse } from "@/lib/types";
+import ChartDialog from '../ChartDialog.vue';
+import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
-  components: { StationList, StationStatus },
-  name: "StationInfo",
-  template: "#station-info",
-  props: ["features", "map"],
+  components: { StationList, StationStatus, ChartDialog },
+  props: {
+    features: {
+      type: Object as PropType<ItemsResponse>,
+      required: true,
+    },
+    map: {
+      type: Object,
+      required: true,
+    },
+    topic: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
-      features_: this.features,
-    };
-  },
-  computed: {
-    station: function () {
-      return this.features_.station;
-    },
-    station_name: function () {
-      if (this.station) {
-        return this.station.properties.name;
-      } else {
-        return this.station;
-      }
-    },
+      showDataset: false,
+      selectedStation: computed(() => useGlobalStateStore().selectedStation),
+      store: useGlobalStateStore()
+    }
   },
   methods: {
-    openData(station) {
-      this.features_.station = station;
-      this.$root.toggleDialog();
-    },
+    toggleDataset() {
+      this.showDataset = !this.showDataset;
+    }
   },
 });
 </script>

@@ -1,6 +1,8 @@
+<!-- Drop down to select and store the token in local storage for fetch requests -->
+
 <template id="token-auth">
   <div class="token-auth">
-    <v-menu location="start" v-model="menu" :close-on-content-click="false">
+    <v-menu location="start" v-model="menuOpen" :close-on-content-click="false">
       <template v-slot:activator="{ props }">
         <v-btn block variant="text" :color="color" class="font-weight-bold" v-bind="props">
           <v-icon icon="mdi-key-variant" />&nbsp;{{ $t('util.token') }}
@@ -11,8 +13,12 @@
           single-line hide-details />
         <v-card-actions>
           <v-row justify="center">
-            <v-btn color="#014e9e" class="font-weight-bold" @click="saveToken" v-html="$t('util.save')" />
-            <v-btn color="pink" class="font-weight-bold" @click="onClose" v-html="$t('util.cancel')" />
+            <v-btn color="#014e9e" class="font-weight-bold" @click="saveToken">
+              {{ $t('util.save') }}
+            </v-btn>
+            <v-btn color="pink" class="font-weight-bold" @click="clearToken">
+              {{ $t('util.cancel') }}
+            </v-btn>
           </v-row>
         </v-card-actions>
       </v-card>
@@ -20,44 +26,41 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script lang="ts">
+import { defineComponent, ref, computed } from "vue";
+import { useGlobalStateStore } from '@/stores/global'
 
 export default defineComponent({
-  name: "TokenAuth",
-  template: "#token-auth",
-  props: ["header"],
-  data() {
-    return { token: "", menu: false };
+  props: {
+    header: Boolean
   },
-  mounted() {
-    this.saveToken();
-  },
-  watch: {
-    "$root.token": function (token) {
-      this.token = token;
-    }
-  },
-  computed: {
-    color: function () {
-      if (this.header) {
-        return "#FFFFFF"
-      } else {
-        return "#014e9e"
-      }
-    }
-  },
-  methods: {
-    saveToken() {
-      // Save token
-      this.$root.token = this.token;
-      this.onClose();
-    },
-    onClose() {
-      // Reset token and close menu
-      this.token = this.$root.token;
-      this.menu = false;
-    },
-  },
+  setup(props) {
+    const token = ref("");
+    const menuOpen = ref(false);
+    const store = useGlobalStateStore();
+
+    // Computed property for color
+    const color = computed(() => {
+      return props.header ? "#FFFFFF" : "#014e9e";
+    });
+
+    const saveToken = () => {
+      store.setToken(token.value);
+      menuOpen.value = false;
+    };
+
+    const clearToken = () => {
+      store.clearToken();
+      menuOpen.value = false;
+    };
+
+    return {
+      token,
+      menuOpen,
+      color,
+      saveToken,
+      clearToken
+    };
+  }
 });
 </script>
