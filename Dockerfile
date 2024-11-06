@@ -1,9 +1,9 @@
-FROM node:14.18.1 as ui-builder
+FROM node:23.1.0-slim as ui-builder
 
 RUN mkdir /usr/src/app
 RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list \
-    && apt-get update \
-    && apt-get upgrade \
+    && apt-get -y update \
+    && apt-get -y upgrade \
     && apt-get install -y chromium
 
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
@@ -13,7 +13,7 @@ COPY package.json /usr/src/app/package.json
 
 WORKDIR /usr/src/app
 
-RUN npm install && \
+RUN npm install --legacy-peer-deps && \
     npm install -g @vue/cli
 
 COPY . /usr/src/app
