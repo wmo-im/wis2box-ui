@@ -1,9 +1,5 @@
 <!-- A Component for selecting the language used in the application -->
 
-<!-- NOTE: If arabic is selected, the settings drop down moves to the left side of the page
-    this is just an issue with arabic specifically given the nature of arabic script and how it is read on the web.
--->
-
 <template id="select-locale">
   <div class="select-locale">
     <v-menu location="start">
@@ -23,7 +19,6 @@
 </template>
 
 <script lang="ts">
-// https://www.digitalocean.com/community/tutorials/vuejs-vue-with-i18n
 import { loadLocale } from "@/locales/i18n";
 import { defineComponent } from "vue";
 

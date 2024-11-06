@@ -14,8 +14,12 @@ interface Links {
   href: string
 }
 
+// Trace represents data that is used for plotting the history, plotting the datastream as timeseries
+// or displaying the timeseries as a table
 export interface Trace {
   x: string[]
+  // possible to have a graph without y values if we are just plotting history and want to show the number of observations
+  y?: number[]
   type: string
   marker?: {
     color: string
@@ -26,7 +30,7 @@ export interface Trace {
   name?: string
 }
 
-// Any of the properties in the items response could be a datastream
+// Any of the properties in the items response could be a potential datastream
 export type Datastreams = Array<ItemsResponse['features'][0]['properties']>
 
 // Represents one feature within the feature collection of a OAF items/ response

@@ -9,7 +9,9 @@
       <v-col class="primary text-center" cols="12">
         <p>
           {{ $t("footer.powered_by") }}
-          <a :title="name" :href="homepage" v-html="name" />
+          <a :title="name" :href="homepage">
+            {{ name }}
+          </a>
           {{ version }}
         </p>
       </v-col>
@@ -24,7 +26,6 @@ import { name, version, homepage } from "../../../package.json";
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "AppFooter",
   data: () => {
     return {
       version,

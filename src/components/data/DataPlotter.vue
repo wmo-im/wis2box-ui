@@ -20,7 +20,7 @@ import { defineComponent, type PropType } from "vue";
 import { mdiOpenInNew } from "@mdi/js";
 import { catchAndDisplayError } from "@/lib/errors";
 import type { Trace, Datastreams, Feature, ItemsResponse } from "@/lib/types";
-import { clean, getColumnFromKey } from "@/lib/helpers";
+import { clean, fetchWithToken, getColumnFromKey } from "@/lib/helpers";
 
 const oapi = window.VUE_APP_OAPI;
 
@@ -70,7 +70,7 @@ export default defineComponent({
         },
         name: "",
       },
-      data: [],
+      data: [] as Trace[],
       loading: false,
       layout: {
         title: "",
@@ -127,22 +127,24 @@ export default defineComponent({
     newTrace(features: ItemsResponse["features"], xAxis: keyof ItemsResponse["features"][0]["properties"], yAxis: keyof ItemsResponse["features"][0]["properties"]) {
 
       const Trace: Trace = JSON.parse(JSON.stringify(this.trace));
-      Trace.x = this.getColumnFromKey(features, xAxis);
-      Trace.y = this.getColumnFromKey(features, yAxis);
+      Trace.x = this.getColumnFromKey(features, xAxis) as string[];
+      Trace.y = this.getColumnFromKey(features, yAxis) as number[];
       this.data.push(Trace);
 
       const Scatter = JSON.parse(JSON.stringify(this.scatter));
       Scatter.x = this.getColumnFromKey(features, xAxis);
       Scatter.y = this.getColumnFromKey(features, yAxis);
       this.data.push(Scatter);
-      this.setDateLayout(features.slice(-1)[0].properties.resultTime);
+      const lastFeature = features.slice(-1)[0];
+      const lastResultTime = lastFeature?.properties.resultTime;
+      this.setDateLayout(lastResultTime || '');
     },
     async loadObservations() {
       this.data = [];
       this.loading = true;
       try {
         const url = `${oapi}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}&sortby=resultTime`;
-        const response = await fetch(url);
+        const response = await fetchWithToken(url);
         const data: ItemsResponse = await response.json();
         const dataURL = response.url;
         this.config.modeBarButtonsToAdd = [{

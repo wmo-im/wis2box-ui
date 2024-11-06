@@ -40,6 +40,7 @@ import DataViewer from "./data/DataViewer.vue";
 import { defineComponent, type PropType } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
 import { useGlobalStateStore } from "@/stores/global";
+import { fetchWithToken } from "@/lib/helpers";
 
 export default defineComponent({
   components: {
@@ -70,15 +71,16 @@ export default defineComponent({
         const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?` + new URLSearchParams({
           wigos_station_identifier: this.selectedStation.id
         });
-        const response = await fetch(url);
+        const response = await fetchWithToken(url);
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errMsg = `${this.topic} ${this.$t("messages.no_observations_in_collection")}`;
+          return catchAndDisplayError(errMsg, url, response.status);
         }
 
         const data: ItemsResponse = await response.json();
         if (!data.features) {
-          catchAndDisplayError(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
+          return catchAndDisplayError(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
         }
 
         // There is no way in OAF to get the enumeration of all distinct values

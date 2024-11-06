@@ -5,11 +5,15 @@
     <v-card flat width="100%" max-width="1130" class="text-center">
       <v-card-text>
         <template v-if="error.msg">
-          <p v-html="error.msg" />
+          <p>
+            {{ error.msg }}
+          </p>
           <br>
         </template>
         <template v-if="error.url">
-          <a :href="error.url" v-html="error.url" />
+          <a :href="error.url">
+            {{ error.url }}
+          </a>
         </template>
       </v-card-text>
       <v-card-actions>
@@ -25,13 +29,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 
 import TokenAuth from "./TokenAuth.vue";
 
 
 export default defineComponent({
-  props: ["error"],
+  props: {
+    error: {
+      type: Object as PropType<{
+        msg: string | null,
+        url: string | null,
+        status: number | null,
+      }>,
+      required: true
+    }
+  },
   components: {
     TokenAuth,
   },

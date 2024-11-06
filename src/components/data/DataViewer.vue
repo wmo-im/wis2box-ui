@@ -37,6 +37,7 @@ import DataTable from "./DataTable.vue";
 import { defineComponent, type PropType } from "vue";
 import type { CollectionsResponse, Datastreams, Feature } from "@/lib/types";
 import { useGlobalStateStore } from "@/stores/global";
+import { fetchWithToken } from "@/lib/helpers";
 
 export default defineComponent({
   components: {
@@ -65,7 +66,7 @@ export default defineComponent({
     }
   },
   async mounted() {
-    const request = await fetch(`${window.VUE_APP_OAPI}/collections/${this.topic}`);
+    const request = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${this.topic}`);
     if (request.ok) {
       const json: CollectionsResponse["collections"][0] = await request.json();
       this.verboseTopicName = json.title;

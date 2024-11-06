@@ -15,14 +15,22 @@
       <v-table v-show="title !== ''" fixed-header height="500px">
         <thead>
           <tr>
-            <th class="text-center" v-html="$t('table.phenomenon_time')" />
-            <th class="text-center" v-html="title" />
+            <th class="text-center">
+              {{ $t('table.phenomenon_time') }}
+            </th>
+            <th class="text-center">
+              {{ title }}
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(_, i) in data.time" :key="i">
-            <td v-html="data.phenomenonTime[i]" />
-            <td v-html="data.value[i]" />
+            <td>
+              {{ data.phenomenonTime[i] }}
+            </td>
+            <td>
+              {{ data.value[i] }}
+            </td>
           </tr>
         </tbody>
       </v-table>
@@ -38,8 +46,8 @@ import Plotly from "plotly.js-cartesian-dist-min";
 import { defineComponent, type PropType } from "vue";
 import { mdiDownload } from "@mdi/js";
 import { catchAndDisplayError } from "@/lib/errors";
-import type { Datastreams, Feature } from "@/lib/types";
-import { clean, getColumnFromKey } from "@/lib/helpers";
+import type { Datastreams, Feature, ItemsResponse } from "@/lib/types";
+import { clean, fetchAllOAFFeatures, getColumnFromKey } from "@/lib/helpers";
 
 const oapi = window.VUE_APP_OAPI;
 
@@ -71,7 +79,7 @@ export default defineComponent({
       data: {} as {
         time: string[],
         phenomenonTime: string[],
-        value: string[],
+        value: number[] | string[], // value can be either categorical or numerical
       },
       loading: false,
       title: "",
@@ -131,18 +139,20 @@ export default defineComponent({
       this.loading = true;
 
       try {
-        const response = await fetch(`${oapi}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}&sortby=-resultTime`);
-        const data = await response.json();
+        const url = `${oapi}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}`
+        console.log(url)
+        const response = await fetchAllOAFFeatures(url);
+        const data: ItemsResponse = await response.json();
         this.plot(response.url);
         if (this.selectedDatastream.units === "CODE TABLE") {
           this.title = clean(`${this.selectedDatastream.name}`);
-          this.data.value = this.getColumnFromKey(data.features, "description");
+          this.data.value = this.getColumnFromKey(data.features, "description") as string[];
         } else {
           this.title = `${clean(this.selectedDatastream.name)} (${this.selectedDatastream.units})`;
-          this.data.value = this.getColumnFromKey(data.features, "value");
+          this.data.value = this.getColumnFromKey(data.features, "value") as number[];
         }
-        this.data.time = this.getColumnFromKey(data.features, "resultTime");
-        this.data.phenomenonTime = this.getColumnFromKey(data.features, "phenomenonTime");
+        this.data.time = this.getColumnFromKey(data.features, "resultTime") as string[];
+        this.data.phenomenonTime = this.getColumnFromKey(data.features, "phenomenonTime") as string[];
       } catch (error) {
         catchAndDisplayError(error as string);
       } finally {

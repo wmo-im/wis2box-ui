@@ -34,7 +34,6 @@ import foot from "@/assets/img/wmo-foot.png";
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "AppHeader",
   components: {
     AppSettings
   },

@@ -70,6 +70,7 @@ import { defineComponent } from "vue";
 import DatasetMap from "../components/leaflet/DatasetMap.vue";
 import type { Dataset, ItemsResponse } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
+import { fetchWithToken } from "@/lib/helpers";
 
 const oapi = window.VUE_APP_OAPI;
 
@@ -88,15 +89,25 @@ export default defineComponent({
   },
   methods: {
     async loadDatasets() {
+      this.loading = true;
+      const url = `${oapi}/collections/discovery-metadata/items`;
+      let response;
       try {
-        this.loading = true;
-        const url = `${oapi}/collections/discovery-metadata/items`;
-        const response = await fetch(url);
+        response = await fetchWithToken(url);
         if (!response.ok) {
-          catchAndDisplayError("", url, response.status);
-          return
+          return catchAndDisplayError('', url, response.status);
         }
+      } catch (error) {
+        return catchAndDisplayError(error as string, url, response?.status);
+      }
+
+      try {
         const data: ItemsResponse = await response.json();
+
+        if (data.numberMatched === 0) {
+          const errMsg = `${this.$t("datasets.oarec")} ${this.$t("messages.no_observations_in_collection")}`;
+          return catchAndDisplayError(errMsg);
+        }
 
         for (const feature of data.features) {
 

@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import type { Feature, ItemsResponse } from "@/lib/types";
+import { LegendColors, type Feature, type ItemsResponse } from "@/lib/types";
 import { useGlobalStateStore } from "@/stores/global";
 import { circleMarker, geoJSON, Layer, type LatLngExpression, type Map } from "leaflet";
 // @ts-expect-error no types
@@ -100,16 +100,16 @@ export default defineComponent({
       let color;
       const hits = feature.properties.num_obs;
       if (hits === 0 || hits === undefined) {
-        fillColor = "#708090";
+        fillColor = LegendColors.Gray;
         color = "#2E343B";
       } else if (hits <= 7) {
-        fillColor = "#FF3300";
+        fillColor = LegendColors.Red;
         color = "#801A00";
       } else if (hits <= 19) {
-        fillColor = "#FF9900";
+        fillColor = LegendColors.Yellow;
         color = "#804D00";
       } else {
-        fillColor = "#009900";
+        fillColor = LegendColors.Green;
         color = "#004D00";
       }
       const markerStyle = {

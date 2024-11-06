@@ -1,3 +1,5 @@
+<!-- StationHistory is -->
+
 <template id="station-history">
   <div class="pt-0 mb-2" v-if="loading">
     <v-progress-linear height="6" indeterminate color="primary" />
@@ -16,6 +18,7 @@ const oapi = window.VUE_APP_OAPI;
 import { defineComponent, type PropType } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
 import type { Feature, ItemsResponse, Trace } from "@/lib/types";
+import { fetchWithToken } from "@/lib/helpers";
 
 
 export default defineComponent({
@@ -96,7 +99,7 @@ export default defineComponent({
       const url = `${oapi}/collections/${station.properties.topic}/items?f=json&sortby=resultTime&wigos_station_identifier=${station.id}&limit=1`;
 
       try {
-        const response = await fetch(url);
+        const response = await fetchWithToken(url);
 
         // Clone the response to be able to read the body twice in case of an error
         const responseClone = response.clone();
@@ -136,7 +139,7 @@ export default defineComponent({
       ];
 
       try {
-        const response = await fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&index=${index}&wigos_station_identifier=${station.id}`);
+        const response = await fetchWithToken(`${oapi}/collections/${station.properties.topic}/items?f=json&index=${index}&wigos_station_identifier=${station.id}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -167,16 +170,15 @@ export default defineComponent({
       for (const d = new Date(this.oldestResultTime.toISOString()); d <= this.now; this.iterDate(d)) {
         const date_ = d.toISOString().split("T")[0];
         try {
-          const response = await fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${date_}&index=${index}&wigos_station_identifier=${station.id}`);
+          const response = await fetchWithToken(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${date_}&index=${index}&wigos_station_identifier=${station.id}`);
           const data: ItemsResponse = await response.json();
 
           if (response.ok) {
-            let fillColor;
             const hits = data.numberMatched;
             if (hits === 0) {
               this.getNextDate(station, index, d);
             } else {
-              fillColor = hits <= 7 ? "#FF3300" : hits <= 19 ? "#FF9900" : "#009900";
+              const fillColor = hits <= 7 ? "#FF3300" : hits <= 19 ? "#FF9900" : "#009900";
               const trace = {
                 x: data.features.map((obs: Feature) => obs.properties.resultTime).filter((time) => time !== undefined),
                 type: "histogram",
@@ -195,7 +197,7 @@ export default defineComponent({
               }
             }
           } else {
-            catchAndDisplayError(this.$t("messages.fetch_error"));
+            catchAndDisplayError("", undefined, response.status);
           }
         } catch (error) {
           catchAndDisplayError(error as string);
@@ -227,7 +229,7 @@ export default defineComponent({
       const nextDate = new Date(d.toISOString());
       this.iterDate(nextDate);
       try {
-        const response = await fetch(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${nextDate.toISOString()}/..&sortby=+resultTime&index=${index}&limit=1&wigos_station_identifier=${station.id}`);
+        const response = await fetchWithToken(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${nextDate.toISOString()}/..&sortby=+resultTime&index=${index}&limit=1&wigos_station_identifier=${station.id}`);
         const data = await response.json();
         let next;
         if (data.numberMatched > 0) {

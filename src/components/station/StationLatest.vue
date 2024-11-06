@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
-import { getNameTime, clean, hasLinks } from "@/lib/helpers.js";
+import { getNameTime, clean, hasLinks, fetchWithToken } from "@/lib/helpers.js";
 import type { Feature } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
 
@@ -56,13 +56,13 @@ export default defineComponent({
         catchAndDisplayError(`
           ${clean(this.selectedStation.properties.name)} ${this.$t(
           "messages.no_linked_collections"
-        )} <br> ${this.$t("messages.how_to_link_station")}`);
+        )}, ${this.$t("messages.how_to_link_station")}`);
         this.loading = false;
       }
     },
     async loadObservations(station: Feature) {
       try {
-        const response = await fetch(
+        const response = await fetchWithToken(
           `${oapi}/collections/${station.properties.topic}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station.id}&limit=1`
         );
         const data = await response.json();
@@ -86,7 +86,7 @@ export default defineComponent({
     async loadRecentObservations(station: Feature, limit: number) {
       this.loading = true;
       try {
-        const response = await fetch(
+        const response = await fetchWithToken(
           `${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${this.latestResultTime}/..&wigos_station_identifier=${station.id}&limit=${limit}`
         );
         const data = await response.json();

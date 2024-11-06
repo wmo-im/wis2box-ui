@@ -12,6 +12,7 @@
           <l-map ref="wisMap" :zoom="zoom" :center="center" :maxZoom="16" :minZoom="2" style="height: 60vh"
             @ready="onReady()">
             <template v-if="!loading">
+              <!-- @vue-expect-error types not correct for map in underlying library -->
               <WisStation :features="features" :map="map" />
             </template>
             <l-tile-layer :url="url" :attribution="attribution" />
