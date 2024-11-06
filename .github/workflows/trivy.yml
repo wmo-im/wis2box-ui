@@ -1,0 +1,26 @@
+name: Run Trivy vulnerability scanner
+
+on: [ push ]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build wis2box-ui
+        run: |
+          docker build -t wis2box-ui:test .
+      - name: Run Trivy vulnerability scanner on wis2box-ui
+        uses: aquasecurity/trivy-action@0.20.0
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
+          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db:1
+        with:
+          image-ref: 'wis2box-ui:test'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          ignorefile: '.trivyignore'

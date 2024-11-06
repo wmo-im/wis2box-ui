@@ -1,4 +1,4 @@
-FROM node:22.3 as ui-builder
+FROM node:22.3-slim as ui-builder
 
 RUN mkdir /usr/src/app
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
