@@ -9,7 +9,7 @@ npm install
 ### Compiles and hot-reloads for development
 
 ```
-npm run serve
+npm run dev
 ```
 
 ### Compiles and minifies for production
@@ -18,16 +18,23 @@ npm run serve
 npm run build
 ```
 
-### Run your end-to-end tests
+### Preview production build
 
 ```
-npm run test:e2e
+npm run preview
+```
+
+### Run unit tests
+
+```
+npm run test:unit
 ```
 
 ### Lints and fixes files
 
 ```
 npm run lint
+npm run format
 ```
 
 ### Customize configuration
