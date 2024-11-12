@@ -10,4 +10,4 @@ window.VUE_APP_BASEMAP_ATTRIBUTION='${WIS2BOX_BASEMAP_ATTRIBUTION:-&copy; <a hre
 window.VUE_APP_CLUSTER='${WIS2BOX_UI_CLUSTER}'\n
 window.VUE_APP_LANG='${WIS2BOX_UI_LANG}'
 "
-echo $env >> /usr/share/nginx/html/env.js
+echo $env > /usr/share/nginx/html/env.js
