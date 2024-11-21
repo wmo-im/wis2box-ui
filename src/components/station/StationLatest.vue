@@ -28,8 +28,6 @@ import { getNameTime, clean, hasLinks, fetchWithToken } from "@/lib/helpers.js";
 import type { Feature } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
 
-const oapi = window.VUE_APP_OAPI;
-
 export default defineComponent({
   data() {
     return {
@@ -63,7 +61,7 @@ export default defineComponent({
     async loadObservations(station: Feature) {
       try {
         const response = await fetchWithToken(
-          `${oapi}/collections/${station.properties.topic}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station.id}&limit=1`
+          `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station.id}&limit=1`
         );
         const data = await response.json();
 
@@ -87,7 +85,7 @@ export default defineComponent({
       this.loading = true;
       try {
         const response = await fetchWithToken(
-          `${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${this.latestResultTime}/..&wigos_station_identifier=${station.id}&limit=${limit}`
+          `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${this.latestResultTime}/..&wigos_station_identifier=${station.id}&limit=${limit}`
         );
         const data = await response.json();
         const features: Feature[] = data.features;

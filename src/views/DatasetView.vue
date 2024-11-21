@@ -72,7 +72,6 @@ import type { Dataset, ItemsResponse } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
 import { fetchWithToken } from "@/lib/helpers";
 
-const oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
   components: {
@@ -90,7 +89,7 @@ export default defineComponent({
   methods: {
     async loadDatasets() {
       this.loading = true;
-      const url = `${oapi}/collections/discovery-metadata/items`;
+      const url = `${window.VUE_APP_OAPI}/collections/discovery-metadata/items`;
       let response;
       try {
         response = await fetchWithToken(url);

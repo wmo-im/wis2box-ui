@@ -49,7 +49,6 @@ import { catchAndDisplayError } from "@/lib/errors";
 import type { Datastreams, Feature, ItemsResponse } from "@/lib/types";
 import { clean, fetchAllOAFFeatures, getColumnFromKey } from "@/lib/helpers";
 
-const oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
   props: {
@@ -139,7 +138,7 @@ export default defineComponent({
       this.loading = true;
 
       try {
-        const url = `${oapi}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}`
+        const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}`
         console.log(url)
         const response = await fetchAllOAFFeatures(url);
         const data: ItemsResponse = await response.json();

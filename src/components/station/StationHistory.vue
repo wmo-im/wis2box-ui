@@ -13,7 +13,6 @@
 // @ts-expect-error no types from plotly min
 import Plotly from "plotly.js-cartesian-dist-min";
 import { clean, hasLinks } from "@/lib/helpers.js";
-const oapi = window.VUE_APP_OAPI;
 
 import { defineComponent, type PropType } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
@@ -96,7 +95,7 @@ export default defineComponent({
       this.loading = true;
       this.data = [];
       // NOTE: It appears that sorting with +resultTime is not supported by the OAPI
-      const url = `${oapi}/collections/${station.properties.topic}/items?f=json&sortby=resultTime&wigos_station_identifier=${station.id}&limit=1`;
+      const url = `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&sortby=resultTime&wigos_station_identifier=${station.id}&limit=1`;
 
       try {
         const response = await fetchWithToken(url);
@@ -139,7 +138,7 @@ export default defineComponent({
       ];
 
       try {
-        const response = await fetchWithToken(`${oapi}/collections/${station.properties.topic}/items?f=json&index=${index}&wigos_station_identifier=${station.id}`);
+        const response = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&index=${index}&wigos_station_identifier=${station.id}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -170,7 +169,7 @@ export default defineComponent({
       for (const d = new Date(this.oldestResultTime.toISOString()); d <= this.now; this.iterDate(d)) {
         const date_ = d.toISOString().split("T")[0];
         try {
-          const response = await fetchWithToken(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${date_}&index=${index}&wigos_station_identifier=${station.id}`);
+          const response = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${date_}&index=${index}&wigos_station_identifier=${station.id}`);
           const data: ItemsResponse = await response.json();
 
           if (response.ok) {
@@ -229,7 +228,7 @@ export default defineComponent({
       const nextDate = new Date(d.toISOString());
       this.iterDate(nextDate);
       try {
-        const response = await fetchWithToken(`${oapi}/collections/${station.properties.topic}/items?f=json&datetime=${nextDate.toISOString()}/..&sortby=+resultTime&index=${index}&limit=1&wigos_station_identifier=${station.id}`);
+        const response = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${nextDate.toISOString()}/..&sortby=+resultTime&index=${index}&limit=1&wigos_station_identifier=${station.id}`);
         const data: ItemsResponse = await response.json();
         let next;
         if (data.numberMatched > 0) {

@@ -22,8 +22,6 @@ import { catchAndDisplayError } from "@/lib/errors";
 import type { Trace, Datastreams, Feature, ItemsResponse } from "@/lib/types";
 import { clean, fetchWithToken, getColumnFromKey } from "@/lib/helpers";
 
-const oapi = window.VUE_APP_OAPI;
-
 export default defineComponent({
   props: {
     topic: {
@@ -143,7 +141,7 @@ export default defineComponent({
       this.data = [];
       this.loading = true;
       try {
-        const url = `${oapi}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}&sortby=resultTime`;
+        const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}&sortby=resultTime`;
 
         let response
         try {
