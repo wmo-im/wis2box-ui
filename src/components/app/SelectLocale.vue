@@ -37,5 +37,25 @@ export default defineComponent({
       }
     }
   },
+  watch: {
+    "$i18n.locale": {
+      handler: function (locale) {
+
+        function removeClassFromElements(className: string) {
+          const elements = document.querySelectorAll(`.${className}`);
+
+          elements.forEach(element => {
+            element.classList.remove(className);
+          });
+        }
+        
+        if (locale === 'ar') {
+          removeClassFromElements('v-locale--is-rtl');
+        }
+      },
+      immediate: true
+    }
+  },
 });
 </script>
+
