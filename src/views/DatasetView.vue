@@ -97,7 +97,8 @@ export default defineComponent({
           return catchAndDisplayError('', url, response.status);
         }
       } catch (error) {
-        return catchAndDisplayError(error as string, url, response?.status);
+        // if fetch fails, and try to show the error code as well otherwise, just show the error
+        return catchAndDisplayError(error as string, undefined, response ? response.status : undefined);
       }
 
       try {

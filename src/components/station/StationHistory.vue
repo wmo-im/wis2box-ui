@@ -104,28 +104,30 @@ export default defineComponent({
         const responseClone = response.clone();
         const data: ItemsResponse = await response.json();
 
-        if (response.ok && data.features.length > 0) {
-          const feature = data.features[0];
-          if (feature && feature.properties && feature.properties.resultTime) {
-            this.oldestResultTime = new Date(feature.properties.resultTime);
-            const index = feature.properties.index;
-            if (!index) {
-              throw new Error("The index is not defined");
-            }
-            if (this.differenceInDays(this.oldestResultTime, this.now) > 30) {
-              this.loadAllObservations(station, index);
+        if (response.ok) {
+          if (data.features.length > 0) {
+            const feature = data.features[0];
+            if (feature && feature.properties && feature.properties.resultTime) {
+              this.oldestResultTime = new Date(feature.properties.resultTime);
+              const index = feature.properties.index;
+              if (!index) {
+                throw new Error("The index is not defined");
+              }
+              if (this.differenceInDays(this.oldestResultTime, this.now) > 30) {
+                this.loadAllObservations(station, index);
+              } else {
+                this.loadDailyObservations(station, index);
+              }
             } else {
-              this.loadDailyObservations(station, index);
+              catchAndDisplayError(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
             }
-          } else {
-            catchAndDisplayError(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
           }
         } else {
           const errorBody = await responseClone.text();
           throw new Error(`${response.status}, ${errorBody}`);
         }
       } catch (error) {
-        catchAndDisplayError(error as string, url);
+        catchAndDisplayError(error as string);
       } finally {
         this.loading = false;
       }
@@ -154,8 +156,6 @@ export default defineComponent({
             this.data.push(trace);
             this.plot(plot);
           }
-        } else {
-          catchAndDisplayError(this.$t("messages.fetch_error"));
         }
       } catch (error) {
         catchAndDisplayError(error as string);
