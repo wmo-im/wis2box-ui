@@ -68,6 +68,12 @@ export default defineComponent({
   mounted() {
     this.fetchData();
   },
+  // watch the selectedStation to update the plot when it changes
+  watch: {
+    selectedStation() {
+      this.fetchData();
+    },
+  },
   methods: {
     async fetchData() {
       const station = this.selectedStation;

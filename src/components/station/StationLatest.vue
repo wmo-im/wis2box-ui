@@ -5,6 +5,8 @@
     <h5 class="text-left" v-if="latestResultTime">
       {{ $t("messages.from") + " " + latestResultTime }}
     </h5>
+  <v-progress-linear v-if="loading" indeterminate color="#014e9e"/>
+
     <v-table>
       <table>
         <tr v-for="(item, i) in recentObservations" :key="i">
@@ -45,6 +47,11 @@ export default defineComponent({
   mounted() {
     this.fetchData();
   },
+  watch: {
+    selectedStation() {
+      this.fetchData();
+    },
+  },
   methods: {
     getNameTime,
     async fetchData() {
@@ -59,6 +66,7 @@ export default defineComponent({
       }
     },
     async loadObservations(station: Feature) {
+      this.loading = true;
       try {
         const response = await fetchWithToken(
           `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station.id}&limit=1`
@@ -71,7 +79,7 @@ export default defineComponent({
           this.loadRecentObservations(station, data.numberMatched);
         } else {
           throw new Error(
-            this.$t("chart.station") + this.$t("messages.no_observations_in_collection")
+            this.$t("chart.station") + ` ${station.properties.name}` + this.$t("messages.no_observations_in_collection")
           );
         }
       } catch (error) {
