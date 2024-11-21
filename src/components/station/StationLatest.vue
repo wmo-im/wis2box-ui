@@ -67,6 +67,7 @@ export default defineComponent({
     },
     async loadObservations(station: Feature) {
       this.loading = true;
+      this.recentObservations = [];
       try {
         const response = await fetchWithToken(
           `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station.id}&limit=1`
