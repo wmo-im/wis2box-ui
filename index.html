@@ -18,7 +18,8 @@
 
 <body>
   <div id="app"></div>
-  <script type="module" src="/env.js"></script>
+  <!-- env.js must be loaded first before main.ts and thus cannot be a module -->
+  <script src="/env.js"></script>
   <script type="module" src="/src/main.ts"></script>
   <meta property="og:image" content="/assets/img/logo.png">
 </body>

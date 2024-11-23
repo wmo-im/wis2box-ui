@@ -39,19 +39,18 @@ export default defineComponent({
   },
   watch: {
     "$i18n.locale": {
-      handler: function (locale) {
+      handler: function (locale: string) {
 
-        function removeClassFromElements(className: string) {
-          const elements = document.querySelectorAll(`.${className}`);
-
+        // If the locale is switched to arabic, don't switch the direction of the page and disrupt the layout
+        if (locale === 'ar') {
+          const invertDirectionClass = 'v-locale--is-rtl';
+          const elements = document.querySelectorAll(`.${invertDirectionClass}`);
           elements.forEach(element => {
-            element.classList.remove(className);
+            element.classList.remove(invertDirectionClass);
           });
         }
         
-        if (locale === 'ar') {
-          removeClassFromElements('v-locale--is-rtl');
-        }
+       
       },
       immediate: true
     }

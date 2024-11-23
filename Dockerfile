@@ -22,8 +22,6 @@ COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 COPY  --from=ui-builder /tmp/app/dist /usr/share/nginx/html
 EXPOSE 80
 
-# Copy the env.js file into the html build folder so the env vars are exposed to the UI
-COPY ./public/* /usr/share/nginx/html
 # After copying in the base env.js file, use entrypoint.sh to override the values
 COPY ./docker/entrypoint.sh /docker-entrypoint.d/entrypoint.sh
 RUN chmod +x /docker-entrypoint.d/entrypoint.sh
