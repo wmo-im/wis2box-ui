@@ -1,50 +1,47 @@
-<!-- This component displays a single simple map on the homepage for a given dataset.
-  It is intended to give the user an overview at a glance for a dataset and
-  does not show any timeseries datapoints or station labels.
--->
-
 <script setup lang="ts">
 import { defineProps, ref, onMounted, nextTick } from "vue";
 import type { Dataset } from "@/lib/types";
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
-import type { Map } from "leaflet";
-import L from "leaflet";
+import L, { type PointTuple } from "leaflet";
 
 const props = defineProps<{ dataset: Dataset }>();
 
 const loading = ref(true);
-const center = ref<[number, number]>([0, 0]);
-const leafletOptions = {
-  zoomControl: false,
-  doubleClickZoom: false,
-  dragging: false,
-  scrollWheelZoom: false,
-  zoomSnap: 0.25,
-};
-const map = ref<Map | null>(null);
 const url = window.VUE_APP_BASEMAP_URL;
+const zoom = 1; 
+const geoJsonRef = ref<typeof LGeoJson | null>(null); // Ref to the LGeoJson component
 
-// Create a ref for the map component
-const mapRef = ref<InstanceType<typeof LMap> | null>(null);
-
-onMounted(() => {
-  // Trigger a resize event after a brief delay. Needed to fix a vue leaflet bug: https://github.com/vue-leaflet/Vue2Leaflet/issues/96#issuecomment-341459943
-  setTimeout(() => window.dispatchEvent(new Event("resize")), 250);
+onMounted(async () => {
+  loading.value = true;
+  await nextTick();
+  loading.value = false;
 });
 
-const onReady = () => {
-  nextTick(() => {
-    if (mapRef.value && mapRef.value["leafletObject"]) {
-      map.value = mapRef.value["leafletObject"];
-      if (map.value) {
-        map.value.fitBounds(L.geoJSON(props.dataset.geometry).getBounds());
-        map.value.attributionControl.setPrefix("");
-        map.value.zoomIn(4);
-        loading.value = false;
-      }
+const onMapReady = (map: L.Map) => {
+  if (props.dataset.geometry) {
+    const geoJsonLayer = L.geoJSON(props.dataset.geometry); 
+    geoJsonLayer.addTo(map); 
+
+    const bounds = geoJsonLayer.getBounds();
+    if (bounds.isValid()) {
+      const padding: PointTuple = [3, 3];
+      map.fitBounds(bounds, { padding }); 
     }
-  });
+    
+    map.attributionControl.remove();
+    map.zoomControl.remove();
+    map.invalidateSize();
+
+    // this is needed to handle the case where the bounds stretch to the end of the map
+    // for instance for the bbox of the entire northern hemisphere.
+    // without this, there may be gray borders at the edge of the map
+    map.setMaxBounds([
+    [ -90, -180 ],
+    [ 90, 180 ]    
+  ]);
+
+  }
 };
 </script>
 
@@ -52,11 +49,15 @@ const onReady = () => {
   <div v-if="loading">
     <v-progress-linear striped indeterminate color="primary" />
   </div>
-  <div v-show="!loading">
-    <l-map ref="mapRef" :center="center" :options="leafletOptions" :maxZoom="16" style="height: 160px; width: 256px"
-      @ready="onReady">
-      <l-geo-json :geojson="dataset.geometry" />
-      <l-tile-layer :url="url" />
-    </l-map>
-  </div>
+  
+  <LMap 
+    :zoom="zoom" 
+    :maxZoom="16" 
+    style="height: 160px; width: 256px" 
+    @ready="onMapReady"
+  >
+    <LTileLayer :url="url" />
+    
+    <LGeoJson ref="geoJsonRef" :geojson="props.dataset.geometry" />
+  </LMap>
 </template>
