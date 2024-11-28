@@ -3,7 +3,7 @@
     <v-alert border="start" variant="text" color="#014e9e">
       <h2>{{ $t("messages.welcome") }}</h2>
     </v-alert>
-    <div class="d-flex justify-center mt-16">
+    <div class="d-flex justify-center mt-1">
       <v-progress-linear v-if="loading" indeterminate color="primary" />
     </div>
 
