@@ -1,7 +1,7 @@
-FROM node:22.3-slim as ui-builder
+FROM node:22.3-slim AS ui-builder
 
 RUN mkdir /usr/src/app
-ENV PATH /usr/src/app/node_modules/.bin:$PATH
+ENV PATH=/usr/src/app/node_modules/.bin:$PATH
 
 COPY package.json /usr/src/app/package.json
 
