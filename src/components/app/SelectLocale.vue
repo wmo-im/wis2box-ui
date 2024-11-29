@@ -1,3 +1,5 @@
+<!-- A Component for selecting the language used in the application -->
+
 <template id="select-locale">
   <div class="select-locale">
     <v-menu location="start">
@@ -7,36 +9,25 @@
         </v-btn>
       </template>
       <v-list>
-        <v-list-item
-          v-for="(name, lang) in languages"
-          :key="`lang-${name}`"
-          :active="$i18n.locale === lang"
-          active-color="#014e9e"
-          @click="$i18n.locale = lang"
-        >
-          <v-list-item-title>{{ name }}</v-list-item-title>
+        <v-list-item v-for="language in Object.keys(languages)" :key="`lang-${language}`"
+          :active="$i18n.locale === language" color="#014e9e" @click="$i18n.locale = String(language)">
+          <v-list-item-title>{{ languages[(language as keyof typeof languages)].language }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
   </div>
 </template>
 
-<script>
-// https://www.digitalocean.com/community/tutorials/vuejs-vue-with-i18n
+<script lang="ts">
 import { loadLocale } from "@/locales/i18n";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "SelectLocale",
-  template: "#select-locale",
   props: ["header"],
   computed: {
-    languages: function () {
-      const temp = {};
-      for (const [key, value] of Object.entries(loadLocale())) {
-        temp[key] = value.language;
-      }
-      return temp;
+    languages: () => {
+      return loadLocale()
     },
     color: function () {
       if (this.header) {
@@ -46,5 +37,24 @@ export default defineComponent({
       }
     }
   },
+  watch: {
+    "$i18n.locale": {
+      handler: function (locale: string) {
+
+        // If the locale is switched to arabic, don't switch the direction of the page and disrupt the layout
+        if (locale === 'ar') {
+          const invertDirectionClass = 'v-locale--is-rtl';
+          const elements = document.querySelectorAll(`.${invertDirectionClass}`);
+          elements.forEach(element => {
+            element.classList.remove(invertDirectionClass);
+          });
+        }
+        
+       
+      },
+      immediate: true
+    }
+  },
 });
 </script>
+

@@ -1,45 +1,49 @@
+<!-- Plot values for a datastream of a station within a collection -->
+
 <template id="data-plotter">
   <div class="data-plotter">
     <v-card min-height="500px" class="ma-4">
-      <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
-
-      <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
-        <v-progress-linear striped indeterminate color="primary" />
-      </div>
+      <v-progress-linear striped indeterminate color="primary" v-if="loading" />
       <div :style="{ visibility: !loading ? 'visible' : 'hidden' }">
         <v-card class="mx-auto" flat>
-          <div :id="'plotly-chart-' + choices_.collection.id" />
+          <div :id="'plotly-chart-' + selectedStation.id" />
         </v-card>
       </div>
     </v-card>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+//@ts-expect-error no types
 import Plotly from "plotly.js-cartesian-dist-min";
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import { mdiOpenInNew } from "@mdi/js";
-
-let oapi = window.VUE_APP_OAPI;
+import { catchAndDisplayError } from "@/lib/errors";
+import type { Trace, Datastreams, Feature, ItemsResponse } from "@/lib/types";
+import { clean, fetchWithToken, getColumnFromKey } from "@/lib/helpers";
 
 export default defineComponent({
-  name: "DataPlotter",
-  template: "#data-plotter",
-  props: ["choices", "alert"],
-  watch: {
-    choices_: {
-      handler(newValue) {
-        if (newValue.collection !== "" && newValue.datastream !== "") {
-          this.data = [];
-          this.config.modeBarButtonsToAdd = [];
-          for (var station of this.choices_.station) {
-            this.loadCollection(newValue.collection, station);
-          }
-        }
-        this.loading = false;
-      },
-      deep: true,
+  props: {
+    topic: {
+      type: String,
+      required: true,
     },
+    selectedStation: {
+      type: Object as PropType<Feature>,
+      required: true,
+    },
+    selectedDatastream: {
+      type: Object as PropType<Datastreams[0]>,
+      required: true,
+    }
+  },
+  mounted: function () {
+    this.loadObservations();
+  },
+  watch: {
+    selectedDatastream: function () {
+      this.loadObservations();
+    }
   },
   data: function () {
     return {
@@ -64,27 +68,34 @@ export default defineComponent({
         },
         name: "",
       },
-      choices_: this.choices,
-      data: [],
+      data: [] as Trace[],
       loading: false,
       layout: {
         title: "",
         xaxis: {
           autorange: true,
           type: "date",
-          range: [null, null],
-          rangeslider: { range: [null, null] },
+          range: [null, null] as [number | null, number | null],
+          rangeslider: { range: [null, null] as [number | null, number | null] },
         },
         yaxis: {
           type: "linear",
           autorange: true,
-          title: null,
+          title: "",
         },
       },
       config: {
         responsive: true,
         displayModeBar: true,
-        modeBarButtonsToAdd: [],
+        modeBarButtonsToAdd: [] as {
+          name: string;
+          icon: {
+            width: number;
+            height: number;
+            path: string;
+          };
+          click: () => void;
+        }[],
         modeBarButtonsToRemove: [
           "zoom2d",
           "pan2d",
@@ -96,138 +107,85 @@ export default defineComponent({
         ],
       },
       font: { size: 14 },
-      alert_: this.alert,
     };
   },
   methods: {
     plot() {
-      var plot = document.getElementById(
-        "plotly-chart-" + this.choices.collection.id
+      this.loading = true;
+      const plot = document.getElementById(
+        "plotly-chart-" + this.selectedStation.id
       );
-      Plotly.purge(plot);
+      if (plot !== null) {
+        Plotly.purge(plot);
+      }
       Plotly.newPlot(plot, this.data, this.layout, this.config);
       this.loading = false;
     },
-    getCol(features, key) {
-      if (key.includes(".")) {
-        const split = key.split(".");
-        if (split.length === 2) {
-          return features.map(function (row) {
-            return row["properties"][split[0]][split[1]];
-          });
-        } else if (split.length === 3) {
-          return features.map(function (row) {
-            return row["properties"][split[0]][split[1]][split[2]];
-          });
-        }
-      } else {
-        return features.map(function (row) {
-          return row["properties"][key];
-        });
-      }
-    },
-    newTrace(features, x, y) {
-      const Trace = JSON.parse(JSON.stringify(this.trace));
-      Trace.x = this.getCol(features, x);
-      Trace.y = this.getCol(features, y);
+    getColumnFromKey,
+    newTrace(features: Feature[], xAxis: keyof Feature["properties"], yAxis: keyof Feature["properties"]) {
+
+      const Trace: Trace = JSON.parse(JSON.stringify(this.trace));
+      Trace.x = this.getColumnFromKey(features, xAxis) as string[];
+      Trace.y = this.getColumnFromKey(features, yAxis) as number[];
       this.data.push(Trace);
 
       const Scatter = JSON.parse(JSON.stringify(this.scatter));
-      Scatter.x = this.getCol(features, x);
-      Scatter.y = this.getCol(features, y);
+      Scatter.x = this.getColumnFromKey(features, xAxis);
+      Scatter.y = this.getColumnFromKey(features, yAxis);
       this.data.push(Scatter);
-      this.setDateLayout(features[features.length - 1]);
+      const lastFeature = features.slice(-1)[0];
+      const lastResultTime = lastFeature?.properties.resultTime;
+      this.setDateLayout(lastResultTime || '');
     },
-    async loadCollection(collection, station_id) {
+    async loadObservations() {
+      this.data = [];
       this.loading = true;
-      var self = this;
-      const title = collection.description;
-      const datastream = this.choices_.datastream;
+      try {
+        const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}&sortby=resultTime`;
 
-      this.alert_.msg =
-        station_id + this.$t("messages.no_observations_in_collection") + title;
+        let response
+        try {
+          response = await fetchWithToken(url);
+        }
+        catch (error) {
+          catchAndDisplayError(error as string, undefined, response?.status);
+          return;
+        }
 
-      await this.$http({
-        method: "get",
-        url: `${oapi}/collections/${collection.id}/items`,
-        params: {
-          f: "json",
-          name: datastream.id,
-          index: datastream.index,
-          wigos_station_identifier: station_id,
-          resulttype: "hits",
-        },
-      })
-        .then(function (response) {
-          // handle success
-          self.loadObservations(
-            collection.id,
-            response.data.numberMatched,
-            datastream,
-            station_id
-          );
-        })
-        .catch(this.$root.catch)
-        .then(function () {
-          console.log("done");
-        });
-    },
-    async loadObservations(collection_id, limit, datastream, station_id) {
-      if (limit === 0) {
-        this.alert_.value = true;
-        this.loading = false;
-        return;
-      } else {
-        var self = this;
-        this.loading = true;
-        await this.$http({
-          method: "get",
-          url: `${oapi}/collections/${collection_id}/items`,
-          params: {
-            f: "json",
-            name: datastream.id,
-            index: datastream.index,
-            wigos_station_identifier: station_id,
-            sortby: "-resultTime",
-            limit: limit,
+        const data: ItemsResponse = await response.json();
+        const dataURL = response.url;
+        this.config.modeBarButtonsToAdd = [{
+          name: this.$t("chart.data_source"),
+          icon: {
+            width: 24,
+            height: 24,
+            path: mdiOpenInNew,
           },
-        })
-          .then(function (resp) {
-            // handle success
-            var dataURL = resp.request.responseURL;
-            self.config.modeBarButtonsToAdd.push({
-              name: self.$t("chart.data_source"),
-              icon: {
-                width: 24,
-                height: 24,
-                path: mdiOpenInNew,
-              },
-              click: function () {
-                const [start, end] = self.layout.xaxis.range;
-                var timeExtent = `${new Date(
-                  start + "Z"
-                ).toISOString()}/${new Date(end + "Z").toISOString()}`;
-                window.location.href = `${dataURL}&datetime=${timeExtent}`;
-              },
-            });
-            self.newTrace(resp.data.features, "resultTime", "value");
-            self.layout.yaxis.title = datastream.units;
-            self.layout.title = datastream.name;
-            self.plot();
-          })
-          .catch(this.$root.catch)
-          .then(function () {
-            console.log("done");
-          });
+          click: () => {
+            const [start, end] = this.layout.xaxis.range;
+            const timeExtent = `${new Date(start + "Z").toISOString()}/${new Date(end + "Z").toISOString()}`;
+            window.location.href = `${dataURL}&datetime=${timeExtent}`;
+          },
+        }];
+        const xAxis = "resultTime";
+        const yAxis = "value";
+        this.newTrace(data.features, xAxis, yAxis);
+        this.layout.yaxis.title = this.selectedDatastream.units || '';
+        this.layout.title = clean(this.selectedDatastream.name || '');
+        this.plot();
+      } catch (error) {
+        catchAndDisplayError(error as string);
+      } finally {
+        this.loading = false;
       }
     },
-    setDateLayout(f) {
-      var startTime = new Date(
-        new Date(f.properties.resultTime).setUTCHours(0, 0, 0, 0)
-      ).toISOString();
-      var endTime = new Date(
+    setDateLayout(resultTime: string) {
+      const startTime = new Date(
+        new Date(resultTime).setUTCHours(0, 0, 0, 0)
+      ).getTime();
+      const endTime = new Date(
         new Date().setUTCHours(23, 59, 59, 999)
-      ).toISOString();
+      ).getTime();
       this.layout.xaxis.range = [startTime, endTime];
       this.layout.xaxis.rangeslider.range = [startTime, endTime];
     },

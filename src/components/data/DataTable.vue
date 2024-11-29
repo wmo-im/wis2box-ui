@@ -1,78 +1,85 @@
-<template id="data-table">
-  <div class="data-table">
-    <v-card min-height="500px" class="ma-4">
-      <v-alert v-show="alert.value" type="warning" v-html="alert.msg" />
+<!-- This component represents the table which displays all the data for
+ a specific station
+-->
 
-      <div :style="{ visibility: loading ? 'visible' : 'hidden' }">
-        <v-progress-linear striped indeterminate color="primary" />
-      </div>
-      <div :style="{ visibility: !loading ? 'visible' : 'hidden' }">
-        <v-container>
-          <v-row justify="center" align="end">
-            <div id="plotly-table" />
-          </v-row>
-        </v-container>
-        <v-table v-show="title !== ''" fixed-header height="500px">
-          <thead>
-            <tr>
-              <th class="text-center" v-html="$t('table.phenomenon_time')" />
-              <th class="text-center" v-html="title" />
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(date, i) in data.time" :key="i">
-              <td v-html="data.phenomenonTime[i]" />
-              <td v-html="data.value[i]" />
-            </tr>
-          </tbody>
-        </v-table>
-      </div>
-    </v-card>
-  </div>
+<template id="data-table">
+  <v-card min-height="500px" class="ma-4">
+    <v-progress-linear striped indeterminate color="primary" v-if="loading" />
+    <div>
+      <v-container>
+        <v-row justify="center" align="end">
+          <div id="plotly-table" />
+        </v-row>
+      </v-container>
+
+      <v-table v-show="title !== ''" fixed-header height="500px">
+        <thead>
+          <tr>
+            <th class="text-center">
+              {{ $t('table.phenomenon_time') }}
+            </th>
+            <th class="text-center">
+              {{ title }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(_, i) in data.time" :key="i">
+            <td>
+              {{ data.phenomenonTime[i] }}
+            </td>
+            <td>
+              {{ data.value[i] }}
+            </td>
+          </tr>
+        </tbody>
+      </v-table>
+    </div>
+  </v-card>
 </template>
 
-<script>
+<script lang="ts">
+// have to ignore the dist-min import since it doesn't have ts types
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import Plotly from "plotly.js-cartesian-dist-min";
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import { mdiDownload } from "@mdi/js";
+import { catchAndDisplayError } from "@/lib/errors";
+import type { Datastreams, Feature, ItemsResponse } from "@/lib/types";
+import { clean, fetchAllOAFFeatures, getColumnFromKey } from "@/lib/helpers";
 
-let oapi = window.VUE_APP_OAPI;
 
 export default defineComponent({
-  name: "DataTable",
-  template: "#data-table",
-  props: ["choices", "alert"],
+  props: {
+    topic: {
+      type: String,
+      required: true,
+    },
+    selectedStation: {
+      type: Object as PropType<Feature>,
+      required: true,
+    },
+    selectedDatastream: {
+      type: Object as PropType<Datastreams[0]>,
+      required: true,
+    }
+  },
   mounted: function () {
-    this.$nextTick(() => {
-      if (this.choices_.collection !== "" && this.choices_.datastream !== "") {
-        for (var station of this.choices_.station) {
-          this.loadCollection(this.choices_.collection, station);
-        }
-      }
-    });
+    this.loadObservations();
   },
   watch: {
-    choices: {
-      handler(newValue) {
-        if (this.loading === true) {
-          return;
-        }
-        this.loading = true;
-        if (newValue.collection !== "" && newValue.datastream !== "") {
-          this.data = {};
-          for (var station of this.choices_.station) {
-            this.loadCollection(newValue.collection, station);
-          }
-        }
-        this.loading = false;
-      },
-      deep: true,
-    },
+    selectedDatastream: function () {
+      this.loadObservations();
+    }
   },
-  data: function () {
+  data() {
     return {
-      choices_: this.choices,
-      data: {},
+      data: {} as {
+        time: string[],
+        phenomenonTime: string[],
+        value: number[] | string[], // value can be either categorical or numerical
+      },
       loading: false,
       title: "",
       headerOverflow: 0,
@@ -98,7 +105,15 @@ export default defineComponent({
         editable: false,
         responsive: true,
         displayModeBar: true,
-        modeBarButtonsToAdd: [],
+        modeBarButtonsToAdd: [] as {
+          name: string,
+          icon: {
+            path: string
+            height: number
+            width: number
+          },
+          click: () => void
+        }[],
         modeBarButtonsToRemove: [
           "toImage",
           "resetScale2d",
@@ -114,111 +129,41 @@ export default defineComponent({
     };
   },
   methods: {
-    onScroll(e) {
+    onScroll(e: { target: { scrollTop: number; }; }) {
       this.headerOverflow = e.target.scrollTop;
     },
-    getCol(features, key) {
-      if (key.includes(".")) {
-        const split = key.split(".");
-        if (split.length === 2) {
-          return features.map(function (row) {
-            return row["properties"][split[0]][split[1]];
-          });
-        } else if (split.length === 3) {
-          return features.map(function (row) {
-            return row["properties"][split[0]][split[1]][split[2]];
-          });
-        }
-      } else {
-        return features.map(function (row) {
-          return row["properties"][key];
-        });
-      }
-    },
-    async loadCollection(collection, station_id) {
-      const title = collection.description;
-      const datastream = this.choices_.datastream;
-
-      this.alert_.msg =
-        station_id + this.$t("messages.no_observations_in_collection") + title;
+    getColumnFromKey,
+    async loadObservations() {
 
       this.loading = true;
-      var self = this;
 
-      await this.$http({
-        method: "get",
-        url: `${oapi}/collections/${collection.id}/items`,
-        params: {
-          f: "json",
-          name: datastream.id,
-          index: datastream.index,
-          wigos_station_identifier: station_id,
-          resulttype: "hits",
-        },
-      })
-        .then(function (response) {
-          // handle success
-          self.loadObservations(
-            collection.id,
-            response.data.numberMatched,
-            datastream,
-            station_id
-          );
-        })
-        .catch(this.$root.catch)
-        .then(function () {
-          console.log("done");
-        });
-    },
-    async loadObservations(collection_id, limit, datastream, station_id) {
-      if (limit === 0) {
-        this.alert_.value = true;
+      try {
+        const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}`
+        console.log(url)
+        const response = await fetchAllOAFFeatures(url);
+        const data: ItemsResponse = await response.json();
+        this.plot(response.url);
+        if (this.selectedDatastream.units === "CODE TABLE") {
+          this.title = clean(`${this.selectedDatastream.name}`);
+          this.data.value = this.getColumnFromKey(data.features, "description") as string[];
+        } else {
+          this.title = `${clean(this.selectedDatastream.name)} (${this.selectedDatastream.units})`;
+          this.data.value = this.getColumnFromKey(data.features, "value") as number[];
+        }
+        this.data.time = this.getColumnFromKey(data.features, "resultTime") as string[];
+        this.data.phenomenonTime = this.getColumnFromKey(data.features, "phenomenonTime") as string[];
+      } catch (error) {
+        catchAndDisplayError(error as string);
+      } finally {
         this.loading = false;
-        return;
-      } else {
-        var self = this;
-        this.loading = true;
-        await this.$http({
-          method: "get",
-          url: `${oapi}/collections/${collection_id}/items`,
-          params: {
-            f: "json",
-            name: datastream.id,
-            index: datastream.index,
-            wigos_station_identifier: station_id,
-            sortby: "-resultTime",
-            limit: limit,
-          },
-        })
-          .then(function (response) {
-            // handle success
-            self.plot(response.request.responseURL);
-            if (datastream.units === "CODE TABLE") {
-              self.title = `${datastream.name}`;
-              self.data.value = self.getCol(
-                response.data.features,
-                "description"
-              );
-            } else {
-              self.title = `${datastream.name} (${datastream.units})`;
-              self.data.value = self.getCol(response.data.features, "value");
-            }
-            self.data.time = self.getCol(response.data.features, "resultTime");
-            self.data.phenomenonTime = self.getCol(
-              response.data.features,
-              "phenomenonTime"
-            );
-          })
-          .catch(this.$root.catch)
-          .then(function () {
-            self.loading = false;
-            console.log("done");
-          });
+        console.log("done");
       }
     },
-    plot(url) {
-      var plot = document.getElementById("plotly-table");
-      Plotly.purge(plot);
+    plot(url: string) {
+      const plot = document.getElementById("plotly-table");
+      if (plot !== null) {
+        Plotly.purge(plot);
+      }
       this.config.modeBarButtonsToAdd = [
         {
           name: this.$t("chart.download"),
@@ -227,8 +172,7 @@ export default defineComponent({
             height: 24,
             path: mdiDownload,
           },
-          click: function () {
-            console.log(url.replace("f=json", "f=csv"));
+          click: () => {
             window.location.href = url.replace("f=json", "f=csv");
           },
         },
@@ -243,6 +187,7 @@ export default defineComponent({
 tr:nth-child(odd) {
   background-color: #eeeeee;
 }
+
 th,
 td {
   padding: 8px;

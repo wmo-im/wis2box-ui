@@ -1,64 +1,55 @@
+<!-- StationList lists all stations which you can click into in order to get the latest values and history -->
+
 <template id="station-list">
-  <div class="station-list">
-    <v-list lines="3">
-      <v-hover v-slot="{ isHovering, props }">
-        <template v-for="(s, i) in stations" :key="i">
-          <v-list-item
-            v-bind="props"
-            height="50"
-            :class="{ 'on-hover': isHovering }"
-            @click="onClick(s)"
-            @mouseover="onHover(s)"
-          >
-            <template v-slot:prepend>
-              <i class="dot" :style="`background: ${getColor(s)}`" />
-            </template>
-
-            <template v-slot:title>
-              <h4 class="ml-1 text-left" v-text="clean(s.properties.name)" />
-            </template>
-
-            <template v-slot:append>
-              <v-btn
-                variant="outlined"
-                size="small"
-                color="#014e9e"
-                :target="s.id"
-                :title="s.id"
-                :href="s.properties.url"
-              >
-                OSCAR
-                <v-icon end icon="mdi-open-in-new" />
-              </v-btn>
-            </template>
-          </v-list-item>
-          <v-divider v-if="i + 1 < stations.length" />
-        </template>
-      </v-hover>
-    </v-list>
-  </div>
+  <v-list>
+    <v-hover v-slot="{ isHovering, props }">
+      <template v-for="(s, i) in stationsSortedByName" :key="i">
+        <v-list-item v-bind="props" :class="{ 'on-hover': isHovering }" @click="onClick(s)" @mouseover="onHover(s)">
+          <template v-slot:prepend>
+            <i class="dot" :style="`background: ${getColor(s)}`" />
+            <h4 class="ml-1 text-left" v-text="clean(s.properties.name)" />
+          </template>
+          <template v-slot:append>
+            <v-btn variant="outlined" size="small" color="#014e9e" :target="s.id" :title="s.id"
+              :href="s.properties.url">
+              OSCAR
+              <v-icon end icon="mdi-open-in-new" />
+            </v-btn>
+          </template>
+        </v-list-item>
+        <v-divider v-if="i + 1 < stationsSortedByName.length" />
+      </template>
+    </v-hover>
+  </v-list>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script lang="ts">
+import { defineComponent, type PropType } from "vue";
 
-import { clean } from "@/scripts/helpers.js";
+
+import { clean } from "@/lib/helpers.js";
+
+import { LegendColors, type Feature } from "@/lib/types";
+import type { ItemsResponse } from "@/lib/types";
+import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
-  name: "StationList",
-  template: "#station-list",
-  props: ["features", "map"],
-  data() {
-    return {
-      features_: this.features,
-    };
+  props: {
+    map: Object,
+    features: {
+      type: Object as PropType<ItemsResponse>,
+      required: true,
+    },
   },
   computed: {
-    stations: function () {
-      if (this.features.stations === null) {
+    stationsSortedByName: function () {
+      if (this.features === null) {
         return [];
       } else {
-        const stns = [...this.features.stations.features].sort((a, b) => {
+        const stns = [...this.features.features].sort((a, b) => {
+          if (a.properties.name === undefined || b.properties.name === undefined) {
+            return 0;
+          }
           const nameA = a.properties.name.toUpperCase(); // ignore upper and lowercase
           const nameB = b.properties.name.toUpperCase(); // ignore upper and lowercase
           if (nameA < nameB) {
@@ -75,31 +66,36 @@ export default defineComponent({
   },
   methods: {
     clean,
-    onClick(station) {
-      this.features_.station = station;
+    onClick(station: Feature) {
       const latlng = [
         station.geometry.coordinates[1],
         station.geometry.coordinates[0],
       ];
-      this.map.flyTo(latlng);
+      const store = useGlobalStateStore();
+      store.setSelectedStation(station);
+      if (this.map) {
+        this.map.flyTo(latlng);
+      }
     },
-    onHover(station) {
+    onHover(station: Feature) {
       const latlng = [
         station.geometry.coordinates[1],
         station.geometry.coordinates[0],
       ];
-      this.map.openPopup(station.properties.name, latlng);
+      if (this.map) {
+        this.map.openPopup(station.properties.name, latlng);
+      }
     },
-    getColor(station) {
-      let hits = station.properties.num_obs;
-      if (hits === 0) {
-        return "#708090";
+    getColor(station: Feature) {
+      const hits = station.properties.num_obs;
+      if (hits === 0 || hits === undefined) {
+        return LegendColors.Gray;
       } else if (hits <= 7) {
-        return "#FF3300";
+        return LegendColors.Red;
       } else if (hits <= 19) {
-        return "#FF9900";
+        return LegendColors.Yellow;
       } else {
-        return "#009900";
+        return LegendColors.Green;
       }
     },
   },

@@ -2,29 +2,39 @@
   <div class="wis-station" style="display: none"></div>
 </template>
 
-<script>
-import { circleMarker, geoJSON } from "leaflet/dist/leaflet-src.esm";
+<script lang="ts">
+import { LegendColors, type Feature, type ItemsResponse } from "@/lib/types";
+import { useGlobalStateStore } from "@/stores/global";
+import { circleMarker, geoJSON, Layer, type LatLngExpression, type Map } from "leaflet";
+// @ts-expect-error no types
 import { MarkerClusterGroup } from "leaflet.markercluster/dist/leaflet.markercluster-src.js";
 
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
-import { defineComponent } from "vue";
+import { computed, defineComponent, type PropType } from "vue";
 
 export default defineComponent({
-  name: "WisStation",
-  template: "#wis-station",
-  props: ["features", "map"],
   data: function () {
     return {
-      features_: this.features,
       geojsonOptions: {
-        onEachFeature: this.onEachFeature,
-        pointToLayer: this.pointToLayer,
+        onEachFeature: this.onEachFeature as () => void,
+        pointToLayer: this.pointToLayer as () => Layer,
       },
-      layer: null,
-      clusterLayer: null,
+      layer: null as Layer | null,
+      clusterLayer: null as Layer | null,
+      renderAsCluster: computed(() => useGlobalStateStore().cluster)
     };
+  },
+  props: {
+    features: {
+      type: Object as PropType<ItemsResponse>,
+      required: true
+    },
+    map: {
+      type: Object as PropType<Map>,
+      required: true
+    }
   },
   mounted: function () {
     this.$nextTick(() => {
@@ -32,61 +42,75 @@ export default defineComponent({
     })
   },
   watch: {
-    "$root.cluster": function () {
+    renderAsCluster: function () {
       this.renderLayer();
     }
   },
   methods: {
     onReady() {
-      this.layer = new geoJSON(this.stations, this.geojsonOptions);
+      this.layer = geoJSON(this.features, this.geojsonOptions);
       this.clusterLayer = new MarkerClusterGroup({
-          disableClusteringAtZoom: 9,
-          chunkedLoading: true,
-          chunkInterval: 500,
-        });
-      this.clusterLayer.addLayer(this.layer);
+        disableClusteringAtZoom: 9,
+        chunkedLoading: true,
+        chunkInterval: 500,
+      });
+      if (this.clusterLayer) {
+        //@ts-expect-error no types for this
+        this.clusterLayer.addLayer(this.layer);
+      }
       this.renderLayer();
     },
     renderLayer() {
-      if (this.$root.cluster){
+      if (this.renderAsCluster) {
+        if (!this.layer) {
+          return
+        }
         this.layer.removeFrom(this.map);
-        this.map.addLayer(this.clusterLayer);
+        if (this.clusterLayer) {
+          if (this.clusterLayer) {
+            this.clusterLayer.addTo(this.map);
+          }
+        }
       } else {
+        if (!this.clusterLayer) {
+          return
+        }
         this.clusterLayer.removeFrom(this.map)
-        this.map.addLayer(this.layer);
+        if (this.layer) {
+          this.map.addLayer(this.layer as L.Layer);
+        }
       }
     },
-    mapClick(e) {
-      this.features_.station = e.target.feature;
-      this.features_.datastreams.length = 0;
-      this.$root.toggleDialog();
+    mapClick(e: { target: { feature: Feature; }; originalEvent: { stopPropagation: () => void; }; }) {
+      const store = useGlobalStateStore();
+      store.setSelectedStation(e.target.feature);
       e.originalEvent.stopPropagation();
     },
-    onEachFeature(feature, layer) {
-      var self = this;
-      layer.on("mouseover", function (e) {
-        self.features_.station = feature;
-        layer.bindPopup(feature.properties.name).openPopup(e.latLng);
+    onEachFeature(feature: Feature, layer: L.Layer) {
+      const store = useGlobalStateStore();
+      layer.on("mouseover", (e: L.LeafletMouseEvent) => {
+        store.setSelectedStation(feature);
+        layer.bindPopup(feature.properties.name!).openPopup(e.latlng);
       });
       layer.on({
         click: this.mapClick
       });
     },
-    pointToLayer(feature, latLng) {
+    pointToLayer(feature: Feature, latLng: LatLngExpression) {
       let fillColor;
       let color;
-      let hits = feature.properties.num_obs;
-      if (hits === 0) {
-        fillColor = "#708090";
+      const hits = feature.properties.num_obs;
+      if (hits === 0 || hits === undefined) {
+        fillColor = LegendColors.Gray;
         color = "#2E343B";
       } else if (hits <= 7) {
-        fillColor = "#FF3300";
+        fillColor = LegendColors.Red;
         color = "#801A00";
       } else if (hits <= 19) {
-        fillColor = "#FF9900";
+        fillColor = LegendColors.Yellow;
         color = "#804D00";
       } else {
-        fillColor = "#009900";
+        fillColor = LegendColors.Green;
         color = "#004D00";
       }
       const markerStyle = {
@@ -98,11 +122,6 @@ export default defineComponent({
         fillOpacity: 0.8,
       };
       return circleMarker(latLng, markerStyle);
-    },
-  },
-  computed: {
-    stations: function () {
-      return this.features_.stations;
     },
   },
 });
