@@ -48,6 +48,10 @@ export default defineComponent({
   },
   methods: {
     onReady() {
+      if (!this.features.features || !this.features.features.length) {
+        return
+      }
+
       this.layer = geoJSON(this.features, this.geojsonOptions);
       this.clusterLayer = new MarkerClusterGroup({
         disableClusteringAtZoom: 9,

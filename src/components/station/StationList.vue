@@ -27,7 +27,7 @@
 import { defineComponent, type PropType } from "vue";
 
 
-import { clean } from "@/lib/helpers.js";
+import { clean } from "@/lib/helpers";
 
 import { LegendColors, type Feature } from "@/lib/types";
 import type { ItemsResponse } from "@/lib/types";
@@ -43,7 +43,8 @@ export default defineComponent({
   },
   computed: {
     stationsSortedByName: function () {
-      if (this.features === null) {
+      // if the features prop is null or the features array associated with it is null, there are no stations to display
+      if (!this.features || !this.features.features) { 
         return [];
       } else {
         const stns = [...this.features.features].sort((a, b) => {

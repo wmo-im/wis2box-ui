@@ -234,7 +234,7 @@ export default defineComponent({
       const nextDate = new Date(d.toISOString());
       this.iterDate(nextDate);
       try {
-        const response = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${nextDate.toISOString()}/..&sortby=+resultTime&index=${index}&limit=1&wigos_station_identifier=${station.id}`);
+        const response = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${nextDate.toISOString()}/..&sortby=resultTime&index=${index}&limit=1&wigos_station_identifier=${station.id}`);
         const data: ItemsResponse = await response.json();
         let next;
         if (data.numberMatched > 0) {

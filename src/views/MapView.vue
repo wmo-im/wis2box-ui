@@ -1,11 +1,15 @@
 <template>
   <v-progress-linear v-if="!featuresReady" striped indeterminate color="primary" />
   <v-card flat>
-    <!-- For some reason, the v-progress-linear will not show up
-         unless there is a dummy div in the template.
-    -->
-    <div v-show="!featuresReady" style="height: 10px;"></div>
-    <WisMap :topic="topic" :features="features" v-if="featuresReady" />
+
+    <div v-show="!featuresReady" style="height: 10px;">
+          <!-- For some reason, the v-progress-linear will not show up
+         unless there is a dummy div in the template. -->
+    </div>
+
+    <div v-if="features">
+      <WisMap :topic="topic" :features="features" v-if="featuresReady" />
+    </div>
   </v-card>
 </template>
 
