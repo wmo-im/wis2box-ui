@@ -95,7 +95,7 @@ export default defineComponent({
           propSet.add(item.properties.name);
         }
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
       }

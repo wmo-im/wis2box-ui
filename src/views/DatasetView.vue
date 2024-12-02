@@ -103,7 +103,7 @@ export default defineComponent({
         }
       } catch (error) {
         // if fetch fails, and try to show the error code as well otherwise, just show the error
-        return catchAndDisplayError(error as string, undefined, response ? response.status : undefined);
+        return catchAndDisplayError(String(error), undefined, response ? response.status : undefined);
       }
 
       try {
@@ -160,7 +160,7 @@ export default defineComponent({
           });
         }
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
       }

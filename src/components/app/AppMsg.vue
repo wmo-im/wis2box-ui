@@ -53,6 +53,7 @@ export default defineComponent({
   computed: {
     // If the user supplies \n in the error message, split it into multiple lines for display
     splitMessage(): string[] {
+      if (!this.error || typeof this.error.msg !== 'string') return [];
       return this.error.msg ? this.error.msg.split('\n') : [];
     }
   },

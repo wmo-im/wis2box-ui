@@ -58,7 +58,7 @@ export default defineComponent({
         catchAndDisplayError(`${this.$t("messages.how_to_link_station")}`, undefined, response.status)
       }
     } catch (error) {
-      catchAndDisplayError(error as string);
+      catchAndDisplayError(String(error));
     } finally {
       this.featuresReady = true;
     }

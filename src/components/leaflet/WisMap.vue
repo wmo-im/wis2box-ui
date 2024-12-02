@@ -113,7 +113,7 @@ export default defineComponent({
       try {
         this.map.fitBounds(bounds_);
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       }
       this.loading = false;
     },

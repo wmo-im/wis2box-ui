@@ -133,7 +133,7 @@ export default defineComponent({
           throw new Error(`${response.status}, ${errorBody}`);
         }
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
       }
@@ -164,7 +164,7 @@ export default defineComponent({
           }
         }
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
       }
@@ -205,7 +205,7 @@ export default defineComponent({
             catchAndDisplayError("", undefined, response.status);
           }
         } catch (error) {
-          catchAndDisplayError(error as string);
+          catchAndDisplayError(String(error));
         }
       }
       this.loading = false;
@@ -246,7 +246,7 @@ export default defineComponent({
         d.setMonth(next.getMonth());
         d.setDate(next.getDate());
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       }
     },
   },

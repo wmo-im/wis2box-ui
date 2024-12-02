@@ -84,7 +84,7 @@ export default defineComponent({
           );
         }
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
         console.log("done");
@@ -100,7 +100,7 @@ export default defineComponent({
         const features: Feature[] = data.features;
         this.recentObservations = features.map((obs: Feature) => obs.properties);
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
       }

@@ -148,7 +148,7 @@ export default defineComponent({
           response = await fetchWithToken(url);
         }
         catch (error) {
-          catchAndDisplayError(error as string, undefined, response?.status);
+          catchAndDisplayError(String(error), undefined, response?.status);
           return;
         }
 
@@ -174,7 +174,7 @@ export default defineComponent({
         this.layout.title = clean(this.selectedDatastream.name || '');
         this.plot();
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
       }
