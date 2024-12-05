@@ -29,9 +29,15 @@ const onMapReady = (map: L.Map) => {
       map.fitBounds(bounds, { padding }); 
     }
     
+    // Make the map static so it just shows the bbox
+    // If the user wants to interact with the map, they should click into the WisMap component
     map.attributionControl.remove();
     map.zoomControl.remove();
     map.invalidateSize();
+    map.dragging.disable();
+    map.touchZoom.disable();
+    map.doubleClickZoom.disable();
+    map.scrollWheelZoom.disable();
 
     // this is needed to handle the case where the bounds stretch to the end of the map
     // for instance for the bbox of the entire northern hemisphere.
