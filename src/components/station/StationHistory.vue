@@ -18,6 +18,7 @@ import { defineComponent, type PropType } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
 import type { Feature, ItemsResponse, Trace } from "@/lib/types";
 import { fetchWithToken } from "@/lib/helpers";
+import { t } from "@/locales/i18n"
 
 
 export default defineComponent({
@@ -86,9 +87,9 @@ export default defineComponent({
           this.loadObservations(station);
         } else if (station !== null) {
           catchAndDisplayError(`
-            ${clean(station.properties.name)} ${this.$t(
+            ${clean(station.properties.name)} ${t(
             "messages.no_linked_collections"
-          )}, ${this.$t("messages.how_to_link_station")}`);
+          )}, ${t("messages.how_to_link_station")}`);
           this.loading = false;
         }
       }
@@ -125,7 +126,7 @@ export default defineComponent({
                 this.loadDailyObservations(station, index);
               }
             } else {
-              catchAndDisplayError(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
+              catchAndDisplayError(t("chart.station") + t("messages.no_observations_in_collection"));
             }
           }
         } else {

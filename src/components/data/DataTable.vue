@@ -16,7 +16,7 @@
         <thead>
           <tr>
             <th class="text-center">
-              {{ $t('table.phenomenon_time') }}
+              {{ t('table.phenomenon_time') }}
             </th>
             <th class="text-center">
               {{ title }}
@@ -48,6 +48,7 @@ import { mdiDownload } from "@mdi/js";
 import { catchAndDisplayError } from "@/lib/errors";
 import type { Datastreams, Feature, ItemsResponse } from "@/lib/types";
 import { clean, fetchAllOAFFeatures, getColumnFromKey } from "@/lib/helpers";
+import { t } from "@/locales/i18n";
 
 
 export default defineComponent({
@@ -132,6 +133,7 @@ export default defineComponent({
     onScroll(e: { target: { scrollTop: number; }; }) {
       this.headerOverflow = e.target.scrollTop;
     },
+    t,
     getColumnFromKey,
     async loadObservations() {
 
@@ -166,7 +168,7 @@ export default defineComponent({
       }
       this.config.modeBarButtonsToAdd = [
         {
-          name: this.$t("chart.download"),
+          name: t("chart.download"),
           icon: {
             width: 24,
             height: 24,
