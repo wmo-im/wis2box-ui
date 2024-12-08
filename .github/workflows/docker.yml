@@ -20,7 +20,10 @@ jobs:
 
       - name: Run Docker container
         run: |
-          docker run -d --name wis2box-ui-test -p 8080:80 wis2box-ui:test
+          # TODO spin up a local WIS2BOX API and validate state of the UI
+          # Set the WIS2BOX_API_URL env var with -e to a dummy value so build passes.
+
+          docker run -d --name wis2box-ui-test -p 8080:80 -e WIS2BOX_API_URL=http://localhost:8080/oapi wis2box-ui:test
           sleep 5 # Give the container time to start
 
       - name: Test Nginx is running
