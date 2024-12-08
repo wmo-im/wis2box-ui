@@ -28,7 +28,8 @@
       "how_to_link_station": "请将站点与此数据集/主题关联，以在地图上显示其数据",
       "from": "从",
       "no_of_observations": "过去24小时的观测",
-      "does_not_exist": "页面不存在"
+      "does_not_exist": "页面不存在",
+      "no_discovery_datasets": ""
     },
     "station": {
       "map": "站点地图",

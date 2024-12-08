@@ -29,6 +29,8 @@ import { defineComponent, type PropType } from "vue";
 import { getNameTime, clean, hasLinks, fetchWithToken } from "@/lib/helpers.js";
 import type { Feature } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
+import { t } from "@/locales/i18n"
+
 
 export default defineComponent({
   data() {
@@ -59,9 +61,9 @@ export default defineComponent({
         this.loadObservations(this.selectedStation);
       } else if (this.selectedStation !== null) {
         catchAndDisplayError(`
-          ${clean(this.selectedStation.properties.name)} ${this.$t(
+          ${clean(this.selectedStation.properties.name)} ${t(
           "messages.no_linked_collections"
-        )}, ${this.$t("messages.how_to_link_station")}`);
+        )}, ${t("messages.how_to_link_station")}`);
         this.loading = false;
       }
     },
@@ -80,7 +82,7 @@ export default defineComponent({
           this.loadRecentObservations(station, data.numberMatched);
         } else {
           throw new Error(
-            this.$t("chart.station") + ` ${station.properties.name}` + this.$t("messages.no_observations_in_collection")
+            t("chart.station") + ` ${station.properties.name}` + t("messages.no_observations_in_collection")
           );
         }
       } catch (error) {

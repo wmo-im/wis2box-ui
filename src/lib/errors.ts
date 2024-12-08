@@ -1,5 +1,5 @@
 import { useGlobalStateStore } from '@/stores/global'
-import i18n from '@/locales/i18n'
+import { t } from '@/locales/i18n'
 
 /**
  * Take in error info, pass it to pinia for global state, and display it
@@ -14,8 +14,6 @@ export function catchAndDisplayError(
   status?: number,
 ) {
   const globalState = useGlobalStateStore()
-
-  const { t } = i18n.global // use the global i18n we defined at application startup to translate error messages
 
   globalState.clearError()
 
