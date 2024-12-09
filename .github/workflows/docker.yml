@@ -1,0 +1,37 @@
+name: Docker Build and Sanity Check
+
+on:
+  push:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t wis2box-ui:test .
+
+      - name: Run Docker container
+        run: |
+          # TODO spin up a local WIS2BOX API and validate state of the UI
+          # Set the WIS2BOX_API_URL env var with -e to a dummy value so build passes.
+
+          docker run -d --name wis2box-ui-test -p 8080:80 -e WIS2BOX_API_URL=http://localhost:8080/oapi wis2box-ui:test
+          sleep 5 # Give the container time to start
+
+      - name: Test Nginx is running
+        run: |
+          curl -f http://localhost:8080 || (docker logs wis2box-ui-test && exit 1)
+
+      - name: Stop and remove container
+        if: always()
+        run: |
+          docker stop wis2box-ui-test || true
+          docker rm wis2box-ui-test || true
