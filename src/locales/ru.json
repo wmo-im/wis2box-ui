@@ -29,7 +29,7 @@
       "from": "от",
       "no_of_observations": "Наблюдения за последние 24 часа",
       "does_not_exist": "Страница не найдена",
-      "no_discovery_datasets": ""
+      "no_discovery_datasets": "Метаданные обнаружения не содержат наборов данных"
     },
     "station": {
       "map": "Карта станции",

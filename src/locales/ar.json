@@ -29,7 +29,7 @@
     "from": "من",
     "no_of_observations": "الملاحظات منذ 24 ساعة",
     "does_not_exist": "الصفحة غير موجودة",
-    "no_discovery_datasets": ""
+    "no_discovery_datasets": "لا تحتوي بيانات تعريف الاكتشاف على مجموعات بيانات"
   },
   "station": {
     "map": "خريطة المحطة",

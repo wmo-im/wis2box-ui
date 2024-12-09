@@ -29,7 +29,7 @@
     "from": "desde",
     "no_of_observations": "Observaciones de las últimas 24 horas",
     "does_not_exist": "Página no encontrada",
-    "no_discovery_datasets": ""
+    "no_discovery_datasets": "Los metadatos de descubrimiento no contienen conjuntos de datos"
 
   },
   "station": {

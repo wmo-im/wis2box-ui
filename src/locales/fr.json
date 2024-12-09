@@ -29,7 +29,7 @@
     "from": "depuis",
     "no_of_observations": "Observations des dernières 24 heures",
     "does_not_exist": "Page non trouvée",
-    "no_discovery_datasets": ""
+    "no_discovery_datasets": "Les métadonnées de découverte ne contiennent pas d'ensembles de données"
   },
   "station": {
     "map": "Plan de la station",
