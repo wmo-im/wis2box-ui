@@ -18,6 +18,7 @@ import { defineComponent, type PropType } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
 import type { Feature, ItemsResponse, Trace } from "@/lib/types";
 import { fetchWithToken } from "@/lib/helpers";
+import { t } from "@/locales/i18n"
 
 
 export default defineComponent({
@@ -86,9 +87,9 @@ export default defineComponent({
           this.loadObservations(station);
         } else if (station !== null) {
           catchAndDisplayError(`
-            ${clean(station.properties.name)} ${this.$t(
+            ${clean(station.properties.name)} ${t(
             "messages.no_linked_collections"
-          )}, ${this.$t("messages.how_to_link_station")}`);
+          )}, ${t("messages.how_to_link_station")}`);
           this.loading = false;
         }
       }
@@ -100,7 +101,6 @@ export default defineComponent({
     async loadObservations(station: Feature) {
       this.loading = true;
       this.data = [];
-      // NOTE: It appears that sorting with +resultTime is not supported by the OAPI
       const url = `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&sortby=resultTime&wigos_station_identifier=${station.id}&limit=1`;
 
       try {
@@ -109,9 +109,16 @@ export default defineComponent({
         // Clone the response to be able to read the body twice in case of an error
         const responseClone = response.clone();
         const data: ItemsResponse = await response.json();
+        
+        const hasFeatures = data.features && data.features.length > 0;
+
+        if (!hasFeatures ) {
+          throw new Error(
+            t("chart.station") + ` ${station.properties.name}` + t("messages.no_observations_in_collection")
+          );
+        } 
 
         if (response.ok) {
-          if (data.features.length > 0) {
             const feature = data.features[0];
             if (feature && feature.properties && feature.properties.resultTime) {
               this.oldestResultTime = new Date(feature.properties.resultTime);
@@ -125,10 +132,11 @@ export default defineComponent({
                 this.loadDailyObservations(station, index);
               }
             } else {
-              catchAndDisplayError(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
+              catchAndDisplayError(t("chart.station") + t("messages.no_observations_in_collection"));
             }
-          }
         } else {
+          // If we checked for errors we know how to handle, but still have something wrong,
+          // just display the raw error
           const errorBody = await responseClone.text();
           throw new Error(`${response.status}, ${errorBody}`);
         }

@@ -42,6 +42,7 @@ import WisStation from "../station/WisStation.vue";
 import StationInfo from "../station/StationInfo.vue";
 import { LegendColors, type ItemsResponse } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
+import {t } from "@/locales/i18n"
 
 export default defineComponent({
   components: {
@@ -97,7 +98,7 @@ export default defineComponent({
 
       if (!this.features.features || !this.features.features.length) {
           this.loading = false;
-          return catchAndDisplayError(`${this.topic} ${this.$t("messages.no_observations_in_collection")}\n${this.$t("messages.how_to_link_station")}`);
+          return catchAndDisplayError(`${this.topic} ${t("messages.no_observations_in_collection")}\n${t("messages.how_to_link_station")}`);
         }
 
       await nextTick();
