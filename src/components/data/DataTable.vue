@@ -153,7 +153,7 @@ export default defineComponent({
         this.data.time = this.getColumnFromKey(data.features, "resultTime") as string[];
         this.data.phenomenonTime = this.getColumnFromKey(data.features, "phenomenonTime") as string[];
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
         console.log("done");

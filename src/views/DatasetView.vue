@@ -23,7 +23,12 @@
                 </v-card>
               </template>
               <template v-else>
-                <i>{{ $t("messages.no_observations_in_collection") }}</i>
+                <!-- TODO we could call out that there are no observations;
+                     However, this could be done by using either feature.properties["wmo:topicHierarchy"].includes("surface-based-observations"); 
+                     or the length of the features inside the collection. Would need to check both and it may be confusing the user
+                     that there are different ways to check
+                  -->
+                <!-- <i>{{ $t("messages.no_observations_in_collection") }}</i> -->
                 <v-card class="pa-0 ma-0">
                   <dataset-map :dataset="dataset" />
                 </v-card>
@@ -98,7 +103,7 @@ export default defineComponent({
         }
       } catch (error) {
         // if fetch fails, and try to show the error code as well otherwise, just show the error
-        return catchAndDisplayError(error as string, undefined, response ? response.status : undefined);
+        return catchAndDisplayError(String(error), undefined, response ? response.status : undefined);
       }
 
       try {
@@ -155,7 +160,7 @@ export default defineComponent({
           });
         }
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
       }
