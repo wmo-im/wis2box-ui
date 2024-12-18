@@ -44,6 +44,9 @@
             <span class="pt-2">
               <strong>{{ $t("datasets.topic") + ": " }}</strong>
               <code>{{ dataset.properties['wmo:topicHierarchy'] }}</code>
+              <br>
+              <strong>{{ "ID: " }}</strong>
+              <code>{{ dataset.properties.id}}</code>
             </span>
           </v-col>
           <v-col>
@@ -129,7 +132,6 @@ export default defineComponent({
               icon: "mdi-map-marker-circle",
             });
           }
-
           for (const link of feature.links) {
             if (link.rel === "canonical") {
               uiLinks.push({
@@ -149,6 +151,14 @@ export default defineComponent({
               });
             }
           }
+
+          uiLinks.push({
+            target: undefined,
+            href: `${window.VUE_APP_OAPI}/collections/messages/items?metadata_id=${feature.id}`,
+            type: "Info",
+            msg: "messages",
+            icon: "mdi-message-text-outline",
+          });
 
           const bbox = feature.geometry.coordinates[0].flat(2);
 

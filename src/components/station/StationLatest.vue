@@ -2,8 +2,8 @@
 
 <template id="station-status">
   <div class="station-status">
-    <h5 class="text-left" v-if="latestResultTime">
-      {{ $t("messages.from") + " " + latestResultTime }}
+    <h5 class="text-left" v-if="latestreportTime">
+      {{ $t("messages.from") + " " + latestreportTime }}
     </h5>
   <v-progress-linear v-if="loading" indeterminate color="#014e9e"/>
 
@@ -36,7 +36,7 @@ export default defineComponent({
   data() {
     return {
       recentObservations: [] as Feature["properties"][],
-      latestResultTime: null as string | null,
+      latestreportTime: null as string | null,
       loading: false,
     };
   },
@@ -72,14 +72,14 @@ export default defineComponent({
       this.recentObservations = [];
       try {
         const response = await fetchWithToken(
-          `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station.id}&limit=1`
+          `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&sortby=-reportTime&wigos_station_identifier=${station.id}&limit=1`
         );
         const data: ItemsResponse = await response.json();
 
         const hasFeatures = data.features && data.features.length > 0;
 
-        if (hasFeatures && data.features[0].properties && data.features[0].properties.resultTime) {
-          this.latestResultTime = data.features[0].properties.resultTime;
+        if (hasFeatures && data.features[0].properties && data.features[0].properties.reportTime) {
+          this.latestreportTime = data.features[0].properties.reportTime;
           this.loadRecentObservations(station, data.numberMatched);
         } else {
           throw new Error(
@@ -97,7 +97,7 @@ export default defineComponent({
       this.loading = true;
       try {
         const response = await fetchWithToken(
-          `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${this.latestResultTime}/..&wigos_station_identifier=${station.id}&limit=${limit}`
+          `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${this.latestreportTime}/..&wigos_station_identifier=${station.id}&limit=${limit}`
         );
         const data = await response.json();
         const features: Feature[] = data.features;

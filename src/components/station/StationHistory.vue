@@ -32,7 +32,7 @@ export default defineComponent({
     return {
       now: new Date(),
       loading: true,
-      oldestResultTime: new Date(),
+      oldestreportTime: new Date(),
       data: [] as Trace[],
       layout: {
         height: 300,
@@ -101,7 +101,7 @@ export default defineComponent({
     async loadObservations(station: Feature) {
       this.loading = true;
       this.data = [];
-      const url = `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&sortby=resultTime&wigos_station_identifier=${station.id}&limit=1`;
+      const url = `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&sortby=reportTime&wigos_station_identifier=${station.id}&limit=1`;
 
       try {
         const response = await fetchWithToken(url);
@@ -120,16 +120,16 @@ export default defineComponent({
 
         if (response.ok) {
             const feature = data.features[0];
-            if (feature && feature.properties && feature.properties.resultTime) {
-              this.oldestResultTime = new Date(feature.properties.resultTime);
-              const index = feature.properties.index;
-              if (!index) {
-                throw new Error("The index is not defined");
+            if (feature && feature.properties && feature.properties.reportTime) {
+              this.oldestreportTime = new Date(feature.properties.reportTime);
+              const reportId = feature.properties.reportId;
+              if (!reportId) {
+                throw new Error("The reportId used to fetch groups of observations is not defined");
               }
-              if (this.differenceInDays(this.oldestResultTime, this.now) > 30) {
-                this.loadAllObservations(station, index);
+              if (this.differenceInDays(this.oldestreportTime, this.now) > 30) {
+                this.loadAllObservations(station, reportId);
               } else {
-                this.loadDailyObservations(station, index);
+                this.loadDailyObservations(station, reportId);
               }
             } else {
               catchAndDisplayError(t("chart.station") + t("messages.no_observations_in_collection"));
@@ -146,20 +146,20 @@ export default defineComponent({
         this.loading = false;
       }
     },
-    async loadAllObservations(station: Feature, index: number) {
+    async loadAllObservations(station: Feature, reportId: string) {
       this.loading = true;
       this.layout.xaxis.range = [
-        this.oldestResultTime.toISOString(),
+        this.oldestreportTime.toISOString(),
         this.now.toISOString(),
       ];
 
       try {
-        const response = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&index=${index}&wigos_station_identifier=${station.id}`);
+        const response = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&reportId=${reportId}&wigos_station_identifier=${station.id}`);
         const data = await response.json();
 
         if (response.ok) {
           const trace = {
-            x: data.features.map((obs: Feature) => obs.properties.resultTime),
+            x: data.features.map((obs: Feature) => obs.properties.reportTime),
             type: "histogram",
             xbins: {
               size: 3600000,
@@ -177,30 +177,30 @@ export default defineComponent({
         this.loading = false;
       }
     },
-    async loadDailyObservations(station: Feature, index: number) {
+    async loadDailyObservations(station: Feature, reportId: string) {
       this.loading = true;
-      this.layout.xaxis.range = [this.oldestResultTime.toISOString(), this.now.toISOString()];
-      for (const d = new Date(this.oldestResultTime.toISOString()); d <= this.now; this.iterDate(d)) {
+      this.layout.xaxis.range = [this.oldestreportTime.toISOString(), this.now.toISOString()];
+      for (const d = new Date(this.oldestreportTime.toISOString()); d <= this.now; this.iterDate(d)) {
         const date_ = d.toISOString().split("T")[0];
         try {
-          const response = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${date_}&index=${index}&wigos_station_identifier=${station.id}`);
+          const response = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${date_}&reportId=${reportId}&wigos_station_identifier=${station.id}`);
           const data: ItemsResponse = await response.json();
 
           if (response.ok) {
             const hits = data.numberMatched;
             if (hits === 0) {
-              this.getNextDate(station, index, d);
+              this.getNextDate(station, reportId, d);
             } else {
               const fillColor = hits <= 7 ? "#FF3300" : hits <= 19 ? "#FF9900" : "#009900";
               const trace = {
-                x: data.features.map((obs: Feature) => obs.properties.resultTime).filter((time) => time !== undefined),
+                x: data.features.map((obs: Feature) => obs.properties.reportTime).filter((time) => time !== undefined),
                 type: "histogram",
                 marker: { color: fillColor },
                 xbins: { size: 3600000 },
                 name: date_,
               };
               if (trace.x.length === 0) {
-                throw new Error("The server returned no resultTime values and thus could not consult the plot");
+                throw new Error("The server returned no reportTime values and thus could not consult the plot");
               }
 
               const plot = document.getElementById(`station-history-${station.id}`);
@@ -238,15 +238,15 @@ export default defineComponent({
       d.setMonth(nextDate.getMonth());
       d.setDate(nextDate.getDate());
     },
-    async getNextDate(station: Feature, index: number, d: Date) {
+    async getNextDate(station: Feature, reportId: string, d: Date) {
       const nextDate = new Date(d.toISOString());
       this.iterDate(nextDate);
       try {
-        const response = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${nextDate.toISOString()}/..&sortby=resultTime&index=${index}&limit=1&wigos_station_identifier=${station.id}`);
+        const response = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${nextDate.toISOString()}/..&sortby=reportTime&reportId=${reportId}&limit=1&wigos_station_identifier=${station.id}`);
         const data: ItemsResponse = await response.json();
         let next;
         if (data.numberMatched > 0) {
-          next = new Date(data.features[0].properties.resultTime || "");
+          next = new Date(data.features[0].properties.reportTime || "");
         } else {
           next = new Date();
         }

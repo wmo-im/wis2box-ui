@@ -140,7 +140,7 @@ export default defineComponent({
       this.loading = true;
 
       try {
-        const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}`
+        const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&reportId=${this.selectedDatastream.reportId}&wigos_station_identifier=${this.selectedStation.id}`
         console.log(url)
         const response = await fetchAllOAFFeatures(url);
         const data: ItemsResponse = await response.json();
@@ -152,7 +152,7 @@ export default defineComponent({
           this.title = `${clean(this.selectedDatastream.name)} (${this.selectedDatastream.units})`;
           this.data.value = this.getColumnFromKey(data.features, "value") as number[];
         }
-        this.data.time = this.getColumnFromKey(data.features, "resultTime") as string[];
+        this.data.time = this.getColumnFromKey(data.features, "reportTime") as string[];
         this.data.phenomenonTime = this.getColumnFromKey(data.features, "phenomenonTime") as string[];
       } catch (error) {
         catchAndDisplayError(String(error));
