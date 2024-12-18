@@ -76,7 +76,7 @@ import DatasetMap from "../components/leaflet/DatasetMap.vue";
 import type { Dataset, ItemsResponse } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
 import { fetchWithToken } from "@/lib/helpers";
-
+import { t } from "@/locales/i18n"
 
 export default defineComponent({
   components: {
@@ -110,7 +110,7 @@ export default defineComponent({
         const data: ItemsResponse = await response.json();
 
         if (data.numberMatched === 0) {
-          const errMsg = `${this.$t("datasets.oarec")} ${this.$t("messages.no_observations_in_collection")}`;
+          const errMsg = `${t("messages.no_discovery_datasets")}`;
           return catchAndDisplayError(errMsg);
         }
 

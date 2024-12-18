@@ -19,6 +19,7 @@ import WisMap from "@/components/leaflet/WisMap.vue";
 import type { ItemsResponse, ProcessResponse } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
 import { fetchWithToken } from "@/lib/helpers";
+import { t } from "@/locales/i18n"
 
 export default defineComponent({
   components: {
@@ -51,11 +52,11 @@ export default defineComponent({
         const data: ProcessResponse = await response.json()
         // It is possible for a process to return an ok HTTP status code but an error in the json
         if (data.code !== 'success') {
-          catchAndDisplayError(`${this.$t("messages.how_to_link_station")}`, undefined, response.status)
+          catchAndDisplayError(`${t("messages.how_to_link_station")}`, undefined, response.status)
         }
         this.features = data.value // value represents the result of the process
       } else {
-        catchAndDisplayError(`${this.$t("messages.how_to_link_station")}`, undefined, response.status)
+        catchAndDisplayError(`${t("messages.how_to_link_station")}`, undefined, response.status)
       }
     } catch (error) {
       catchAndDisplayError(String(error));

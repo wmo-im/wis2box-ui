@@ -28,7 +28,8 @@
     "how_to_link_station": "",
     "from": "",
     "no_of_observations": "",
-    "does_not_exist": ""
+    "does_not_exist": "",
+    "no_discovery_datasets": ""
   },
   "station": {
     "map": "",
@@ -44,7 +45,7 @@
     "chart": "",
     "options": "",
     "collection": "",
-    "observed_property'": "",
+    "observed_property": "",
     "station": "",
     "data_source": "",
     "download": ""
