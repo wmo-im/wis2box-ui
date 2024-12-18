@@ -62,6 +62,7 @@
     "oarec": "Métadonnées de découverte",
     "map": "Carte",
     "explore": "Explorer",
-    "mqp": "PubSub"
+    "mqp": "PubSub",
+    "metadata_id": "Identifiant des métadonnées"
   }
 }

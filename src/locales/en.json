@@ -63,6 +63,7 @@
     "oarec": "Discovery metadata",
     "map": "Map",
     "explore": "Explore",
-    "mqp": "PubSub"
+    "mqp": "PubSub",
+    "metadata_id": "Metadata Identifier"
   }
 }

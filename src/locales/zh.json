@@ -62,7 +62,8 @@
       "oarec": "发现元数据",
       "map": "地图",
       "explore": "探索",
-      "mqp": "PubSub"
+      "mqp": "PubSub",
+      "metadata_id": "元数据标识符"
     }
   }
   

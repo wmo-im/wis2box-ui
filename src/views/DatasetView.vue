@@ -37,15 +37,15 @@
           </v-container>
         </v-col>
         <v-col sm="12" md="9" class="text-center">
-          <v-col>
+          <v-col class="pb-0">
             <h2>{{ dataset.properties.title }}</h2>
           </v-col>
-          <v-col class="flex-nowrap">
-            <span class="pt-2">
+          <v-col>
+            <span>
               <strong>{{ $t("datasets.topic") + ": " }}</strong>
               <code>{{ dataset.properties['wmo:topicHierarchy'] }}</code>
               <br>
-              <strong>{{ "ID: " }}</strong>
+              <strong>{{ $t("datasets.metadata_id") + ": " }}</strong>
               <code>{{ dataset.properties.id}}</code>
             </span>
           </v-col>
