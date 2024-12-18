@@ -139,7 +139,7 @@ export default defineComponent({
                 target: undefined,
                 type: "OARec",
                 msg: "oarec",
-                icon: "mdi-open-in-new",
+                icon: "mdi-book-search",
               });
             } else if (link.rel === "collection" && hasObs) {
               uiLinks.push({
@@ -147,7 +147,7 @@ export default defineComponent({
                 target: undefined,
                 type: "OAFeat",
                 msg: "oafeat",
-                icon: "mdi-open-in-new",
+                icon: "mdi-database-search",
               });
             }
           }
