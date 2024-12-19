@@ -16,7 +16,7 @@
         <thead>
           <tr>
             <th class="text-center">
-              {{ $t('table.phenomenon_time') }}
+              {{ t('table.phenomenon_time') }}
             </th>
             <th class="text-center">
               {{ title }}
@@ -48,6 +48,7 @@ import { mdiDownload } from "@mdi/js";
 import { catchAndDisplayError } from "@/lib/errors";
 import type { Datastreams, Feature, ItemsResponse } from "@/lib/types";
 import { clean, fetchAllOAFFeatures, getColumnFromKey } from "@/lib/helpers";
+import { t } from "@/locales/i18n";
 
 
 export default defineComponent({
@@ -132,13 +133,14 @@ export default defineComponent({
     onScroll(e: { target: { scrollTop: number; }; }) {
       this.headerOverflow = e.target.scrollTop;
     },
+    t,
     getColumnFromKey,
     async loadObservations() {
 
       this.loading = true;
 
       try {
-        const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}`
+        const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&reportId=${this.selectedDatastream.reportId}&wigos_station_identifier=${this.selectedStation.id}`
         console.log(url)
         const response = await fetchAllOAFFeatures(url);
         const data: ItemsResponse = await response.json();
@@ -150,10 +152,10 @@ export default defineComponent({
           this.title = `${clean(this.selectedDatastream.name)} (${this.selectedDatastream.units})`;
           this.data.value = this.getColumnFromKey(data.features, "value") as number[];
         }
-        this.data.time = this.getColumnFromKey(data.features, "resultTime") as string[];
+        this.data.time = this.getColumnFromKey(data.features, "reportTime") as string[];
         this.data.phenomenonTime = this.getColumnFromKey(data.features, "phenomenonTime") as string[];
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
         console.log("done");
@@ -166,7 +168,7 @@ export default defineComponent({
       }
       this.config.modeBarButtonsToAdd = [
         {
-          name: this.$t("chart.download"),
+          name: t("chart.download"),
           icon: {
             width: 24,
             height: 24,

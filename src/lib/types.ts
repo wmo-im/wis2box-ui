@@ -60,8 +60,8 @@ export interface Feature {
     topics?: string[]
     wmo_region?: string
     num_obs?: number
-    index?: number
-    resultTime?: string
+    reportTime?: string
+    reportId?: string
     units?: string
     phenomenonTime?: string
     wigos_station_identifier?: string

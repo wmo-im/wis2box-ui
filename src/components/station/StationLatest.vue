@@ -2,8 +2,8 @@
 
 <template id="station-status">
   <div class="station-status">
-    <h5 class="text-left" v-if="latestResultTime">
-      {{ $t("messages.from") + " " + latestResultTime }}
+    <h5 class="text-left" v-if="latestreportTime">
+      {{ $t("messages.from") + " " + latestreportTime }}
     </h5>
   <v-progress-linear v-if="loading" indeterminate color="#014e9e"/>
 
@@ -27,14 +27,16 @@
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
 import { getNameTime, clean, hasLinks, fetchWithToken } from "@/lib/helpers.js";
-import type { Feature } from "@/lib/types";
+import type { Feature, ItemsResponse } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
+import { t } from "@/locales/i18n"
+
 
 export default defineComponent({
   data() {
     return {
       recentObservations: [] as Feature["properties"][],
-      latestResultTime: null,
+      latestreportTime: null as string | null,
       loading: false,
     };
   },
@@ -59,9 +61,9 @@ export default defineComponent({
         this.loadObservations(this.selectedStation);
       } else if (this.selectedStation !== null) {
         catchAndDisplayError(`
-          ${clean(this.selectedStation.properties.name)} ${this.$t(
+          ${clean(this.selectedStation.properties.name)} ${t(
           "messages.no_linked_collections"
-        )}, ${this.$t("messages.how_to_link_station")}`);
+        )}, ${t("messages.how_to_link_station")}`);
         this.loading = false;
       }
     },
@@ -70,21 +72,22 @@ export default defineComponent({
       this.recentObservations = [];
       try {
         const response = await fetchWithToken(
-          `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&sortby=-resultTime&wigos_station_identifier=${station.id}&limit=1`
+          `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&sortby=-reportTime&wigos_station_identifier=${station.id}&limit=1`
         );
-        const data = await response.json();
+        const data: ItemsResponse = await response.json();
 
-        const feature = data.features[0];
-        if (feature && feature.properties && feature.properties.resultTime) {
-          this.latestResultTime = feature.properties.resultTime;
+        const hasFeatures = data.features && data.features.length > 0;
+
+        if (hasFeatures && data.features[0].properties && data.features[0].properties.reportTime) {
+          this.latestreportTime = data.features[0].properties.reportTime;
           this.loadRecentObservations(station, data.numberMatched);
         } else {
           throw new Error(
-            this.$t("chart.station") + ` ${station.properties.name}` + this.$t("messages.no_observations_in_collection")
+            t("chart.station") + ` ${station.properties.name}` + t("messages.no_observations_in_collection")
           );
         }
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
         console.log("done");
@@ -94,13 +97,13 @@ export default defineComponent({
       this.loading = true;
       try {
         const response = await fetchWithToken(
-          `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${this.latestResultTime}/..&wigos_station_identifier=${station.id}&limit=${limit}`
+          `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&datetime=${this.latestreportTime}/..&wigos_station_identifier=${station.id}&limit=${limit}`
         );
         const data = await response.json();
         const features: Feature[] = data.features;
         this.recentObservations = features.map((obs: Feature) => obs.properties);
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
       }

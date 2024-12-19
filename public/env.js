@@ -17,3 +17,6 @@ window.VUE_APP_BASEMAP_URL =
 
 window.VUE_APP_WAF = `${window.VUE_APP_URL}/data/` // endpoint that describes the s3 ListBucketResult and its associated metadata 
 window.VUE_APP_CLUSTER = false // cluster the stations on the map instead of having each one as a separate marker
+window.VUE_APP_CUSTOM_LOGO_URL = "" // URL of a custom logo;
+window.VUE_APP_CUSTOM_BACKGROUND_COLOR = "" // background color of the banner
+window.VUE_APP_DISABLE_SEPARATOR_IMAGE  = false // background color of the footer

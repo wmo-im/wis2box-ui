@@ -1,14 +1,12 @@
-<!-- Component for displaying error messages -->
-
 <template id="app-msg">
   <v-overlay v-model="snackbar" class="align-center justify-center">
     <v-card flat width="100%" max-width="1130" class="text-center">
       <v-card-text>
         <template v-if="error.msg">
-          <p>
-            {{ error.msg }}
-          </p>
-          <br>
+          <template v-for="(line, index) in splitMessage" :key="index">
+            <p>{{ line }}</p>
+            <br />
+          </template>
         </template>
         <template v-if="error.url">
           <a :href="error.url">
@@ -33,7 +31,6 @@ import { defineComponent, type PropType } from "vue";
 
 import TokenAuth from "./TokenAuth.vue";
 
-
 export default defineComponent({
   props: {
     error: {
@@ -51,6 +48,13 @@ export default defineComponent({
   data: function () {
     return {
       snackbar: false,
+    }
+  },
+  computed: {
+    // If the user supplies \n in the error message, split it into multiple lines for display
+    splitMessage(): string[] {
+      if (!this.error || typeof this.error.msg !== 'string') return [];
+      return this.error.msg ? this.error.msg.split('\n') : [];
     }
   },
   watch: {

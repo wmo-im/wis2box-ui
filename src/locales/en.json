@@ -28,7 +28,9 @@
     "how_to_link_station": "Please associate stations with this dataset/topic to see their data displayed on the map",
     "from": "from",
     "no_of_observations": "Observations from the past 24 hours",
-    "does_not_exist": "Page not found"
+    "does_not_exist": "Page not found",
+    "no_discovery_datasets": "Discovery Metadata contains no datasets"
+
   },
   "station": {
     "map": "Station map",
@@ -61,6 +63,7 @@
     "oarec": "Discovery metadata",
     "map": "Map",
     "explore": "Explore",
-    "mqp": "PubSub"
+    "mqp": "PubSub",
+    "metadata_id": "Metadata Identifier"
   }
 }

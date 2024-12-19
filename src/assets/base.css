@@ -59,6 +59,11 @@
 }
 
 body {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+body {
   min-height: 100vh;
   color: var(--color-text);
   background: var(--color-background);

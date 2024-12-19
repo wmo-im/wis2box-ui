@@ -1,5 +1,26 @@
 # wis2box-ui
 
+`wis2box-ui` is the user interface for the [wis2box](https://docs.wis2box.wis.wmo.int) 
+
+## Environment Variables
+
+The UI has a series of environment variables that can be used to configure the application. If you are using `npm` locally, these can be set in the [.env](./public/env.js) file.
+
+If you are using Docker, when you run the associated [Dockerfile](./Dockerfile), the environment variables will be loaded in and override the values in the [.env](./public/env.js) file.
+
+| Environment Variable            | Description                                                                 | Required to be set|
+|----------------------------------|-----------------------------------------------------------------------------|----------|
+| `WIS2BOX_URL`                    | The base URL for the `wis2box` application.                                 | ✅    |
+| `WIS2BOX_API_URL`                | The backend URL for the `wis2box` API.                                      | ✅    |
+| `WIS2BOX_BASEMAP_URL`            | The URL pattern for fetching map tiles (default: OpenStreetMap URL).         | ❌    |
+| `WIS2BOX_BASEMAP_ATTRIBUTION`    | Attribution text for the map tiles (default: OpenStreetMap link).            | ❌    |
+| `WIS2BOX_UI_CLUSTER`             | Boolean flag to enable or disable clustering of stations on the map (default: 'false'). | ❌    |
+| `WIS2BOX_UI_LANG`                | The language to use when translating with i18n (default: 'en').              | ❌    |
+| `WIS2BOX_LOGO`                   | The URL of a custom logo to display in the application.                      | ❌    |
+| `WIS2BOX_CUSTOM_BACKGROUND_COLOR`| The background color of the banner (can be set to a hex color code).         | ❌    |
+| `WIS2BOX_DISABLE_SEPARATOR_IMAGE`| Boolean flag to enable or disable the footer separator image (default: 'false'). | ❌    |
+
+
 ## Project setup
 
 ```

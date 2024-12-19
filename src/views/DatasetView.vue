@@ -23,7 +23,12 @@
                 </v-card>
               </template>
               <template v-else>
-                <i>{{ $t("messages.no_observations_in_collection") }}</i>
+                <!-- TODO we could call out that there are no observations;
+                     However, this could be done by using either feature.properties["wmo:topicHierarchy"].includes("surface-based-observations"); 
+                     or the length of the features inside the collection. Would need to check both and it may be confusing the user
+                     that there are different ways to check
+                  -->
+                <!-- <i>{{ $t("messages.no_observations_in_collection") }}</i> -->
                 <v-card class="pa-0 ma-0">
                   <dataset-map :dataset="dataset" />
                 </v-card>
@@ -32,13 +37,16 @@
           </v-container>
         </v-col>
         <v-col sm="12" md="9" class="text-center">
-          <v-col>
+          <v-col class="pb-0">
             <h2>{{ dataset.properties.title }}</h2>
           </v-col>
-          <v-col class="flex-nowrap">
-            <span class="pt-2">
+          <v-col>
+            <span>
               <strong>{{ $t("datasets.topic") + ": " }}</strong>
               <code>{{ dataset.properties['wmo:topicHierarchy'] }}</code>
+              <br>
+              <strong>{{ $t("datasets.metadata_id") + ": " }}</strong>
+              <code>{{ dataset.properties.id}}</code>
             </span>
           </v-col>
           <v-col>
@@ -71,7 +79,7 @@ import DatasetMap from "../components/leaflet/DatasetMap.vue";
 import type { Dataset, ItemsResponse } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
 import { fetchWithToken } from "@/lib/helpers";
-
+import { t } from "@/locales/i18n"
 
 export default defineComponent({
   components: {
@@ -98,14 +106,14 @@ export default defineComponent({
         }
       } catch (error) {
         // if fetch fails, and try to show the error code as well otherwise, just show the error
-        return catchAndDisplayError(error as string, undefined, response ? response.status : undefined);
+        return catchAndDisplayError(String(error), undefined, response ? response.status : undefined);
       }
 
       try {
         const data: ItemsResponse = await response.json();
 
         if (data.numberMatched === 0) {
-          const errMsg = `${this.$t("datasets.oarec")} ${this.$t("messages.no_observations_in_collection")}`;
+          const errMsg = `${t("messages.no_discovery_datasets")}`;
           return catchAndDisplayError(errMsg);
         }
 
@@ -124,7 +132,6 @@ export default defineComponent({
               icon: "mdi-map-marker-circle",
             });
           }
-
           for (const link of feature.links) {
             if (link.rel === "canonical") {
               uiLinks.push({
@@ -132,7 +139,7 @@ export default defineComponent({
                 target: undefined,
                 type: "OARec",
                 msg: "oarec",
-                icon: "mdi-open-in-new",
+                icon: "mdi-book-search",
               });
             } else if (link.rel === "collection" && hasObs) {
               uiLinks.push({
@@ -140,10 +147,18 @@ export default defineComponent({
                 target: undefined,
                 type: "OAFeat",
                 msg: "oafeat",
-                icon: "mdi-open-in-new",
+                icon: "mdi-database-search",
               });
             }
           }
+
+          uiLinks.push({
+            target: undefined,
+            href: `${window.VUE_APP_OAPI}/collections/messages/items?metadata_id=${feature.id}`,
+            type: "Info",
+            msg: "messages",
+            icon: "mdi-message-text-outline",
+          });
 
           const bbox = feature.geometry.coordinates[0].flat(2);
 
@@ -155,7 +170,7 @@ export default defineComponent({
           });
         }
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
       }

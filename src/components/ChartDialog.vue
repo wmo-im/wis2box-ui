@@ -40,6 +40,7 @@ import { defineComponent, type PropType } from "vue";
 import { catchAndDisplayError } from "@/lib/errors";
 import { useGlobalStateStore } from "@/stores/global";
 import { fetchWithToken } from "@/lib/helpers";
+import { t } from "@/locales/i18n";
 
 export default defineComponent({
   components: {
@@ -73,13 +74,13 @@ export default defineComponent({
         const response = await fetchWithToken(url);
 
         if (!response.ok) {
-          const errMsg = `${this.topic} ${this.$t("messages.no_linked_collections")}`;
+          const errMsg = `${this.topic} ${t("messages")}`;
           return catchAndDisplayError(errMsg, url, response.status);
         }
 
         const data: ItemsResponse = await response.json();
         if (!data.features || data.numberMatched === 0) {
-          return catchAndDisplayError(this.$t("chart.station") + this.$t("messages.no_observations_in_collection"));
+          return catchAndDisplayError(t("chart.station") + t("messages.no_observations_in_collection"));
         }
 
         // There is no way in OAF to get the enumeration of all distinct values
@@ -95,7 +96,7 @@ export default defineComponent({
           propSet.add(item.properties.name);
         }
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
       }

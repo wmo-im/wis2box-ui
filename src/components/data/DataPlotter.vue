@@ -21,6 +21,7 @@ import { mdiOpenInNew } from "@mdi/js";
 import { catchAndDisplayError } from "@/lib/errors";
 import type { Trace, Datastreams, Feature, ItemsResponse } from "@/lib/types";
 import { clean, fetchWithToken, getColumnFromKey } from "@/lib/helpers";
+import { t } from "@/locales/i18n"
 
 export default defineComponent({
   props: {
@@ -134,28 +135,28 @@ export default defineComponent({
       Scatter.y = this.getColumnFromKey(features, yAxis);
       this.data.push(Scatter);
       const lastFeature = features.slice(-1)[0];
-      const lastResultTime = lastFeature?.properties.resultTime;
-      this.setDateLayout(lastResultTime || '');
+      const lastreportTime = lastFeature?.properties.reportTime;
+      this.setDateLayout(lastreportTime || '');
     },
     async loadObservations() {
       this.data = [];
       this.loading = true;
       try {
-        const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&index=${this.selectedDatastream.index}&wigos_station_identifier=${this.selectedStation.id}&sortby=resultTime`;
+        const url = `${window.VUE_APP_OAPI}/collections/${this.topic}/items?f=json&name=${this.selectedDatastream.name}&reportId=${this.selectedDatastream.reportId}&wigos_station_identifier=${this.selectedStation.id}&sortby=reportTime`;
 
         let response
         try {
           response = await fetchWithToken(url);
         }
         catch (error) {
-          catchAndDisplayError(error as string, undefined, response?.status);
+          catchAndDisplayError(String(error), undefined, response?.status);
           return;
         }
 
         const data: ItemsResponse = await response.json();
         const dataURL = response.url;
         this.config.modeBarButtonsToAdd = [{
-          name: this.$t("chart.data_source"),
+          name: t("chart.data_source"),
           icon: {
             width: 24,
             height: 24,
@@ -167,21 +168,21 @@ export default defineComponent({
             window.location.href = `${dataURL}&datetime=${timeExtent}`;
           },
         }];
-        const xAxis = "resultTime";
+        const xAxis = "reportTime";
         const yAxis = "value";
         this.newTrace(data.features, xAxis, yAxis);
         this.layout.yaxis.title = this.selectedDatastream.units || '';
         this.layout.title = clean(this.selectedDatastream.name || '');
         this.plot();
       } catch (error) {
-        catchAndDisplayError(error as string);
+        catchAndDisplayError(String(error));
       } finally {
         this.loading = false;
       }
     },
-    setDateLayout(resultTime: string) {
+    setDateLayout(reportTime: string) {
       const startTime = new Date(
-        new Date(resultTime).setUTCHours(0, 0, 0, 0)
+        new Date(reportTime).setUTCHours(0, 0, 0, 0)
       ).getTime();
       const endTime = new Date(
         new Date().setUTCHours(23, 59, 59, 999)

@@ -1,7 +1,7 @@
 <!-- App represents the main tree of the application UI -->
 
 <template>
-  <v-app id="v-app">
+  <v-app id="v-app" class="ma-0 pa-0">
     <app-header app />
     <v-main>
       <v-responsive class="pa-2">

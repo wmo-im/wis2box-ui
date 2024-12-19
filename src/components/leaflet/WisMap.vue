@@ -1,5 +1,3 @@
-<!-- WisMap displays a leaflet map with all the stations labeled on it -->
-
 <template id="wis-map">
   <v-progress-linear v-if="loading" striped indeterminate color="primary" />
   <div class="text-center">
@@ -11,8 +9,7 @@
         <v-card class="ma-1">
           <l-map ref="wisMap" :zoom="zoom" :center="center" :maxZoom="16" :minZoom="2" style="height: 60vh"
             @ready="onReady()">
-            <template v-if="!loading">
-              <!-- @vue-expect-error types not correct for map in underlying library -->
+            <template v-if="!loading && map && features">
               <WisStation :features="features" :map="map" />
             </template>
             <l-tile-layer :url="url" :attribution="attribution" />
@@ -36,19 +33,16 @@
 </template>
 
 <script lang="ts">
-
+import { defineComponent, ref, nextTick } from "vue";
 import { type PropType } from "vue";
-
 import "leaflet/dist/leaflet.css";
-import { geoJSON } from "leaflet";
+import { geoJSON, type Map } from "leaflet";
 import { LControl, LMap, LTileLayer } from "@vue-leaflet/vue-leaflet";
-
 import WisStation from "../station/WisStation.vue";
 import StationInfo from "../station/StationInfo.vue";
-
-import { defineComponent } from "vue";
-import type { Map } from "leaflet";
 import { LegendColors, type ItemsResponse } from "@/lib/types";
+import { catchAndDisplayError } from "@/lib/errors";
+import {t } from "@/locales/i18n"
 
 export default defineComponent({
   components: {
@@ -61,7 +55,6 @@ export default defineComponent({
   data() {
     return {
       loading: true,
-      map: undefined as unknown as Map, // TODO: Type this properly
       center: [0, 0] as [number, number],
       zoom: 1,
       attribution: window.VUE_APP_BASEMAP_ATTRIBUTION,
@@ -89,26 +82,46 @@ export default defineComponent({
       return this.$vuetify.display.smAndDown;
     },
   },
-  created() {
-    // Ensure that features prop is properly set
+  mounted() {
     if (!this.features || !this.features.features) {
       console.error("Features prop is not properly set:", this.features);
     }
   },
   methods: {
-    onReady() {
-      this.$nextTick(() => {
-        this.loading = true;
-        // @ts-expect-error map ref is not typable
-        this.map = this.$refs.wisMap["leafletObject"];
-        this.map.attributionControl.setPrefix("");
-        this.map.zoomControl.setPosition("topright");
+    async onReady() {
+      const wisMap = this.$refs.wisMap as { leafletObject?: Map };
+      if (!wisMap?.leafletObject) return;
 
-        const bounds_ = geoJSON(this.features).getBounds();
-        this.map.fitBounds(bounds_); // Fit map bounds to the fetched stations\
-        this.loading = false;
-      });
+      this.map = wisMap.leafletObject;
+      this.map.attributionControl.setPrefix("");
+      this.map.zoomControl.setPosition("topright");
+
+      if (!this.features.features || !this.features.features.length) {
+          this.loading = false;
+          return catchAndDisplayError(`${this.topic} ${t("messages.no_observations_in_collection")}\n${t("messages.how_to_link_station")}`);
+        }
+
+      await nextTick();
+
+
+      const bounds_ = geoJSON(this.features).getBounds();
+      if (!bounds_.isValid()) {
+        console.error("Invalid bounds inside feature", this.features);
+        catchAndDisplayError("Error: invalid bounds for map");
+        return;
+      }
+
+      try {
+        this.map.fitBounds(bounds_);
+      } catch (error) {
+        catchAndDisplayError(String(error));
+      }
+      this.loading = false;
     },
+  },
+  setup() {
+    const map = ref<Map | undefined>();
+    return { map };
   },
 });
 </script>

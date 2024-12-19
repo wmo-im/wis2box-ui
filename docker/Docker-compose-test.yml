@@ -1,0 +1,21 @@
+# This docker compose file is solely used for testing purposes as a helper
+# to more quickly spin up a local instance of the UI with custom environment variables
+
+services:
+  test-app:
+    build:
+      context: ..
+      dockerfile: Dockerfile  # Adjust if your Dockerfile has a different name
+    ports:
+      - "5174:80"  # Maps port 80 in the container to port 5174 on the host
+    container_name: wis2box-ui-test
+    restart: no 
+    environment:
+      - WIS2BOX_URL=http://localhost:5174
+      - WIS2BOX_API_URL=http://localhost:8010/proxy/oapi
+      - WIS2BOX_UI_CLUSTER=true
+      - WIS2BOX_CUSTOM_BACKGROUND_COLOR=#acb0be
+      # sample random logo just for testing
+      - WIS2BOX_LOGO=https://upload.wikimedia.org/wikipedia/en/thumb/b/b6/World_Meteorological_Organization_Logo.svg/2880px-World_Meteorological_Organization_Logo.svg.png
+      - WIS2BOX_DISABLE_SEPARATOR_IMAGE=true
+
