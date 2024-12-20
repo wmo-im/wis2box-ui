@@ -1,13 +1,15 @@
 <template id="datasets">
   <v-card flat>
-    <v-alert border="start" variant="text" color="#014e9e">
-      <h2>{{ $t("messages.welcome") }}</h2>
-    </v-alert>
     <div class="d-flex justify-center mt-1">
       <v-progress-linear v-if="loading" indeterminate color="primary" />
     </div>
 
     <v-card class="pa-2">
+
+      <v-alert class="py-2" border="start" variant="text" color="#014e9e">
+        <h2>{{ $t("messages.welcome") }}</h2>
+      </v-alert>
+
       <v-row v-for="(dataset, index) in datasets" :key="index">
         <v-col sm="12" md="3">
           <v-container>
