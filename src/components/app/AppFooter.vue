@@ -4,13 +4,17 @@
       <v-col cols="12">
         <v-img v-if="footerImage && !disableSeparator" cover :src="footerImage" :lazy-src="footerImage" />
       </v-col>
-      <v-col class="primary text-center" cols="12">
+      <v-col class="primary text-center pt-0" cols="12">
         <p :style="{ color: contrastColor }">
           {{ $t("footer.powered_by") }}
           <a :title="name" :href="homepage" :style="{ color: contrastColor }">
             {{ name }}
           </a>
           {{ version }}
+          <br/>
+          <a title="name" :href="documentation" :style="{ color: contrastColor }">
+            wis2box {{ $t("navigation.documentation") }}
+          </a>
         </p>
       </v-col>
     </v-row>
@@ -27,6 +31,7 @@ export default defineComponent({
     version,
     name,
     homepage,
+    documentation: "https://docs.wis2box.wis.wmo.int/",
     footerImage,
     customFooterColor:
       window.VUE_APP_CUSTOM_BACKGROUND_COLOR !== undefined && window.VUE_APP_CUSTOM_BACKGROUND_COLOR !== ""
