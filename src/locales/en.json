@@ -58,9 +58,9 @@
   },
   "datasets": {
     "topic": "Topic",
-    "messages": "WIS 2.0 messages",
+    "messages": "Messages",
     "oafeat": "Observations",
-    "oarec": "Discovery metadata",
+    "oarec": "Metadata",
     "map": "Map",
     "explore": "Explore",
     "mqp": "PubSub",
