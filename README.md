@@ -17,7 +17,7 @@ If you are using Docker, when you run the associated [Dockerfile](./Dockerfile),
 | `WIS2BOX_UI_CLUSTER`             | Boolean flag to enable or disable clustering of stations on the map (default: 'false'). | ❌    |
 | `WIS2BOX_UI_LANG`                | The language to use when translating with i18n (default: 'en').              | ❌    |
 | `WIS2BOX_UI_LOGO`                   | The URL of a custom logo to display in the application.                      | ❌    |
-| `WIS2BOX_UI_BACKGROUND_COLOR`| The background color of the banner (can be set to a hex color code).         | ❌    |
+| `WIS2BOX_UI_BANNER_COLOR`| The background color of the banner (can be set to a hex color code).         | ❌    |
 | `WIS2BOX_UI_DISABLE_SEPARATOR_IMAGE`| Boolean flag to enable or disable the footer separator image (default: 'false'). | ❌    |
 
 
