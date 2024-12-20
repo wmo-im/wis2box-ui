@@ -21,7 +21,7 @@
       <v-responsive width="90%" max-width="1130" height="100%" class="mx-auto">
         <v-container fluid>
           <v-row align="center" class="fill-height">
-            <a :href="wis2" title="wis2box" class="logo-container">
+            <a :href="home" title="wis2box home" class="logo-container">
               <img :src="logo" alt="Logo" class="logo" style="max-height: 100px; max-width:auto; padding: 10px;" />
             </a>
             <v-spacer />
@@ -61,7 +61,7 @@ export default defineComponent({
   },
   data: function () {
     return {
-      wis2: "https://community.wmo.int/activity-areas/wis/wis2-implementation",
+      home: window.VUE_APP_URL,
       logo:
         window.VUE_APP_CUSTOM_LOGO_URL !== undefined && window.VUE_APP_CUSTOM_LOGO_URL !== ""
           ? window.VUE_APP_CUSTOM_LOGO_URL
