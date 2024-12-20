@@ -8,7 +8,7 @@
         <v-row justify="center">
           <v-card flat width="90%" max-width="1130">
             <v-layout>
-              <app-nav />
+              <!-- <app-nav /> -->
               <v-main>
                 <router-view />
               </v-main>
@@ -30,13 +30,13 @@ import { useGlobalStateStore } from '@/stores/global';
 import AppFooter from "@/components/app/AppFooter.vue";
 import AppHeader from "@/components/app/AppHeader.vue";
 import AppMsg from "@/components/app/AppMsg.vue";
-import AppNav from "@/components/app/AppNav.vue";
+// import AppNav from "@/components/app/AppNav.vue";
 
 export default defineComponent({
   components: {
     AppFooter,
     AppHeader,
-    AppNav,
+    // AppNav,
     AppMsg
   },
   // watch for any global errors that we may want to pass to AppMsg component and present to the user
