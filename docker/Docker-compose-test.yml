@@ -14,8 +14,8 @@ services:
       - WIS2BOX_URL=http://localhost:5174
       - WIS2BOX_API_URL=http://localhost:8010/proxy/oapi
       - WIS2BOX_UI_CLUSTER=true
-      - WIS2BOX_CUSTOM_BACKGROUND_COLOR=#acb0be
+      - WIS2BOX_UI_BACKGROUND_COLOR=#acb0be
       # sample random logo just for testing
-      - WIS2BOX_LOGO=https://upload.wikimedia.org/wikipedia/en/thumb/b/b6/World_Meteorological_Organization_Logo.svg/2880px-World_Meteorological_Organization_Logo.svg.png
-      - WIS2BOX_DISABLE_SEPARATOR_IMAGE=true
+      - WIS2BOX_UI_LOGO=https://upload.wikimedia.org/wikipedia/en/thumb/b/b6/World_Meteorological_Organization_Logo.svg/2880px-World_Meteorological_Organization_Logo.svg.png
+      - WIS2BOX_UI_DISABLE_SEPARATOR_IMAGE=true
 
