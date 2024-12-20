@@ -57,9 +57,9 @@
   },
   "datasets": {
     "topic": "Sujet",
-    "messages": "Messagerie WIS 2.0",
+    "messages": "Messagerie",
     "oafeat": "Observations",
-    "oarec": "Métadonnées de découverte",
+    "oarec": "Métadonnées",
     "map": "Carte",
     "explore": "Explorer",
     "mqp": "PubSub",

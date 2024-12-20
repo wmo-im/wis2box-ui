@@ -57,9 +57,9 @@
   },
   "datasets": {
     "topic": "الموضوع",
-    "messages": "رسائل WIS 2.0",
+    "messages": "رسائل",
     "oafeat": "الملاحظات",
-    "oarec": "بيانات الاكتشاف",
+    "oarec": "البيانات الوصفية",
     "map": "الخريطة",
     "explore": "استكشاف",
     "mqp": "PubSub",
