@@ -5,7 +5,7 @@
 
 window.VUE_APP_LANG = 'en' // what language to use when translating with i18n
 window.VUE_APP_BASEMAP_ATTRIBUTION =
-  '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors}'
+  '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
 
 window.VUE_APP_URL = 'http://localhost:5173' // the base url for the frontend
 
