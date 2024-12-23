@@ -39,7 +39,9 @@
     "status": "l' histoire",
     "latest": "Dernières valeurs",
     "report": "Rapport de la station",
-    "limit": "Limite"
+    "limit": "Limite",
+    "overtwenty": "20 ou plus",
+    "none": "Aucun"
   },
   "chart": {
     "chart": "Graphique",

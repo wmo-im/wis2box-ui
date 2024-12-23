@@ -40,7 +40,9 @@
     "status": "History",
     "latest": "Latest values",
     "report": "Station report",
-    "limit": "Limit"
+    "limit": "Limit",
+    "overtwenty": "20 or more",
+    "none": "None"
   },
   "chart": {
     "chart": "Plot",

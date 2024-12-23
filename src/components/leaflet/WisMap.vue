@@ -14,14 +14,14 @@
             </template>
             <l-tile-layer :url="url" :attribution="attribution" />
             <l-control position="bottomleft">
-              <v-card width="124px" class="legend pa-2" border="1">
+              <v-card width="132px" class="legend pa-2" border="1">
                 <strong>{{ $t("messages.no_of_observations") }}</strong>
                 <v-divider class="my-2" />
                 <v-row no-gutters justify="center" v-for="(item, i) in legend" :key="i">
                   <v-col cols="3">
                     <i class="dot" :style="`background: ${item.color}`" />
                   </v-col>
-                  <v-col>{{ item.range }}</v-col>
+                  <v-col>{{ $t(item.range) }}</v-col>
                 </v-row>
               </v-card>
             </l-control>
@@ -60,10 +60,10 @@ export default defineComponent({
       attribution: window.VUE_APP_BASEMAP_ATTRIBUTION,
       url: window.VUE_APP_BASEMAP_URL,
       legend: [
-        { color: LegendColors.Green, range: "20 or more" },
+        { color: LegendColors.Green, range: "station.overtwenty" },
         { color: LegendColors.Yellow, range: "8 - 19" },
         { color: LegendColors.Red, range: "1 - 7" },
-        { color: LegendColors.Gray, range: "None" },
+        { color: LegendColors.Gray, range: "station.none" },
       ],
     };
   },

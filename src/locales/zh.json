@@ -39,7 +39,9 @@
       "status": "历史",
       "latest": "最新数值",
       "report": "站点报告",
-      "limit": "限制"
+      "limit": "限制",
+      "overtwenty": "20 或以上",
+      "none": "无"
     },
     "chart": {
       "chart": "图表",
