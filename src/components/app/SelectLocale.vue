@@ -5,7 +5,7 @@
     <v-menu location="start">
       <template v-slot:activator="{ props }">
         <v-btn block variant="text" :color="color" class="font-weight-bold" v-bind="props">
-          <v-icon icon="mdi-web" />&nbsp;{{ $t('code') }}
+          <v-icon icon="mdi-translate" />&nbsp;{{ $t('code') }}
         </v-btn>
       </template>
       <v-list>
