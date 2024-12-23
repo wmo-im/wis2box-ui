@@ -7,22 +7,51 @@
       </v-col>
       <v-col :cols="smAndDown ? 12 : 8">
         <v-card class="ma-1">
-          <l-map ref="wisMap" :zoom="zoom" :center="center" :maxZoom="16" :minZoom="2" style="height: 60vh"
-            @ready="onReady()">
+          <l-map
+            ref="wisMap"
+            :zoom="zoom"
+            :center="center"
+            :maxZoom="16"
+            :minZoom="2"
+            style="height: 60vh"
+            @ready="onReady()"
+          >
             <template v-if="!loading && map && features">
               <WisStation :features="features" :map="map" />
             </template>
             <l-tile-layer :url="url" :attribution="attribution" />
             <l-control position="bottomleft">
-              <v-card width="132px" class="legend pa-2" border="1">
-                <strong>{{ $t("messages.no_of_observations") }}</strong>
-                <v-divider class="my-2" />
-                <v-row no-gutters justify="center" v-for="(item, i) in legend" :key="i">
-                  <v-col cols="3">
-                    <i class="dot" :style="`background: ${item.color}`" />
-                  </v-col>
-                  <v-col>{{ $t(item.range) }}</v-col>
-                </v-row>
+              <v-card
+                width="132px"
+                class="legend pa-2"
+                border="1"
+                @click="toggleLegendExpanded"
+                :class="{ expanded: legendExpanded }"
+              >
+                <div v-if="!legendExpanded">
+                  {{ $t("station.legend") }}
+                  &nbsp;
+                  &nbsp;
+                  <v-icon icon="mdi-chevron-up" />
+                </div>
+                <v-expand-transition>
+                  <div v-if="legendExpanded">
+                    <strong>{{ $t("messages.no_of_observations") }}</strong>
+                    <v-divider class="my-2" />
+                    <v-row
+                      no-gutters
+                      justify="center"
+                      v-for="(item, i) in legend"
+                      :key="i"
+                    >
+                      <v-col cols="3">
+                        <i class="dot" :style="`background: ${item.color}`" />
+                      </v-col>
+                      <v-col>{{ $t(item.range) }}</v-col>
+                    </v-row>
+                    <v-icon icon="mdi-chevron-down" />
+                  </div>
+                </v-expand-transition>
               </v-card>
             </l-control>
           </l-map>
@@ -42,7 +71,7 @@ import WisStation from "../station/WisStation.vue";
 import StationInfo from "../station/StationInfo.vue";
 import { LegendColors, type ItemsResponse } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
-import {t } from "@/locales/i18n"
+import { t } from "@/locales/i18n";
 
 export default defineComponent({
   components: {
@@ -65,6 +94,7 @@ export default defineComponent({
         { color: LegendColors.Red, range: "1 - 7" },
         { color: LegendColors.Gray, range: "station.none" },
       ],
+      legendExpanded: false, // Track if the legend is expanded
     };
   },
   props: {
@@ -88,6 +118,9 @@ export default defineComponent({
     }
   },
   methods: {
+    toggleLegendExpanded() {
+      this.legendExpanded = !this.legendExpanded;
+    },
     async onReady() {
       const wisMap = this.$refs.wisMap as { leafletObject?: Map };
       if (!wisMap?.leafletObject) return;
@@ -133,5 +166,10 @@ export default defineComponent({
   display: inline-block;
   border-radius: 50%;
   opacity: 0.8;
+}
+
+.legend.expanded {
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 </style>
