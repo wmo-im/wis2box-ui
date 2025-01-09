@@ -74,6 +74,9 @@ export default defineComponent({
         const response = await fetchWithToken(
           `${window.VUE_APP_OAPI}/collections/${station.properties.topic}/items?f=json&sortby=-reportTime&wigos_station_identifier=${station.id}&limit=1`
         );
+        if (response.status == 401) {
+          throw new Error(t("messages.not_authorized"));
+        }
         const data: ItemsResponse = await response.json();
 
         const hasFeatures = data.features && data.features.length > 0;
