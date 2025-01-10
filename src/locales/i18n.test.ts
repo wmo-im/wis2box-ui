@@ -36,7 +36,7 @@ describe('i18n', () => {
 
     for (const [locale, localeObject] of Object.entries(locales)) {
       const localeKeys = getKeys(localeObject)
-      expect(localeKeys, `Missing keys in ${locale}`).toEqual(templateKeys)
+      expect(localeKeys.sort(), `Missing keys in ${locale}`).toEqual(templateKeys.sort())
     }
   })
 })
