@@ -2,6 +2,8 @@
 
 `wis2box-ui` is the user interface for the [wis2box](https://docs.wis2box.wis.wmo.int) 
 
+Please direct all issues to the [main wis2box issue tracker](https://github.com/wmo-im/wis2box/issues)
+
 ## Environment Variables
 
 The UI has a series of environment variables that can be used to configure the application. If you are using `npm` locally, these can be set in the [.env](./public/env.js) file.
@@ -21,46 +23,17 @@ If you are using Docker, when you run the associated [Dockerfile](./Dockerfile),
 | `WIS2BOX_UI_DISABLE_SEPARATOR_IMAGE`| Boolean flag to enable or disable the footer separator image (default: 'false'). | ❌    |
 
 
-## Project setup
+## Commands for Developers
 
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-
-```
-npm run dev
-```
-
-### Compiles and minifies for production
-
-```
-npm run build
-```
-
-### Preview production build
-
-```
-npm run preview
-```
-
-### Run unit tests
-
-```
-npm run test:unit
-```
-
-### Lints and fixes files
-
-```
-npm run lint
-npm run format
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
+| Command                                            | Description                                     |
+|----------------------------------------------------|-------------------------------------------------|
+| `npm install`                                      | Install project dependencies.                   |
+| `docker compose -f docker/Docker-compose-test.yml up` | Build and start the UI with Docker. By default it will accessible on localhost:5174           |
+| `npm run dev`                                      | Compiles and hot-reloads for development.       |
+| `npm run build`                                    | Compiles and minifies for production.           |
+| `npm run preview`                                  | Preview production build.                       |
+| `npm run test:unit`                                | Run unit tests.                                 |
+| `npm run lint`<br>`npm run format`                 | Lints and fixes files.                          |
 
 ## Multilingual (i18n) Support
 
@@ -70,7 +43,7 @@ wis2box-ui has multilingual support via [vue i18n](https://vue-i18n.intlify.dev/
 
 To add a supported locale to wis2box-ui, create a branch of wis2box-ui and navigate to `wis2box-ui/src/locales/`. From there, create a copy of `_template.json` with the name of the new locale as the name of the file (i.e. `en.json`, `en-US.json`, etc...). Create entries for the empty double quoted fields and submit a pull request back into the main branch. The default language of wis2box-ui is English (en).
 
-#### To create an entry for German (de):
+#### Example: creating an entry for German (de):
 
 ```
 git clone https://github.com/wmo-im/wis2box-ui.git
@@ -107,10 +80,6 @@ git push --tags
 ### Code Conventions
 
 - [@vue/cli-plugin/eslint](https://cli.vuejs.org/core-plugins/eslint.html)
-
-## Issues
-
-Please direct all issues to the [main wis2box issue tracker](https://github.com/wmo-im/wis2box/issues)
 
 ## Contact
 

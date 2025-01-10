@@ -105,7 +105,10 @@ export default defineComponent({
 
       try {
         const response = await fetchWithToken(url);
-
+        if (response.status === 401) {
+          catchAndDisplayError(t("messages.not_authorized"));
+          return
+        }
         // Clone the response to be able to read the body twice in case of an error
         const responseClone = response.clone();
         const data: ItemsResponse = await response.json();
@@ -134,7 +137,8 @@ export default defineComponent({
             } else {
               catchAndDisplayError(t("chart.station") + t("messages.no_observations_in_collection"));
             }
-        } else {
+        } 
+        else {
           // If we checked for errors we know how to handle, but still have something wrong,
           // just display the raw error
           const errorBody = await responseClone.text();
