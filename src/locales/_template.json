@@ -39,7 +39,9 @@
     "status": "",
     "latest": "",
     "report": "",
-    "limit": ""
+    "limit": "",
+    "search": "",
+    "search_hint": ""
   },
   "chart": {
     "chart": "",

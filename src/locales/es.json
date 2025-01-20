@@ -40,7 +40,9 @@
     "status": "Registro",
     "latest": "Últimas",
     "report": "Informe de la estación",
-    "limit": "Límite"
+    "limit": "Límite",
+    "search": "Buscar estaciones",
+    "search_hint": "Filtrar por nombre o identificador de estación WIGOS"
   },
   "chart": {
     "chart": "Gráfico",
