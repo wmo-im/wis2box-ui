@@ -6,7 +6,7 @@
       :hint="$t('station.search_hint')"
       append-icon="mdi-magnify"
       variant="underlined"
-      class="pa-3"
+      class="px-4 pt-3"
       clearable
     ></v-text-field>
 
