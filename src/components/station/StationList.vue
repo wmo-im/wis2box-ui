@@ -1,26 +1,36 @@
-<!-- StationList lists all stations which you can click into in order to get the latest values and history -->
-
 <template id="station-list">
-  <v-list>
-    <v-hover v-slot="{ isHovering, props }">
-      <template v-for="(s, i) in stationsSortedByName" :key="i">
-        <v-list-item v-bind="props" :class="{ 'on-hover': isHovering }" @click="onClick(s)" @mouseover="onHover(s)">
-          <template v-slot:prepend>
-            <i class="dot" :style="`background: ${getColor(s)}`" />
-            <h4 class="ml-1 text-left" v-text="clean(s.properties.name)" />
-          </template>
-          <template v-slot:append>
-            <v-btn variant="outlined" size="small" color="#014e9e" :target="s.id" :title="s.id"
-              :href="s.properties.url">
-              OSCAR
-              <v-icon end icon="mdi-open-in-new" />
-            </v-btn>
-          </template>
-        </v-list-item>
-        <v-divider v-if="i + 1 < stationsSortedByName.length" />
-      </template>
-    </v-hover>
-  </v-list>
+  <div>
+    <v-text-field
+      v-model="searchQuery"
+      :label="$t('station.search')"
+      :hint="$t('station.search_hint')"
+      append-icon="mdi-magnify"
+      variant="underlined"
+      class="px-4 pt-3"
+      clearable
+    ></v-text-field>
+
+    <v-list>
+      <v-hover v-slot="{ isHovering, props }">
+        <template v-for="(s, i) in filteredStations" :key="i">
+          <v-list-item v-bind="props" :class="{ 'on-hover': isHovering }" @click="onClick(s)" @mouseover="onHover(s)">
+            <template v-slot:prepend>
+              <i class="dot" :style="`background: ${getColor(s)}`" />
+              <h4 class="ml-1 text-left" v-text="clean(s.properties.name)" />
+            </template>
+            <template v-slot:append>
+              <v-btn variant="outlined" size="small" color="#014e9e" :target="s.id" :title="s.id"
+                :href="s.properties.url">
+                OSCAR
+                <v-icon end icon="mdi-open-in-new" />
+              </v-btn>
+            </template>
+          </v-list-item>
+          <v-divider v-if="i + 1 < filteredStations.length" />
+        </template>
+      </v-hover>
+    </v-list>
+  </div>
 </template>
 
 <script lang="ts">
@@ -41,18 +51,22 @@ export default defineComponent({
       required: true,
     },
   },
+  data() {
+    return {
+      searchQuery: "",
+    };
+  },
   computed: {
     stationsSortedByName: function () {
-      // if the features prop is null or the features array associated with it is null, there are no stations to display
-      if (!this.features || !this.features.features) { 
+      if (!this.features || !this.features.features) {
         return [];
       } else {
         const stns = [...this.features.features].sort((a, b) => {
           if (a.properties.name === undefined || b.properties.name === undefined) {
             return 0;
           }
-          const nameA = a.properties.name.toUpperCase(); // ignore upper and lowercase
-          const nameB = b.properties.name.toUpperCase(); // ignore upper and lowercase
+          const nameA = a.properties.name.toUpperCase();
+          const nameB = b.properties.name.toUpperCase();
           if (nameA < nameB) {
             return -1;
           } else if (nameA > nameB) {
@@ -64,6 +78,13 @@ export default defineComponent({
         return stns;
       }
     },
+    filteredStations() {
+      const query = this.searchQuery.toLowerCase();
+      return this.stationsSortedByName.filter(station => 
+        (station.properties.name?.toLowerCase().includes(query) ?? false) ||
+        (station.id?.toLowerCase().includes(query) ?? false)
+      );
+    }
   },
   methods: {
     clean,

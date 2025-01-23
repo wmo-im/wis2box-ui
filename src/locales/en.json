@@ -30,7 +30,6 @@
     "no_of_observations": "Observations from the past 24 hours",
     "does_not_exist": "Page not found",
     "no_discovery_datasets": "Discovery Metadata contains no datasets"
-
   },
   "station": {
     "map": "Station map",
@@ -40,7 +39,9 @@
     "status": "History",
     "latest": "Latest values",
     "report": "Station report",
-    "limit": "Limit"
+    "limit": "Limit",
+    "search": "Search stations",
+    "search_hint": "Filter by name or WIGOS Station Identifier"
   },
   "chart": {
     "chart": "Plot",

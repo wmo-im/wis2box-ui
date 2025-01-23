@@ -39,7 +39,9 @@
     "status": "l' histoire",
     "latest": "Dernières valeurs",
     "report": "Rapport de la station",
-    "limit": "Limite"
+    "limit": "Limite",
+    "search": "Rechercher des stations",
+    "search_hint": "Filtrer par nom ou identifiant de station WIGOS"
   },
   "chart": {
     "chart": "Graphique",

@@ -1,69 +1,71 @@
 {
-    "language": "中文",
-    "code": "zh",
-    "navigation": {
-      "home": "首页",
-      "datasets": "数据集",
-      "services": "服务",
-      "data": "数据",
-      "documentation": "文档"
-    },
-    "util": {
-      "token": "令牌",
-      "cancel": "取消",
-      "save": "保存",
-      "close": "关闭",
-      "settings": "设置",
-      "cluster": "集群"
-    },
-    "footer": {
-      "powered_by": "由...提供支持"
-    },
-    "messages": {
-      "welcome": "欢迎使用 WIS 2.0 in a box!",
-      "no_observations_in_collection": " 集合中没有观测数据 ",
-      "authorized": "已授权",
-      "not_authorized": "数据需要授权; 请添加授权令牌",
-      "no_linked_collections": "没有关联的集合",
-      "how_to_link_station": "请将站点与此数据集/主题关联，以在地图上显示其数据",
-      "from": "从",
-      "no_of_observations": "过去24小时的观测",
-      "does_not_exist": "页面不存在",
-      "no_discovery_datasets": "发现元数据不包含数据集"
-    },
-    "station": {
-      "map": "站点地图",
-      "properties": "站点属性",
-      "wigos_station_identifier": "WIGOS 站点标识符",
-      "name": "站点名称",
-      "status": "历史",
-      "latest": "最新数值",
-      "report": "站点报告",
-      "limit": "限制"
-    },
-    "chart": {
-      "chart": "图表",
-      "options": "选项",
-      "collection": "集合",
-      "observed_property": "观测属性",
-      "station": "站点",
-      "data_source": "数据源",
-      "download": "下载"
-    },
-    "table": {
-      "table": "表格",
-      "result_time": "结果时间",
-      "phenomenon_time": "现象时间"
-    },
-    "datasets": {
-      "topic": "主题",
-      "messages": "消息",
-      "oafeat": "观测",
-      "oarec": "发现元数据",
-      "map": "地图",
-      "explore": "探索",
-      "mqp": "PubSub",
-      "metadata_id": "元数据标识符"
-    }
+  "language": "中文",
+  "code": "zh",
+  "navigation": {
+    "home": "首页",
+    "datasets": "数据集",
+    "services": "服务",
+    "data": "数据",
+    "documentation": "文档"
+  },
+  "util": {
+    "token": "令牌",
+    "cancel": "取消",
+    "save": "保存",
+    "close": "关闭",
+    "settings": "设置",
+    "cluster": "集群"
+  },
+  "footer": {
+    "powered_by": "由...提供支持"
+  },
+  "messages": {
+    "welcome": "欢迎使用 WIS 2.0 in a box!",
+    "no_observations_in_collection": " 集合中没有观测数据 ",
+    "authorized": "已授权",
+    "not_authorized": "数据需要授权; 请添加授权令牌",
+    "no_linked_collections": "没有关联的集合",
+    "how_to_link_station": "请将站点与此数据集/主题关联，以在地图上显示其数据",
+    "from": "从",
+    "no_of_observations": "过去24小时的观测",
+    "does_not_exist": "页面不存在",
+    "no_discovery_datasets": "发现元数据不包含数据集"
+  },
+  "station": {
+    "map": "站点地图",
+    "properties": "站点属性",
+    "wigos_station_identifier": "WIGOS 站点标识符",
+    "name": "站点名称",
+    "status": "历史",
+    "latest": "最新数值",
+    "report": "站点报告",
+    "limit": "限制",
+    "search": "搜索站点",
+    "search_hint": "按名称或 WIGOS 站点标识符筛选"
+  },
+  "chart": {
+    "chart": "图表",
+    "options": "选项",
+    "collection": "集合",
+    "observed_property": "观测属性",
+    "station": "站点",
+    "data_source": "数据源",
+    "download": "下载"
+  },
+  "table": {
+    "table": "表格",
+    "result_time": "结果时间",
+    "phenomenon_time": "现象时间"
+  },
+  "datasets": {
+    "topic": "主题",
+    "messages": "消息",
+    "oafeat": "观测",
+    "oarec": "发现元数据",
+    "map": "地图",
+    "explore": "探索",
+    "mqp": "PubSub",
+    "metadata_id": "元数据标识符"
   }
+}
   
