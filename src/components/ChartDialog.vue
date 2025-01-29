@@ -9,7 +9,7 @@
       class="pa-4 scroll">
 
       <v-row justify="end">
-        <v-btn variant="text" color="pink" icon @click="open = !open">
+        <v-btn variant="text" color="pink" icon @click="handleClose">
           <v-icon icon="mdi-close"> </v-icon>
         </v-btn>
       </v-row>
@@ -64,6 +64,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ["toggleDataset"],
   methods: {
     async fetchDatastreams() {
       this.loading = true;
@@ -101,6 +102,10 @@ export default defineComponent({
         this.loading = false;
       }
     },
+    handleClose: function() {
+      this.$emit('toggleDataset');
+      this.open = false;
+    }
   },
   async mounted() {
     await this.fetchDatastreams();
