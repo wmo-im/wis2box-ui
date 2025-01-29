@@ -19,25 +19,27 @@
     <v-main style="height: 100vh">
       <v-window v-model="tab" style="height: 100%">
         <v-window-item :value="0" v-if="selectedDatastream">
-          <DataPlotter :selected-datastream="selectedDatastream" :selected-station="selectedStation" :topic="topic" />
+          <DataPlotter :selected-datastream="selectedDatastream" :selected-station="selectedStation" :topic="topic"
+            :items-response="itemsResponse" :items-response-url="itemsResponseUrl" :loading="loading" />
         </v-window-item>
         <v-window-item :value="1" v-if="selectedDatastream">
-          <DataTable :selected-datastream="selectedDatastream" :selected-station="selectedStation" :topic="topic" />
+          <DataTable :selected-datastream="selectedDatastream" :selected-station="selectedStation" :topic="topic"
+            :items-response="itemsResponse" :items-response-url="itemsResponseUrl" :loading="loading" />
         </v-window-item>
       </v-window>
     </v-main>
   </v-layout>
-
 </template>
 
 <script lang="ts">
-import DataPlotter from "./DataPlotter.vue";
-import DataNavigation from "./DataNavigation.vue";
-import DataTable from "./DataTable.vue";
+import DataPlotter from "@/components/data/DataPlotter.vue";
+import DataNavigation from "@/components/data/DataNavigation.vue";
+import DataTable from "@/components/data/DataTable.vue";
 import { defineComponent, type PropType } from "vue";
-import type { CollectionsResponse, Datastreams, Feature } from "@/lib/types";
+import type { CollectionsResponse, Datastreams, Feature, ItemsResponse } from "@/lib/types";
 import { useGlobalStateStore } from "@/stores/global";
-import { fetchWithToken } from "@/lib/helpers";
+import { fetchAllOAFFeatures, fetchWithToken } from "@/lib/helpers";
+import { catchAndDisplayError } from "@/lib/errors";
 
 export default defineComponent({
   components: {
@@ -62,7 +64,13 @@ export default defineComponent({
   computed: {
     selectedDatastream() {
       const store = useGlobalStateStore();
+
       return store.selectedDatastream;
+    }
+  },
+  watch: {
+    selectedDatastream: function () {
+      this.loadObservations();
     }
   },
   async mounted() {
@@ -71,6 +79,40 @@ export default defineComponent({
       const json: CollectionsResponse["collections"][0] = await request.json();
       this.verboseTopicName = json.title;
     }
+    this.loadObservations();
+
+  },
+  methods: {
+    async loadObservations() {
+      if (!this.selectedDatastream) {
+        return;
+      }
+
+      this.loading = true;
+      try {
+        const url = this.getObservationsUrl();
+        const response = await fetchAllOAFFeatures(url);
+        const data: ItemsResponse = await response.json();
+        this.itemsResponse = data;
+        this.itemsResponseUrl = response.url;
+      } catch (error) {
+        catchAndDisplayError(String(error));
+      } finally {
+        this.loading = false;
+        console.log("done");
+      }
+    },
+    getUrl() {
+      return `${window.VUE_APP_OAPI}/collections/${this.topic}/items`
+        + `?f=json&name=${this.selectedDatastream?.name}`
+        + `&reportId=${this.selectedDatastream?.reportId}`
+        + `&wigos_station_identifier=${this.selectedStation.id}`
+        + '&sortby=reportTime';
+    },
+    getObservationsUrl() {
+      return this.getUrl();
+      // + `&limit=${this.chunkSize}${this.getOffset()}`; replace with datetime range
+    },
   },
   data() {
     return {
@@ -78,8 +120,14 @@ export default defineComponent({
       tab: 0,
       tabs: ["chart.chart", "table.table"],
       verboseTopicName: "",
+      itemsResponse: {} as ItemsResponse,
+      itemsResponseUrl: "",
+      dateTimeRange: null,
+      total: 0,
+      startTime: null,
+      endTime: null,
+      loading: false
     };
   },
 });
-
 </script>

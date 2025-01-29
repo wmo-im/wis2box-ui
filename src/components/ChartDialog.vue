@@ -25,7 +25,7 @@
 
       <v-progress-linear v-if="loading" indeterminate color="primary" />
 
-      <v-responsive height="590">
+      <v-responsive height="620">
         <DataViewer :datastreams="datastreams" :topic="topic" :selected-station="selectedStation" />
       </v-responsive>
     </v-card>
