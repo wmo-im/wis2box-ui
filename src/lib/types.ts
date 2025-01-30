@@ -82,7 +82,7 @@ export interface ItemsResponse {
 
 // Superset of Feature, with additional helper fields for easier use in the frontend
 export interface Dataset extends Feature {
-  hasObs: boolean
+  hasSynop: boolean
   id: string
   bbox: number[]
   // links in a format that can be used by the wis2box UI

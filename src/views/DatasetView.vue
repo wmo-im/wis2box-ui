@@ -121,11 +121,10 @@ export default defineComponent({
 
         for (const feature of data.features) {
 
-
-          const hasObs = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations"); // TODO check this originally had /synop at the end. However, it seems like this was incorrect in upstream
+          const hasSynop = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
           const uiLinks = [];
 
-          if (hasObs) {
+          if (hasSynop) {
             uiLinks.push({
               href: undefined,
               target: `/fixed-land-station-map/${feature.id}`,
@@ -143,7 +142,7 @@ export default defineComponent({
                 msg: "oarec",
                 icon: "mdi-book-search",
               });
-            } else if (link.rel === "collection" && hasObs) {
+            } else if (link.rel === "collection" && hasSynop) {
               uiLinks.push({
                 href: link.href,
                 target: undefined,
@@ -165,7 +164,7 @@ export default defineComponent({
           const bbox = feature.geometry.coordinates[0].flat(2);
 
           this.datasets.push({
-            hasObs,
+            hasSynop,
             bbox,
             uiLinks,
             ...feature,
