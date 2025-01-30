@@ -36,45 +36,110 @@ export type Datastreams = Array<ItemsResponse['features'][0]['properties']>
 // Represents one feature within the feature collection of a OAF items/ response
 export interface Feature {
   id: string
-  conformsTo: undefined
   geometry: {
-    type: 'Polygon'
-    coordinates: number[][][]
+    type: 'Point'
+    coordinates: number[]
   }
   properties: {
-    identifier: string
-    title: string
-    description: string
+    description?: string
+    name?: string
+    phenomenonTime?: string
+    reportId: string
+    reportTime: string
+    units: string
+    value: number
+    wigos_station_identifier?: string
     language: string
     type: string
     created: string
     updated: string
     contacts: []
-    'wmo:dataPolicy': string
-    'wmo:topicHierarchy': string
     id: string
-    // Many additional fields. Can't enumerate them all since the
-    // user can add additional properties they want in the backend
-    name?: string
-    topic?: string
-    topics?: string[]
-    wmo_region?: string
-    num_obs?: number
-    reportTime?: string
-    reportId?: string
-    units?: string
-    phenomenonTime?: string
-    wigos_station_identifier?: string
-    value?: number
-    url?: string
   }
   links: Links[]
 }
 
-// Represents the JSON response from the OAF /items endpoint, such as ${oapi}/collections/discovery-metadata/items
+// Represents the JSON response from the OAFeat endpoint ${oapi}/collections/${wmo-urn}/items
 export interface ItemsResponse {
   type: 'FeatureCollection'
   features: Feature[]
+  numberMatched: number
+  numberReturned: number
+  links: Links[]
+}
+
+// Represents one feature within the feature collection of a OAR items/ response
+export interface DiscoveryMetadata {
+  id: string;
+  conformsTo: string[];
+  type: "Feature";
+  wis2box: {
+    topic_hierarchy: string;
+    centre_id: string;
+    data_mappings: {
+      plugins: {
+        [key: string]: {
+          plugin: string;
+          notify: boolean;
+          buckets?: string[];
+          "file-pattern": string;
+          template?: string;
+        }[];
+      };
+    };
+  };
+  time: {
+    interval: [string, string];
+    resolution: string;
+  };
+  geometry: {
+    type: "Polygon";
+    coordinates: number[][][];
+  };
+  properties: {
+    type: string;
+    identifier: string;
+    title: string;
+    description: string;
+    language: {
+      code: string | null;
+    };
+    keywords: string[];
+    themes: {
+      concepts: {
+        id: string;
+        title: string;
+      }[];
+      scheme: string;
+    }[];
+    contacts: {
+      organization: string;
+      emails: { value: string }[];
+      addresses: { country: string }[];
+      links: { rel: string; href: string; type: string }[];
+      roles: string[];
+    }[];
+    created: string;
+    updated: string;
+    "wmo:dataPolicy": string;
+    "wmo:topicHierarchy": string;
+    id: string;
+  };
+  links: {
+    href: string;
+    type: string;
+    name?: string;
+    rel: string;
+    title: string;
+    channel?: string;
+  }[];
+}
+
+
+// Represents the JSON response from the OARec endpoint ${oapi}/collections/discovery-metadata/items
+export interface MetadataResponse {
+  type: 'FeatureCollection'
+  features: DiscoveryMetadata[]
   numberMatched: number
   numberReturned: number
   links: Links[]

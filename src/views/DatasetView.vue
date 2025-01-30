@@ -78,7 +78,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import DatasetMap from "../components/leaflet/DatasetMap.vue";
-import type { Dataset, ItemsResponse } from "@/lib/types";
+import type { Dataset, MetadataResponse } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
 import { fetchWithToken } from "@/lib/helpers";
 import { t } from "@/locales/i18n"
@@ -112,7 +112,7 @@ export default defineComponent({
       }
 
       try {
-        const data: ItemsResponse = await response.json();
+        const data: MetadataResponse = await response.json();
 
         if (data.numberMatched === 0) {
           const errMsg = `${t("messages.no_discovery_datasets")}`;
@@ -121,7 +121,9 @@ export default defineComponent({
 
         for (const feature of data.features) {
 
-          const hasSynop = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
+          const hasSynop = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop") &&
+                           feature.wis2box.data_mappings.plugins.bufr4 && 
+                           feature.wis2box.data_mappings.plugins.bufr4[0].plugin.includes("ObservationDataBUFR2GeoJSON");
           const uiLinks = [];
 
           if (hasSynop) {
