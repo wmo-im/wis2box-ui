@@ -142,7 +142,7 @@ export default defineComponent({
                 msg: "oarec",
                 icon: "mdi-book-search",
               });
-            } else if (link.rel === "collection" && hasSynop) {
+            } else if (link.rel === "collection") {
               uiLinks.push({
                 href: link.href,
                 target: undefined,
