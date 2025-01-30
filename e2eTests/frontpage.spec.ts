@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import {ItemsResponse} from "../src/lib/types";
+import { MetadataResponse } from "../src/lib/types";
 
 test("should display welcome text on the front page", async ({ page }) => {
   await page.goto("http://localhost:5173"); 
@@ -60,7 +60,7 @@ test("should have as many rows with maps as stations in the backend", async ({
     "http://localhost:8010/proxy/oapi/collections/discovery-metadata/items"
   );
   expect(response.ok).toBe(true);
-  const jsonResp: ItemsResponse = await response.json();
+  const jsonResp: MetadataResponse = await response.json();
   expect(jsonResp.numberMatched).toBe(numberOfStations);
   expect(jsonResp.numberReturned).toBe(numberOfStations);
 

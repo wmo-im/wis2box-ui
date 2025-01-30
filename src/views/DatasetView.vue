@@ -14,7 +14,7 @@
         <v-col sm="12" md="3">
           <v-container>
             <v-row justify="center" fill-height>
-              <template v-if="dataset.hasObs">
+              <template v-if="dataset.hasSynop">
                 <v-card class="pa-0 ma-0" @click="loadMap(dataset.id)">
                   <v-overlay open-on-hover contained activator="parent" class="align-center justify-center">
                     <v-btn flat>
@@ -78,7 +78,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import DatasetMap from "../components/leaflet/DatasetMap.vue";
-import type { Dataset, ItemsResponse } from "@/lib/types";
+import type { Dataset, MetadataResponse } from "@/lib/types";
 import { catchAndDisplayError } from "@/lib/errors";
 import { fetchWithToken } from "@/lib/helpers";
 import { t } from "@/locales/i18n"
@@ -112,7 +112,7 @@ export default defineComponent({
       }
 
       try {
-        const data: ItemsResponse = await response.json();
+        const data: MetadataResponse = await response.json();
 
         if (data.numberMatched === 0) {
           const errMsg = `${t("messages.no_discovery_datasets")}`;
@@ -121,11 +121,10 @@ export default defineComponent({
 
         for (const feature of data.features) {
 
-
-          const hasObs = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations"); // TODO check this originally had /synop at the end. However, it seems like this was incorrect in upstream
+          const hasSynop = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
           const uiLinks = [];
 
-          if (hasObs) {
+          if (hasSynop) {
             uiLinks.push({
               href: undefined,
               target: `/fixed-land-station-map/${feature.id}`,
@@ -143,7 +142,7 @@ export default defineComponent({
                 msg: "oarec",
                 icon: "mdi-book-search",
               });
-            } else if (link.rel === "collection" && hasObs) {
+            } else if (link.rel === "collection") {
               uiLinks.push({
                 href: link.href,
                 target: undefined,
@@ -165,7 +164,7 @@ export default defineComponent({
           const bbox = feature.geometry.coordinates[0].flat(2);
 
           this.datasets.push({
-            hasObs,
+            hasSynop,
             bbox,
             uiLinks,
             ...feature,
