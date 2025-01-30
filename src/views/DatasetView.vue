@@ -14,7 +14,7 @@
         <v-col sm="12" md="3">
           <v-container>
             <v-row justify="center" fill-height>
-              <template v-if="dataset.hasObs">
+              <template v-if="dataset.hasSynop">
                 <v-card class="pa-0 ma-0" @click="loadMap(dataset.id)">
                   <v-overlay open-on-hover contained activator="parent" class="align-center justify-center">
                     <v-btn flat>
