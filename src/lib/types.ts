@@ -41,20 +41,28 @@ export interface Feature {
     coordinates: number[]
   }
   properties: {
-    description?: string
-    name?: string
-    phenomenonTime?: string
-    reportId: string
-    reportTime: string
-    units: string
-    value: number
-    wigos_station_identifier?: string
-    language: string
-    type: string
-    created: string
-    updated: string
-    contacts: []
     id: string
+    name: string
+    description: string
+
+    // Station GeoJSON
+    traditional_station_identifier?: string
+    barometer_height?: number
+    facility_type?: string
+    territory_name?: string
+    url?: string
+    topic?: string
+    topics?: string[]
+    status?: string
+    num_obs?: number
+
+    // Observation GeoJSON
+    phenomenonTime?: string
+    reportId?: string
+    reportTime?: string
+    units?: string
+    value?: number
+    wigos_station_identifier?: string
   }
   links: Links[]
 }
@@ -146,7 +154,7 @@ export interface MetadataResponse {
 }
 
 // Superset of Feature, with additional helper fields for easier use in the frontend
-export interface Dataset extends Feature {
+export interface Dataset extends DiscoveryMetadata {
   hasSynop: boolean
   id: string
   bbox: number[]

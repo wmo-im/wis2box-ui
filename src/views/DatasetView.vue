@@ -121,9 +121,7 @@ export default defineComponent({
 
         for (const feature of data.features) {
 
-          const hasSynop = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop") &&
-                           feature.wis2box.data_mappings.plugins.bufr4 && 
-                           feature.wis2box.data_mappings.plugins.bufr4[0].plugin.includes("ObservationDataBUFR2GeoJSON");
+          const hasSynop = feature.properties["wmo:topicHierarchy"].includes("surface-based-observations/synop");
           const uiLinks = [];
 
           if (hasSynop) {
