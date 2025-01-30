@@ -12,7 +12,7 @@
         </v-row>
       </v-container>
 
-      <v-table v-show="title !== ''" fixed-header height="500px">
+      <v-table v-show="title !== ''" fixed-header height="470px">
         <thead>
           <tr>
             <th class="text-center">
