@@ -3,7 +3,7 @@
 -->
 
 <template id="data-table">
-  <v-card min-height="440px" max-height="440px" class="ma-4 mb-0">
+  <v-card min-height="450px" max-height="450px" class="ma-4">
     <v-progress-linear striped indeterminate color="primary" v-if="loading" />
     <div>
       <v-container>
@@ -12,7 +12,7 @@
         </v-row>
       </v-container>
 
-      <v-table v-show="title !== ''" fixed-header height="440px" max-height="440px">
+      <v-table v-show="title !== ''" fixed-header height="450px" max-height="450px">
         <thead>
           <tr>
             <th class="text-center">
@@ -87,14 +87,19 @@ export default defineComponent({
         itemsResponseUrl: this.itemsResponseUrl,
       };
     },
+    features() {
+      return this.itemsResponse.features
+    }
   },
   watch: {
-    // Ensure table is only created once
-    combinedProps: function() {
+    combinedProps: function () {
+      this.generateTable();
+    },
+    features: function () {
       this.generateTable();
     },
   },
-  mounted:function(){
+  mounted: function () {
     this.generateTable();
   },
   data() {
@@ -161,9 +166,8 @@ export default defineComponent({
       if (!Object.keys(this.itemsResponse).length || !this.itemsResponseUrl.length) {
         return;
       }
-
-      try { 
-        this.plot(this.itemsResponseUrl);
+      
+      try {
         if (this.selectedDatastream.units === "CODE TABLE") {
           this.title = clean(`${this.selectedDatastream.name}`);
           this.data.value = this.getColumnFromKey(this.itemsResponse.features, "description") as string[];

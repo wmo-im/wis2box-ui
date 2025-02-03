@@ -2,9 +2,9 @@
 
 <template id="data-plotter">
   <div class="data-plotter">
-    <v-card min-height="500px" class="ma-4">
+    <v-card min-height="450px" class="ma-4">
       <v-progress-linear striped indeterminate color="primary" v-if="loading" />
-      <div :style="{ visibility: !loading ? 'visible' : 'hidden' }">
+      <div :style="{}">
         <v-card class="mx-auto" flat>
           <div :id="'plotly-chart-' + selectedStation.id" />
         </v-card>
@@ -60,11 +60,16 @@ export default defineComponent({
     },
   },
   watch: {
-    combinedProps: function() {
+    combinedProps: function () {
       this.generatePlot();
     },
+    itemsResponse: {
+      handler: function () {
+        this.generatePlot();
+      }, deep: true
+    },
   },
-  mounted:function(){
+  mounted: function () {
     this.generatePlot();
   },
   data: function () {
