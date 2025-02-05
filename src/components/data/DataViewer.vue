@@ -279,7 +279,7 @@ export default defineComponent({
 .chunkInput {
   display: flex;
   flex-direction: column;
-  min-width: 65px;
+  min-width: 80px;
   min-height: 60px;
 }
 
