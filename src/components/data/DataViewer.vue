@@ -118,21 +118,23 @@ export default defineComponent({
         this.itemsResponsePaginated.features = this.itemsResponse.features.slice(startIndex, endIndex);
       }
     },
-    chunkSize: function (newVal) {
-      if (this.chunkSize) {
+    chunkSize: function (newChunkSize) {
+      // Check if newChunkSize is null
+      if (typeof newChunkSize === 'number' && !isNaN(newChunkSize)) {
         // Dont allow exceeding the min or max
-        if (newVal < 1) {
+        if (newChunkSize < 1) {
             this.chunkSize = 1;
-        } else if (newVal > this.itemsResponse.numberMatched) {
+        } else if (newChunkSize > this.itemsResponse.numberMatched) {
             this.chunkSize = this.itemsResponse.numberMatched;
+        } else {
+          this.page = 1;
+          this.totalPages = Math.ceil(this.itemsResponse.numberReturned / newChunkSize);
+          
+          const startIndex = (this.page - 1) * newChunkSize;
+          const endIndex = startIndex + newChunkSize;
+          this.itemsResponsePaginated.features = this.itemsResponse.features.slice(startIndex, endIndex);
         }
 
-        this.page = 1;
-        this.totalPages = Math.ceil(this.itemsResponse.numberReturned / this.chunkSize);
-        
-        const startIndex = (this.page - 1) * this.chunkSize;
-        const endIndex = startIndex + this.chunkSize;
-        this.itemsResponsePaginated.features = this.itemsResponse.features.slice(startIndex, endIndex);
       }
     },
     numberReturned: function () {
