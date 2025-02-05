@@ -106,6 +106,9 @@ export default defineComponent({
   },
   watch: {
     selectedDatastream: function () {
+      // Reset variables to original state when changing datastream
+      this.resetVariables();
+      // Fetch new total and observations
       this.loadData();
     },
     page: function () {
@@ -252,6 +255,14 @@ export default defineComponent({
     getNextUrl(data: ItemsResponse) {
       return data.links.find(link => link.rel === "next")?.href ?? '';
     },
+    resetVariables() {
+      this.chunkSize = 500;
+      this.page = 1;
+      this.totalPages = 0;
+      this.itemsResponse = { type: 'FeatureCollection', features: [], numberMatched: 0, numberReturned: 0, links: [] } as ItemsResponse;
+      this.itemsResponsePaginated = { type: 'FeatureCollection', features: [], numberMatched: 0, numberReturned: 0, links: [] } as ItemsResponse;
+      this.itemsResponseUrl = "";
+    }
   },
   data(): DataViewerData {
     return {
