@@ -33,7 +33,7 @@
                 <label for="observations">
                   Observations
                 </label>
-                <input type="number" id="observations" :value="chunkSize" @input="debouncedHandleChunkSizeChange" :min="1"
+                <input type="number" id="observations" :disabled="!chunkSize" :value="chunkSize" @input="debouncedHandleChunkSizeChange" :min="1"
                   :max="itemsResponse.numberMatched" title="Number of observations per request and page" />
               </div>
             </v-col>
@@ -118,8 +118,15 @@ export default defineComponent({
         this.itemsResponsePaginated.features = this.itemsResponse.features.slice(startIndex, endIndex);
       }
     },
-    chunkSize: function () {
+    chunkSize: function (newVal) {
       if (this.chunkSize) {
+        // Dont allow exceeding the min or max
+        if (newVal < 1) {
+            this.chunkSize = 1;
+        } else if (newVal > this.itemsResponse.numberMatched) {
+            this.chunkSize = this.itemsResponse.numberMatched;
+        }
+
         this.page = 1;
         this.totalPages = Math.ceil(this.itemsResponse.numberReturned / this.chunkSize);
         
@@ -160,13 +167,8 @@ export default defineComponent({
       if (event.target) {
         const target = event.target as HTMLInputElement
         const chunkSize = Number(target.value);
-        if (chunkSize < 1) {
-          this.chunkSize = 1;
-        } else if (chunkSize > this.itemsResponse.numberMatched) {
-          this.chunkSize = this.itemsResponse.numberMatched;
-        } else {
-          this.chunkSize = chunkSize;
-        }
+ 
+        this.chunkSize = chunkSize;
       }
     },
     async loadData() {
