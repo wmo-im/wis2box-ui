@@ -9,8 +9,8 @@
         {{ selectedStation?.properties.name || $t("chart.station") }}
       </v-toolbar-title>
 
-      <template v-slot:prepend v-if="selectedStation">
-        <v-btn icon @click="store.clearSelectedStation">
+      <template v-slot:prepend>
+        <v-btn icon @click="selectedStation ? store.clearSelectedStation() : $router.push('/')">
           <v-icon icon="mdi-arrow-left"></v-icon>
         </v-btn>
       </template>
