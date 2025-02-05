@@ -69,7 +69,7 @@ export interface DataViewerData {
   itemsResponseUrl: string;
   totalPages: number;
   page: number;
-  chunkSize: number;
+  chunkSize: number | null;
   loading: boolean;
   debouncedHandleChunkSizeChange: DebouncedFunc<(event: Event) => void>;
 }
@@ -112,20 +112,26 @@ export default defineComponent({
       this.loadData();
     },
     page: function () {
-      const startIndex = (this.page - 1) * this.chunkSize;
-      const endIndex = startIndex + this.chunkSize;
-      this.itemsResponsePaginated.features = this.itemsResponse.features.slice(startIndex, endIndex);
+      if (this.chunkSize) {
+        const startIndex = (this.page - 1) * this.chunkSize;
+        const endIndex = startIndex + this.chunkSize;
+        this.itemsResponsePaginated.features = this.itemsResponse.features.slice(startIndex, endIndex);
+      }
     },
     chunkSize: function () {
-      this.page = 1;
-      this.totalPages = Math.ceil(this.itemsResponse.numberReturned / this.chunkSize);
-
-      const startIndex = (this.page - 1) * this.chunkSize;
-      const endIndex = startIndex + this.chunkSize;
-      this.itemsResponsePaginated.features = this.itemsResponse.features.slice(startIndex, endIndex);
+      if (this.chunkSize) {
+        this.page = 1;
+        this.totalPages = Math.ceil(this.itemsResponse.numberReturned / this.chunkSize);
+        
+        const startIndex = (this.page - 1) * this.chunkSize;
+        const endIndex = startIndex + this.chunkSize;
+        this.itemsResponsePaginated.features = this.itemsResponse.features.slice(startIndex, endIndex);
+      }
     },
     numberReturned: function () {
-      this.totalPages = Math.ceil(this.itemsResponse.numberReturned / this.chunkSize);
+      if (this.chunkSize) {
+        this.totalPages = Math.ceil(this.itemsResponse.numberReturned / this.chunkSize);
+      }
     }
   },
   async mounted() {
@@ -164,14 +170,14 @@ export default defineComponent({
       }
     },
     async loadData() {
-      if (!this.selectedDatastream) {
-        return;
-      }
-
       this.loading = true;
       try {
         // Get the total number of features
         await this.loadTotal();
+
+        if (!this.selectedDatastream || !this.chunkSize) {
+          return;
+        }
 
         // If the total is under 500, fetch all
         if (this.itemsResponse.numberMatched <= this.chunkSize) {
@@ -190,13 +196,15 @@ export default defineComponent({
     async loadTotal() {
       const url = this.getUrl();
       const total = await fetchTotalFeatures(url);
-      if (total < this.chunkSize) {
-        this.chunkSize = total;
-      }
+      this.chunkSize = Math.min(total, 500);
       this.itemsResponseUrl = addParam(url, 'limit', total.toString());
       this.itemsResponse.numberMatched = total;
     },
     async loadObservationsByChunk() {
+      if (!this.chunkSize) {
+        return;
+      }
+
       // Nested in loadData try catch
       let hasNextUrl = true;
       let nextUrl = this.getObservationsUrl();
@@ -227,6 +235,10 @@ export default defineComponent({
       }
     },
     async loadObservations() {
+      if (!this.chunkSize) {
+        return;
+      }
+
       // Nested in loadData try catch
       const url = this.getObservationsUrl();
       const response = await fetchOAFFeatures(url);
@@ -246,6 +258,10 @@ export default defineComponent({
       return `${window.VUE_APP_OAPI}/collections/${this.topic}/items?${params.toString()}`;
     },
     getObservationsUrl() {
+      if (!this.chunkSize) {
+        return '';
+      }
+
       const url = this.getUrl();
       return addParam(url, 'limit', this.chunkSize.toString());
     },
@@ -256,7 +272,7 @@ export default defineComponent({
       return data.links.find(link => link.rel === "next")?.href ?? '';
     },
     resetVariables() {
-      this.chunkSize = 500;
+      this.chunkSize = null;
       this.page = 1;
       this.totalPages = 0;
       this.itemsResponse = { type: 'FeatureCollection', features: [], numberMatched: 0, numberReturned: 0, links: [] } as ItemsResponse;
@@ -275,7 +291,7 @@ export default defineComponent({
       itemsResponseUrl: "",
       totalPages: 0,
       page: 1,
-      chunkSize: 500,
+      chunkSize: null,
       loading: false,
       debouncedHandleChunkSizeChange: debounce(() => { }, 500) as DebouncedFunc<(event: Event) => void>
     };
