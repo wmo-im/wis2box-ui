@@ -59,7 +59,7 @@ import { catchAndDisplayError } from "@/lib/errors";
 import debounce from 'lodash.debounce';
 import type { DebouncedFunc } from "lodash";
 
-interface Data {
+export interface DataViewerData {
   drawer: boolean;
   tab: number;
   tabs: string[];
@@ -246,7 +246,7 @@ export default defineComponent({
       return data.links.find(link => link.rel === "next")?.href ?? '';
     },
   },
-  data(): Data {
+  data(): DataViewerData {
     return {
       drawer: true,
       tab: 0,
@@ -257,7 +257,7 @@ export default defineComponent({
       itemsResponseUrl: "",
       totalPages: 0,
       page: 1,
-      chunkSize: 10,
+      chunkSize: 500,
       loading: false,
       debouncedHandleChunkSizeChange: debounce(() => {}, 500) as DebouncedFunc<(event: Event) => void>
     };

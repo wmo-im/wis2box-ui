@@ -4,7 +4,7 @@
   <div class="data-plotter">
     <v-card min-height="450px" class="ma-4">
       <v-progress-linear striped indeterminate color="primary" v-if="loading" />
-      <div :style="{}">
+      <div>
         <v-card class="mx-auto" flat>
           <div :id="'plotly-chart-' + selectedStation.id" />
         </v-card>
