@@ -105,10 +105,9 @@ export function getColumnFromKey<T extends keyof Feature['properties']>(
   return result
 }
 
+// get total number of OAF features from enpoint
 export async function fetchTotalFeatures(urlWithParams: string): Promise<number> {
-  const hitsURL = `${urlWithParams}&${new URLSearchParams({
-    resulttype: 'hits',
-  }).toString()}`
+  const hitsURL = addParam(urlWithParams, 'resulttype', 'hits');
 
   const response = await fetchWithToken(hitsURL)
   if (response.ok) {
@@ -120,9 +119,8 @@ export async function fetchTotalFeatures(urlWithParams: string): Promise<number>
   }
 }
 
-// in OAF endpoints there is no way to get all the features in a collection at once
-// so we need to fetch as hits, then fetch as features using the hits as the limit
-export async function fetchAllOAFFeatures(urlWithParams: string) {
+// Fetch features using the request built in DataViewer
+export async function fetchOAFFeatures(urlWithParams: string) {
 
     const featuresResponse = await fetchWithToken(urlWithParams)
     if (featuresResponse.ok) {

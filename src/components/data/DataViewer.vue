@@ -30,11 +30,11 @@
           <v-row no-gutter align="center" justify="space-between">
             <v-col cols="1">
               <div className="chunkInput">
-                <label for="records">
-                  Records
+                <label for="observations">
+                  Observations
                 </label>
-                <input type="number" id="records" :value="chunkSize" @input="debouncedHandleChunkSizeChange" :min="1" :max="itemsResponse.numberMatched" style=""
-                  title="Enter the number of records per request" />
+                <input type="number" id="observations" :value="chunkSize" @input="debouncedHandleChunkSizeChange" :min="1"
+                  :max="itemsResponse.numberMatched" title="Number of observations per request and page" />
               </div>
             </v-col>
             <v-col cols="11">
@@ -54,7 +54,7 @@ import DataTable from "@/components/data/DataTable.vue";
 import { defineComponent, type PropType } from "vue";
 import type { CollectionsResponse, Datastreams, Feature, ItemsResponse } from "@/lib/types";
 import { useGlobalStateStore } from "@/stores/global";
-import { addParam, fetchAllOAFFeatures, fetchTotalFeatures, fetchWithToken, isLocalhost, replaceHostname, replaceParam } from "@/lib/helpers";
+import { addParam, fetchOAFFeatures, fetchTotalFeatures, fetchWithToken, isLocalhost, replaceHostname, replaceParam } from "@/lib/helpers";
 import { catchAndDisplayError } from "@/lib/errors";
 import debounce from 'lodash.debounce';
 import type { DebouncedFunc } from "lodash";
@@ -142,6 +142,8 @@ export default defineComponent({
 
   },
   created() {
+    // Cancel the existing debounced function from instantiation
+    this.debouncedHandleChunkSizeChange.cancel();
     this.debouncedHandleChunkSizeChange = debounce(this.handleChunkSizeChange, 300);
   },
   methods: {
@@ -153,7 +155,7 @@ export default defineComponent({
           this.chunkSize = 1;
         } else if (chunkSize > this.itemsResponse.numberMatched) {
           this.chunkSize = this.itemsResponse.numberMatched;
-        }  else {
+        } else {
           this.chunkSize = chunkSize;
         }
       }
@@ -165,9 +167,13 @@ export default defineComponent({
 
       this.loading = true;
       try {
+        // Get the total number of features
         await this.loadTotal();
+
+        // If the total is under 500, fetch all
         if (this.itemsResponse.numberMatched <= this.chunkSize) {
           await this.loadObservations();
+          // Else get in groups of 500 or the user requested chunk size
         } else {
           await this.loadObservationsByChunk();
         }
@@ -186,16 +192,15 @@ export default defineComponent({
       }
       this.itemsResponseUrl = addParam(url, 'limit', total.toString());
       this.itemsResponse.numberMatched = total;
-
     },
     async loadObservationsByChunk() {
       // Nested in loadData try catch
       let hasNextUrl = true;
       let nextUrl = this.getObservationsUrl();
       while (hasNextUrl) {
-        const response = await fetchAllOAFFeatures(nextUrl);
+        const response = await fetchOAFFeatures(nextUrl);
         const data: ItemsResponse = await response.json();
-        
+
         if (this.itemsResponsePaginated.features.length === 0) {
           this.itemsResponsePaginated.features = data.features
         }
@@ -204,6 +209,8 @@ export default defineComponent({
         hasNextUrl = this.hasNextUrl(data);
         if (hasNextUrl) {
           let _nextUrl = this.getNextUrl(data);
+
+          // If developing on localhost, replace hostname with proxy
           if (isLocalhost()) {
             _nextUrl = replaceHostname(_nextUrl, window.VUE_APP_OAPI);
           }
@@ -219,7 +226,7 @@ export default defineComponent({
     async loadObservations() {
       // Nested in loadData try catch
       const url = this.getObservationsUrl();
-      const response = await fetchAllOAFFeatures(url);
+      const response = await fetchOAFFeatures(url);
       const data: ItemsResponse = await response.json();
       this.itemsResponse = JSON.parse(JSON.stringify(data));
       this.itemsResponsePaginated = JSON.parse(JSON.stringify(data));
@@ -259,7 +266,7 @@ export default defineComponent({
       page: 1,
       chunkSize: 500,
       loading: false,
-      debouncedHandleChunkSizeChange: debounce(() => {}, 500) as DebouncedFunc<(event: Event) => void>
+      debouncedHandleChunkSizeChange: debounce(() => { }, 500) as DebouncedFunc<(event: Event) => void>
     };
   },
   beforeUnmount() {
