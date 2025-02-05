@@ -2,7 +2,7 @@
 
 <template id="data-plotter">
   <div class="data-plotter">
-    <v-card min-height="450px" class="ma-4">
+    <v-card min-height="470px" class="ma-4">
       <v-progress-linear striped indeterminate color="primary" v-if="loading" />
       <div>
         <v-card class="mx-auto" flat>

@@ -26,7 +26,7 @@
           <DataTable :selected-datastream="selectedDatastream" :selected-station="selectedStation" :topic="topic"
             :items-response="itemsResponsePaginated" :items-response-url="itemsResponseUrl" :loading="loading" />
         </v-window-item>
-        <v-container>
+        <v-container style="padding-top: 0px;">
           <v-row no-gutter align="center" justify="space-between">
             <v-col cols="1">
               <div className="chunkInput">
@@ -37,7 +37,7 @@
                   :max="itemsResponse.numberMatched" title="Number of observations per request and page" />
               </div>
             </v-col>
-            <v-col cols="11">
+            <v-col cols="10">
               <v-pagination v-if="totalPages > 1" v-model="page" :length="totalPages" />
             </v-col>
           </v-row>

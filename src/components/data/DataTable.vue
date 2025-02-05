@@ -3,7 +3,7 @@
 -->
 
 <template id="data-table">
-  <v-card min-height="450px" max-height="450px" class="ma-4">
+  <v-card min-height="470px" max-height="470px" class="ma-4">
     <v-progress-linear striped indeterminate color="primary" v-if="loading" />
     <div>
       <v-container>
@@ -12,7 +12,7 @@
         </v-row>
       </v-container>
 
-      <v-table v-show="title !== ''" fixed-header height="450px" max-height="450px">
+      <v-table v-show="title !== ''" fixed-header height="438px">
         <thead>
           <tr>
             <th class="text-center">
@@ -168,6 +168,7 @@ export default defineComponent({
       }
       
       try {
+        this.plot(this.itemsResponseUrl);
         if (this.selectedDatastream.units === "CODE TABLE") {
           this.title = clean(`${this.selectedDatastream.name}`);
           this.data.value = this.getColumnFromKey(this.itemsResponse.features, "description") as string[];
