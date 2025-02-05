@@ -33,7 +33,7 @@
                 <label for="records">
                   Records
                 </label>
-                <input type="number" id="records" v-model="chunkSize" :min="1" :max="itemsResponse.numberMatched" style=""
+                <input type="number" id="records" :value="chunkSize" @input="debouncedHandleChunkSizeChange" :min="1" :max="itemsResponse.numberMatched" style=""
                   title="Enter the number of records per request" />
               </div>
             </v-col>
@@ -56,6 +56,23 @@ import type { CollectionsResponse, Datastreams, Feature, ItemsResponse } from "@
 import { useGlobalStateStore } from "@/stores/global";
 import { addParam, fetchAllOAFFeatures, fetchTotalFeatures, fetchWithToken, isLocalhost, replaceHostname, replaceParam } from "@/lib/helpers";
 import { catchAndDisplayError } from "@/lib/errors";
+import debounce from 'lodash.debounce';
+import type { DebouncedFunc } from "lodash";
+
+interface Data {
+  drawer: boolean;
+  tab: number;
+  tabs: string[];
+  verboseTopicName: string;
+  itemsResponse: ItemsResponse;
+  itemsResponsePaginated: ItemsResponse;
+  itemsResponseUrl: string;
+  totalPages: number;
+  page: number;
+  chunkSize: number;
+  loading: boolean;
+  debouncedHandleChunkSizeChange: DebouncedFunc<(event: Event) => void>;
+}
 
 export default defineComponent({
   components: {
@@ -109,6 +126,12 @@ export default defineComponent({
     }
   },
   async mounted() {
+    this.$t('$vuetify.pagination.ariaLabel.root');
+    this.$t('$vuetify.pagination.ariaLabel.page');
+    this.$t('$vuetify.pagination.ariaLabel.currentPage');
+    this.$t('$vuetify.pagination.ariaLabel.next');
+    this.$t('$vuetify.pagination.ariaLabel.previous');
+
     const request = await fetchWithToken(`${window.VUE_APP_OAPI}/collections/${this.topic}`);
     if (request.ok) {
       const json: CollectionsResponse["collections"][0] = await request.json();
@@ -118,8 +141,23 @@ export default defineComponent({
     this.loadData();
 
   },
+  created() {
+    this.debouncedHandleChunkSizeChange = debounce(this.handleChunkSizeChange, 300);
+  },
   methods: {
-
+    handleChunkSizeChange(event: Event) {
+      if (event.target) {
+        const target = event.target as HTMLInputElement
+        const chunkSize = Number(target.value);
+        if (chunkSize < 1) {
+          this.chunkSize = 1;
+        } else if (chunkSize > this.itemsResponse.numberMatched) {
+          this.chunkSize = this.itemsResponse.numberMatched;
+        }  else {
+          this.chunkSize = chunkSize;
+        }
+      }
+    },
     async loadData() {
       if (!this.selectedDatastream) {
         return;
@@ -131,7 +169,6 @@ export default defineComponent({
         if (this.itemsResponse.numberMatched <= this.chunkSize) {
           await this.loadObservations();
         } else {
-
           await this.loadObservationsByChunk();
         }
       } catch (error) {
@@ -144,6 +181,9 @@ export default defineComponent({
     async loadTotal() {
       const url = this.getUrl();
       const total = await fetchTotalFeatures(url);
+      if (total < this.chunkSize) {
+        this.chunkSize = total;
+      }
       this.itemsResponseUrl = addParam(url, 'limit', total.toString());
       this.itemsResponse.numberMatched = total;
 
@@ -155,11 +195,11 @@ export default defineComponent({
       while (hasNextUrl) {
         const response = await fetchAllOAFFeatures(nextUrl);
         const data: ItemsResponse = await response.json();
-        // TODO: clean this up
-        if (!(this.itemsResponsePaginated.features.length > 0)) {
+        
+        if (this.itemsResponsePaginated.features.length === 0) {
           this.itemsResponsePaginated.features = data.features
         }
-        this.itemsResponse.features = this.itemsResponse.features.concat([...data.features])
+        this.itemsResponse.features = this.itemsResponse.features.concat(JSON.parse(JSON.stringify(data.features)))
         this.itemsResponse.numberReturned += data.features.length;
         hasNextUrl = this.hasNextUrl(data);
         if (hasNextUrl) {
@@ -169,7 +209,6 @@ export default defineComponent({
           }
           // If chunksize has changed, reflect this in the next request
           _nextUrl = replaceParam(_nextUrl, 'limit', this.chunkSize.toString());
-
           if (_nextUrl === nextUrl) {
             throw new Error('Next url matches previous, aborting request');
           }
@@ -207,7 +246,7 @@ export default defineComponent({
       return data.links.find(link => link.rel === "next")?.href ?? '';
     },
   },
-  data() {
+  data(): Data {
     return {
       drawer: true,
       tab: 0,
@@ -216,16 +255,16 @@ export default defineComponent({
       itemsResponse: { type: 'FeatureCollection', features: [], numberMatched: 0, numberReturned: 0, links: [] } as ItemsResponse,
       itemsResponsePaginated: { type: 'FeatureCollection', features: [], numberMatched: 0, numberReturned: 0, links: [] } as ItemsResponse,
       itemsResponseUrl: "",
-      dateTimeRange: null,
-      total: 0,
       totalPages: 0,
       page: 1,
-      chunkSize: 500,
-      startTime: null,
-      endTime: null,
+      chunkSize: 10,
       loading: false,
+      debouncedHandleChunkSizeChange: debounce(() => {}, 500) as DebouncedFunc<(event: Event) => void>
     };
   },
+  beforeUnmount() {
+    this.debouncedHandleChunkSizeChange.cancel();
+  }
 });
 </script>
 
@@ -234,6 +273,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   min-width: 65px;
+  min-height: 60px;
 }
 
 .chunkInput>label {
