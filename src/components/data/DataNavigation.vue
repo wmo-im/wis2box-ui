@@ -5,7 +5,7 @@
   <v-navigation-drawer 
     v-model="alwaysOpen" 
     class="text-center"
-    style="overflow-y: auto; max-height: 60vh;">
+    style="overflow-y: auto; max-height: 70vh;">
     <v-list-item-subtitle class="mt-2">
       {{ $t('chart.observed_property') }}
     </v-list-item-subtitle>
