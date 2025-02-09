@@ -1,8 +1,6 @@
 <template id="datasets">
   <v-card flat>
-    <div v-if="loading" class="d-flex justify-center mt-1">
-      <v-progress-linear indeterminate color="primary" />
-    </div>
+    <v-progress-linear v-if="loading" indeterminate color="primary" />
 
     <v-card v-if="!loading" class="pa-2">
 
