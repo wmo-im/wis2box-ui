@@ -3,7 +3,7 @@
 -->
 
 <template id="station-info">
-  <v-card flat height="60vh" class="scroll">
+  <v-card flat :height="$vuetify.display.mdAndUp ? '70vh':'50vh'" class="scroll">
     <v-toolbar>
       <v-toolbar-title>
         {{ selectedStation?.properties.name || $t("chart.station") }}
