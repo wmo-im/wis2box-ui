@@ -4,21 +4,17 @@
   <v-app id="v-app" class="ma-0 pa-0">
     <app-header app />
     <v-main>
-      <v-responsive class="pa-2">
-        <v-row justify="center">
+      <v-container fluid class="fill-height">
+        <v-row justify="center" align="stretch">
           <v-card flat width="90%" max-width="1130">
-            <v-layout>
-              <!-- <app-nav /> -->
-              <v-main>
-                <router-view />
-              </v-main>
-            </v-layout>
+            <!-- <app-nav /> -->
+            <router-view />
           </v-card>
         </v-row>
-      </v-responsive>
+      </v-container>
     </v-main>
     <app-msg app class="pb-4" :error="errorState" />
-    <app-footer app class="pt-4" />
+    <app-footer app />
   </v-app>
 </template>
 
