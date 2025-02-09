@@ -4,7 +4,7 @@
 
     <v-card v-if="!loading" class="pa-2">
 
-      <v-alert class="py-2 mb-2 text-center" border="bottom" variant="text" color="#014e9e">
+      <v-alert class="py-2 mb-2 text-center" border="start" variant="text" color="#014e9e">
         <h2>{{ $t("messages.welcome") }}</h2>
       </v-alert>
 
