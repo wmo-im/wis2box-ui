@@ -4,9 +4,9 @@
       <v-progress-linear v-if="loading" indeterminate color="primary" />
     </div>
 
-    <v-card class="pa-2">
+    <v-card v-if="!loading" class="pa-2">
 
-      <v-alert class="py-2" border="start" variant="text" color="#014e9e">
+      <v-alert class="py-2 mb-2" border="start" variant="text" color="#014e9e">
         <h2>{{ $t("messages.welcome") }}</h2>
       </v-alert>
 
