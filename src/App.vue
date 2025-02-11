@@ -4,12 +4,10 @@
   <v-app id="v-app" class="ma-0 pa-0">
     <app-header app />
     <v-main>
-      <v-container fluid class="fill-height">
-        <v-row justify="center" align="stretch">
-          <v-card flat width="90%" max-width="1130">
-            <!-- <app-nav /> -->
-            <router-view />
-          </v-card>
+      <v-container class="py-2" max-width="1200">
+        <v-row>
+          <!-- <app-nav /> -->
+          <router-view />
         </v-row>
       </v-container>
     </v-main>

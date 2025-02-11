@@ -3,7 +3,7 @@
 -->
 
 <template id="station-info">
-  <v-card flat :height="$vuetify.display.mdAndUp ? '70vh':'50vh'" class="scroll">
+  <v-card flat :height="$vuetify.display.height - 232" class="scroll">
     <v-toolbar>
       <v-toolbar-title :class="selectedStation?.properties.name ? 'mx-auto' : 'ml-n12'">
         {{ selectedStation?.properties.name || $t("chart.station") }}
@@ -68,6 +68,11 @@ export default defineComponent({
     toggleDataset() {
       this.showDataset = !this.showDataset;
     }
+  },
+  computed: {
+    smAndDown() {
+      return this.$vuetify.display.smAndDown;
+    },
   },
 });
 </script>
