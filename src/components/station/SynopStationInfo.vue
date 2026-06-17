@@ -25,7 +25,7 @@
     <ChartDialog :topic="topic" :selected-station="selectedStation" v-if="showDataset && selectedStation" />
 
     <v-card flat class="text-center" v-if="!selectedStation">
-      <StationList :features="features" :map="map" />
+      <SynopStationList :features="features" :map="map" />
     </v-card>
     <v-card flat class="text-center" v-else>
       <StationStatus :features="features" :map="map" />
@@ -35,14 +35,14 @@
 
 <script lang="ts">
 import { computed, defineComponent, type PropType } from "vue";
-import StationList from "./StationList.vue";
+import SynopStationList from "./SynopStationList.vue";
 import StationStatus from "./StationStatus.vue";
 import type { ItemsResponse } from "@/lib/types";
 import ChartDialog from '../ChartDialog.vue';
 import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
-  components: { StationList, StationStatus, ChartDialog },
+  components: { SynopStationList, StationStatus, ChartDialog },
   props: {
     features: {
       type: Object as PropType<ItemsResponse>,
