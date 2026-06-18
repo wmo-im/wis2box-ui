@@ -111,6 +111,8 @@ export default defineComponent({
       }
     },
     getColor(station: Feature) {
+      // Determine the color based on the number of observations
+      // 2 or more observations: green, 1 observation: yellow, 0 observations: gray
       const hits = station.properties.num_obs;
       if (hits === 0 || hits === undefined) {
         return LegendColors.Gray;
