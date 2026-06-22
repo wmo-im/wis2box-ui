@@ -19,7 +19,7 @@
     <TempChartDialog :metadata_id="metadata_id" :selected-station="selectedStation" v-if="showDataset && selectedStation" />
 
     <v-card flat class="text-center" v-if="!selectedStation">
-      <StationList :features="features" :map="map" />
+      <TempStationList :features="features" :map="map" />
     </v-card>
     <v-card flat class="text-center" v-else>
       <MsgStationStatus :features="features" :map="map" :metadata_id="metadata_id"/>
@@ -33,14 +33,14 @@
 
 <script lang="ts">
 import { computed, defineComponent, type PropType } from "vue";
-import StationList from "./StationList.vue";
+import TempStationList from "./TempStationList.vue";
 import MsgStationStatus from "./MsgStationStatus.vue";
 import type { ItemsResponse } from "@/lib/types";
 import TempChartDialog from '../TempChartDialog.vue';
 import { useGlobalStateStore } from "@/stores/global";
 
 export default defineComponent({
-  components: { StationList, MsgStationStatus, TempChartDialog },
+  components: { TempStationList, MsgStationStatus, TempChartDialog },
   props: {
     features: {
       type: Object as PropType<ItemsResponse>,
